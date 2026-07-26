@@ -16,9 +16,29 @@ let streamScores = {
 let isAdminLoggedIn = false;
 const ADMIN_PIN = "royal123";
 
-// Fetch scores from Google Sheet on page load
+// Generate a random unique ID for this specific browser tab/device session
+let viewerId = Math.random().toString(36).substring(2);
+
+// Send a heartbeat every 15 seconds so the Google Sheet tracks this tab as an active viewer
+setInterval(() => {
+    fetch(API_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "heartbeat", viewerId: viewerId })
+    }).catch(err => console.error("Heartbeat error:", err));
+}, 15000);
+
+// Fetch scores and viewer count from Google Sheet on page load
 window.addEventListener("DOMContentLoaded", () => {
     fetchScores();
+    // Send initial heartbeat right away on load
+    fetch(API_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "heartbeat", viewerId: viewerId })
+    }).catch(err => console.error("Initial heartbeat error:", err));
 });
 
 function fetchScores() {
@@ -31,6 +51,11 @@ function fetchScores() {
             }
             if (data && data.streams) {
                 streamScores = data.streams;
+            }
+            // Update active viewer count on the web UI
+            let viewerElem = document.getElementById("viewerCount");
+            if (viewerElem && data.viewers !== undefined) {
+                viewerElem.textContent = data.viewers;
             }
             updateDisplay();
         })
