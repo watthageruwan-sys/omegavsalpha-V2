@@ -16,6 +16,9 @@
 
 body {
     background-color: var(--color-bg);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
     color: var(--color-text-main);
     display: flex;
     justify-content: center;
