@@ -1,21 +1,12 @@
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbybAtE2AllK3WQ3S2NHakdilPUBA4xPtKRkKPIjRLSbNRiV26rYdvTa5JsSy3srNaBzHg/exec";
 
 let scores = { alpha: 0, omega: 0 };
-let teamStreams = {
-    alpha: {
-        "Physical Science": 0,
-        "Bio Science": 0,
-        "Commerce": 0,
-        "Technology": 0,
-        "Arts": 0
-    },
-    omega: {
-        "Physical Science": 0,
-        "Bio Science": 0,
-        "Commerce": 0,
-        "Technology": 0,
-        "Arts": 0
-    }
+let publicStreams = {
+    "Physical Science": 0,
+    "Bio Science": 0,
+    "Commerce": 0,
+    "Technology": 0,
+    "Arts": 0
 };
 
 let lastAlpha = 0;
@@ -97,10 +88,10 @@ function awardCustomStreamScore(team) {
     let points = parseInt(achievementEl.value) || 0;
     let achievementName = achievementEl.options[achievementEl.selectedIndex].text.split(' (')[0];
     
-    // Add points to the specific team's stream breakdown
-    if (teamStreams[team] && teamStreams[team][chosenStream] !== undefined) {
-        teamStreams[team][chosenStream] += points;
-        if (teamStreams[team][chosenStream] < 0) teamStreams[team][chosenStream] = 0;
+    // Aggregate points into the public stream score regardless of which team scored it
+    if (publicStreams[chosenStream] !== undefined) {
+        publicStreams[chosenStream] += points;
+        if (publicStreams[chosenStream] < 0) publicStreams[chosenStream] = 0;
     }
 
     let reason = `[${chosenStream}] ${achievementName}`;
@@ -140,8 +131,7 @@ async function resetScores() {
 
     scores.alpha = 0;
     scores.omega = 0;
-    Object.keys(teamStreams.alpha).forEach(k => teamStreams.alpha[k] = 0);
-    Object.keys(teamStreams.omega).forEach(k => teamStreams.omega[k] = 0);
+    Object.keys(publicStreams).forEach(k => publicStreams[k] = 0);
 
     updateUI();
     logActivity("Scoreboard reset to zero.");
@@ -176,18 +166,11 @@ function updateUI() {
     if (alphaScoreEl) alphaScoreEl.innerText = scores.alpha;
     if (omegaScoreEl) omegaScoreEl.innerText = scores.omega;
 
-    // Update Team Alpha stream elements
-    for (let streamName in teamStreams.alpha) {
+    // Update public stream elements
+    for (let streamName in publicStreams) {
         let safeId = streamName.replace(/\s+/g, '-');
-        let el = document.getElementById(`alpha-${safeId}`);
-        if (el) el.innerText = teamStreams.alpha[streamName];
-    }
-
-    // Update Team Omega stream elements
-    for (let streamName in teamStreams.omega) {
-        let safeId = streamName.replace(/\s+/g, '-');
-        let el = document.getElementById(`omega-${safeId}`);
-        if (el) el.innerText = teamStreams.omega[streamName];
+        let el = document.getElementById(`stream-${safeId}`);
+        if (el) el.innerText = publicStreams[streamName];
     }
 
     let alphaCard = document.querySelector('.alpha-card');
