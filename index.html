@@ -11,18 +11,20 @@
     <div class="container">
         <!-- HEADER -->
         <header>
-            <div class="subtitle">Battle Arena</div>
+            <div class="subtitle">Kuruduwatta Royal College - Grade 12 Study Group Initiative</div>
             <h1>α-ALPHA vs Ω-OMEGA</h1>
             <div class="college-name">
                 <div class="school-flag">
                     <div class="navy-half"></div>
                     <div class="gold-half"></div>
                 </div>
-                Kuruduwatta Royal College
+                Battle Arena & Study Tracker
             </div>
-            <div class="viewer-badge-container">
-                <span class="viewer-dot"></span>
-                👀 Live Viewers: <span id="viewerCount">1</span>
+            <div>
+                <div class="viewer-badge-container">
+                    <span class="viewer-dot"></span>
+                    👀 Live Viewers: <span id="viewerCount">1</span>
+                </div>
             </div>
         </header>
 
@@ -32,48 +34,14 @@
             <div class="team-card alpha-card" id="alphaCard">
                 <div class="team-title">α - Team Alpha</div>
                 <div class="score-display" id="alphaScore">0</div>
-                <div class="score-subtitle">Total Points</div>
-                
-                <!-- Admin Quick Point Buttons -->
-                <div class="quick-points">
-                    <button class="btn-point" onclick="updateScore('alpha', 1, 'Quick +1')">+1</button>
-                    <button class="btn-point" onclick="updateScore('alpha', 5, 'Quick +5')">+5</button>
-                    <button class="btn-point" onclick="updateScore('alpha', 10, 'Quick +10')">+10</button>
-                    <button class="btn-point" onclick="updateScore('alpha', -1, 'Quick -1')">-1</button>
-                </div>
+                <div class="score-subtitle" style="color: #94a3b8; font-size: 0.9rem;">Total Points</div>
             </div>
 
             <!-- Team Omega Card -->
             <div class="team-card omega-card" id="omegaCard">
                 <div class="team-title">Ω - Team Omega</div>
                 <div class="score-display" id="omegaScore">0</div>
-                <div class="score-subtitle">Total Points</div>
-                
-                <!-- Admin Quick Point Buttons -->
-                <div class="quick-points">
-                    <button class="btn-point" onclick="updateScore('omega', 1, 'Quick +1')">+1</button>
-                    <button class="btn-point" onclick="updateScore('omega', 5, 'Quick +5')">+5</button>
-                    <button class="btn-point" onclick="updateScore('omega', 10, 'Quick +10')">+10</button>
-                    <button class="btn-point" onclick="updateScore('omega', -1, 'Quick -1')">-1</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- BATTLE STATUS BANNER -->
-        <div class="battle-status">
-            <div class="status-content">
-                <h3 id="statusTitle">🔥 Battle Just Began!</h3>
-                <p id="statusDesc">The scoreboard is clean. Step up, lock in, and claim the lead!</p>
-            </div>
-            <div class="progress-container">
-                <div class="progress-labels">
-                    <span id="alphaPct">α-Alpha (50%)</span>
-                    <span id="omegaPct">Ω-Omega (50%)</span>
-                </div>
-                <div class="progress-bar-container">
-                    <div class="progress-alpha" id="alphaBar"></div>
-                    <div class="progress-omega" id="omegaBar"></div>
-                </div>
+                <div class="score-subtitle" style="color: #94a3b8; font-size: 0.9rem;">Total Points</div>
             </div>
         </div>
 
@@ -104,6 +72,32 @@
             </div>
         </div>
 
+        <!-- BATTLE STATUS BANNER -->
+        <div class="battle-status">
+            <div class="status-content">
+                <h3 id="statusTitle">🔥 Battle Just Began!</h3>
+                <p id="statusDesc">The scoreboard is clean. Step up, lock in, and claim the lead!</p>
+            </div>
+            <div class="progress-container">
+                <div class="progress-labels">
+                    <span id="alphaPct">α-Alpha (50%)</span>
+                    <span id="omegaPct">Ω-Omega (50%)</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-alpha" id="alphaBar"></div>
+                    <div class="progress-omega" id="omegaBar"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACTIVITY LOG -->
+        <div class="activity-section">
+            <h2>📜 Live Activity Feed</h2>
+            <div class="activity-log" id="activityLog">
+                <div class="activity-item"><span class="activity-time">[System]</span> Battle arena initialized. Standing by for points...</div>
+            </div>
+        </div>
+
         <!-- CONTROLS / ADMIN PANEL -->
         <div class="controls-section locked" id="controlsSection">
             <div class="controls-header">
@@ -127,35 +121,27 @@
                 </div>
 
                 <div class="control-group">
-                    <label for="achievementSelect">Select Achievement / Event</label>
+                    <label for="achievementSelect">Select Official Point Criteria</label>
                     <select id="achievementSelect">
-                        <option value="10">Quiz Win / Challenge Completed (+10 pts)</option>
-                        <option value="5">Participation / Attendance (+5 pts)</option>
-                        <option value="15">Special Presentation / Project (+15 pts)</option>
-                        <option value="20">Major Championship Victory (+20 pts)</option>
+                        <option value="10">Top Average Score (+10 pts)</option>
+                        <option value="5">Most Improved (+5 pts)</option>
+                        <option value="5">Full Attendance (+5 pts)</option>
+                        <option value="3">Shared Resources (+3 pts)</option>
                     </select>
                 </div>
 
                 <div class="control-row">
-                    <button class="btn-action" style="background-color: #3b82f6;" onclick="awardCustomStreamScore('alpha')">Award to α-Alpha</button>
-                    <button class="btn-action" style="background-color: #ef4444;" onclick="awardCustomStreamScore('omega')">Award to Ω-Omega</button>
+                    <button class="btn-action" onclick="awardCustomStreamScore('alpha')">Award to α-Alpha</button>
+                    <button class="btn-action" onclick="awardCustomStreamScore('omega')">Award to Ω-Omega</button>
                 </div>
 
                 <button class="btn-danger" onclick="resetScores()">⚠️ Reset All Scores</button>
             </div>
         </div>
 
-        <!-- ACTIVITY LOG -->
-        <div class="activity-section">
-            <h2>📜 Live Activity Feed</h2>
-            <div class="activity-log" id="activityLog">
-                <div class="activity-item"><span class="activity-time">[System]</span> Battle arena initialized successfully.</div>
-            </div>
-        </div>
-
         <!-- FOOTER -->
         <footer>
-            Kuruduwatta Royal College Battle Arena &copy; 2026
+            Kuruduwatta Royal College &bull; Grade 12 Study Group Initiative &copy; 2026
         </footer>
     </div>
 
