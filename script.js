@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbzPCvtp7q-pjK-Dsn7F0sUx4Bs6ZdZLduEQ2hRHuwH2LTYglg6O5wMQJymohaQo4JyIqg/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbx5cJfY2zwrD6M9oL9HVY-rJTj2Q8jeYM2zZrKsd2YCGGnWEvQJKv2ieH_bkpUxzTLxzw/exec";
 
 let scores = {
     alpha: 0,
@@ -85,7 +85,7 @@ function updateScore(team, points, reason) {
     if (scores[team] < 0) scores[team] = 0;
 
     updateDisplay();
-    syncToSheet(); // Send update to Google Sheet
+    syncToSheet();
     
     let teamName = team === 'alpha' ? 'α-Alpha' : 'Ω-Omega';
     logActivity(`${teamName} received ${points > 0 ? '+' + points : points} pts for "${reason}".`);
@@ -103,7 +103,7 @@ function awardCustomStreamScore(team) {
     streamScores[selectedStream] += points;
 
     updateDisplay();
-    syncToSheet(); // Send update to Google Sheet
+    syncToSheet();
 
     let teamName = team === 'alpha' ? 'α-Alpha' : 'Ω-Omega';
     logActivity(`${teamName} earned +${points} pts in [${selectedStream}] for ${achievementText}!`);
@@ -115,7 +115,7 @@ function resetScores() {
         scores.omega = 0;
         Object.keys(streamScores).forEach(stream => streamScores[stream] = 0);
         updateDisplay();
-        syncToSheet(); // Send update to Google Sheet
+        syncToSheet();
         logActivity("Scoreboard has been reset to zero.");
     }
 }
