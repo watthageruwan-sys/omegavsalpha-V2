@@ -19,7 +19,6 @@
 }
 
 body {
-    /* BACKGROUND REMAINS THE SAME - PERFECT FOR PHONE & PC */
     background: url('download (4).jfif');
     background-size: 100vw 100vh; 
     background-position: center;
@@ -37,12 +36,10 @@ body {
 .container {
     width: 100%;
     max-width: 640px;
-    /* SOLID BACKGROUND TO MAKE IT STAND OUT */
     background: #0f1219; 
     padding: 40px;
     border-radius: 24px;
     border: 1px solid rgba(255, 255, 255, 0.15);
-    /* HEAVY DROPSHADOW TO LIFT IT OFF THE BACKGROUND PICTURE */
     box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 0, 0, 0.6);
     position: relative;
     overflow: hidden;
@@ -117,7 +114,6 @@ header h1 {
 
 .team-card {
     flex: 1;
-    /* SOLID CARD BACKGROUNDS */
     background: #181d29;
     padding: 30px 25px;
     border-radius: 16px;
@@ -129,18 +125,42 @@ header h1 {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
 }
 
-/* TRUE TEAM COLORS ON THE CARDS */
 .alpha-card { border-top: 5px solid var(--color-team-alpha); }
 .omega-card { border-top: 5px solid var(--color-team-omega); }
 
+/* --- DYNAMIC WINNING GLOW ANIMATIONS --- */
+@keyframes pulseGlowAlpha {
+    0% {
+        box-shadow: 0 0 15px rgba(59, 130, 246, 0.2), inset 0 0 15px rgba(59, 130, 246, 0.1);
+    }
+    50% {
+        box-shadow: 0 0 35px rgba(59, 130, 246, 0.5), inset 0 0 20px rgba(59, 130, 246, 0.2);
+    }
+    100% {
+        box-shadow: 0 0 15px rgba(59, 130, 246, 0.2), inset 0 0 15px rgba(59, 130, 246, 0.1);
+    }
+}
+
+@keyframes pulseGlowOmega {
+    0% {
+        box-shadow: 0 0 15px rgba(253, 197, 0, 0.2), inset 0 0 15px rgba(253, 197, 0, 0.1);
+    }
+    50% {
+        box-shadow: 0 0 35px rgba(253, 197, 0, 0.5), inset 0 0 20px rgba(253, 197, 0, 0.2);
+    }
+    100% {
+        box-shadow: 0 0 15px rgba(253, 197, 0, 0.2), inset 0 0 15px rgba(253, 197, 0, 0.1);
+    }
+}
+
 .alpha-card.is-winning {
-    box-shadow: 0 4px 25px rgba(59, 130, 246, 0.4), 0 0 40px -5px rgba(59, 130, 246, 0.2);
-    background: #1a2538; /* Slight blue tint when winning */
+    background: #1a2538;
+    animation: pulseGlowAlpha 3s infinite ease-in-out;
 }
 
 .omega-card.is-winning {
-    box-shadow: 0 4px 25px rgba(253, 197, 0, 0.4), 0 0 40px -5px rgba(253, 197, 0, 0.2);
-    background: #252216; /* Slight gold tint when winning */
+    background: #252216;
+    animation: pulseGlowOmega 3s infinite ease-in-out;
 }
 
 .team-card h2 {
@@ -173,7 +193,7 @@ header h1 {
 
 /* --- STATUS BANNER & PROGRESS --- */
 .status-banner {
-    background: #181d29; /* Solid */
+    background: #181d29;
     border: 1px solid rgba(255, 255, 255, 0.05);
     padding: 18px;
     border-radius: 16px;
@@ -231,7 +251,7 @@ header h1 {
 }
 
 #controlsSection {
-    background: #0b0d14; /* Extra dark solid admin panel */
+    background: #0b0d14;
     padding: 25px;
     border-radius: 16px;
     border: 1px solid rgba(253, 197, 0, 0.3);
@@ -288,7 +308,7 @@ header h1 {
 
 .control-buttons button:hover {
     background: var(--color-gold);
-    color: #0b0d14; /* Deep dark text on hover */
+    color: #0b0d14;
     border-color: var(--color-gold);
 }
 
