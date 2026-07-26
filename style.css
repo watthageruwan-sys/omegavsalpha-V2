@@ -16,7 +16,7 @@
 
 body {
     background: #0b0d14 url('download (4).jfif') no-repeat center center fixed;
-    background-size: 100% 100%;
+    background-size: cover;
     color: var(--color-text-main);
     display: flex;
     justify-content: center;
@@ -24,12 +24,18 @@ body {
     min-height: 100vh;
 }
 
+/* Unified Main Dashboard Container Card */
 .container {
     width: 100%;
     max-width: 480px;
+    background: #0f131d;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    padding: 24px;
     display: flex;
     flex-direction: column;
     gap: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
 }
 
 header {
