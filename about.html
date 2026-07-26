@@ -138,4 +138,188 @@
   @media (max-width:760px){.duties-strip{grid-template-columns:1fr 1fr;}}
   @media (max-width:480px){.duties-strip{grid-template-columns:1fr;}}
   .duty-item{
-    background:var(--mist);border:1px solid #E3E6EE;border-radius:12
+    background:var(--mist);border:1px solid #E3E6EE;border-radius:12px;padding:16px 16px 18px;
+  }
+  .duty-title{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700;color:#B8890A;letter-spacing:.02em;
+  }
+  .duty-item p{font-size:12.5px;color:var(--gray);margin-top:6px;line-height:1.5;}
+
+  /* Timeline */
+  .tl-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+  @media (max-width:760px){.tl-grid{grid-template-columns:1fr 1fr;}}
+  @media (max-width:480px){.tl-grid{grid-template-columns:1fr;}}
+  .tl-card{
+    background:var(--paper);border:1px solid #E3E6EE;border-radius:14px;padding:20px 18px;
+    box-shadow:0 10px 26px -20px rgba(18,42,94,.35);
+  }
+  .tl-card .wk{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--gold);font-weight:700;}
+  .tl-card h3{font-size:15.5px;color:var(--navy);font-weight:700;margin-top:8px;}
+  .tl-card p{font-size:13px;color:var(--gray);margin-top:6px;line-height:1.45;}
+
+  footer{
+    position:relative;z-index:1;text-align:center;font-size:12.5px;color:var(--gray);
+    padding:40px 28px 40px;
+  }
+</style>
+</head>
+<body>
+
+<div class="arc-top"></div>
+<div class="dot-grid"></div>
+<div class="arc-bottom"></div>
+
+<div class="page">
+
+  <!-- NAV -->
+  <div class="nav-bar">
+    <a href="index.html" class="nav-btn">⚔️ Battle Arena</a>
+    <a href="about.html" class="nav-btn active">📖 About the Initiative</a>
+  </div>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="trophy-badge">
+      <svg viewBox="0 0 64 64" fill="none">
+        <path d="M16 8h32v6c0 10-7 16-16 16S16 24 16 14V8z" fill="#F2B705"/>
+        <path d="M16 10H6c0 8 4 13 10 14" stroke="#122A5E" stroke-width="2.4" fill="none"/>
+        <path d="M48 10h10c0 8-4 13-10 14" stroke="#122A5E" stroke-width="2.4" fill="none"/>
+        <rect x="27" y="30" width="10" height="10" fill="#F2B705"/>
+        <rect x="20" y="42" width="24" height="6" rx="2" fill="#F2B705"/>
+        <path d="M32 16l2 4 4 .5-3 3 .8 4-3.8-2-3.8 2 .8-4-3-3 4-.5z" fill="#122A5E"/>
+      </svg>
+    </div>
+    <div class="header-text">
+      <div class="kicker">Kuruduwatta Royal College</div>
+      <h1>Grade 12 Study Group Initiative</h1>
+      <div class="underline"></div>
+      <p class="subtitle">Learning together, achieving more — a peer-driven plan to help Grade 12 students prepare for their exams.</p>
+    </div>
+  </div>
+
+  <!-- THE CHALLENGE -->
+  <div class="section-block">
+    <div class="section-kicker">The Challenge</div>
+    <h2 class="section-title">Why Grade 12 needs a better way to prepare</h2>
+    <div class="challenge-grid">
+      <div class="challenge-card">
+        <div class="icon-box c-navy small"><span class="glyph">!</span></div>
+        <h3>Heavy syllabus</h3>
+        <p>A.L. subjects pack in dense content, leaving little time to revise deeply before exams.</p>
+      </div>
+      <div class="challenge-card">
+        <div class="icon-box c-blue small"><span class="glyph">?</span></div>
+        <h3>Studying alone</h3>
+        <p>Many students struggle silently with the same topics, without realizing classmates could help.</p>
+      </div>
+      <div class="challenge-card">
+        <div class="icon-box c-teal small"><span class="glyph">×</span></div>
+        <h3>Exam pressure</h3>
+        <p>Rising stress makes it harder to stay motivated and organized in the final stretch.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- OBJECTIVE -->
+  <div class="section-block">
+    <div class="section-kicker">Our Objective</div>
+    <h2 class="section-title">Turn revision into a shared habit</h2>
+    <ul class="objective-list">
+      <li><span class="idx">01</span><span>Create small, subject-focused peer groups for Grade 12 students.</span></li>
+      <li><span class="idx">02</span><span>Turn revision into a shared, consistent habit rather than a last-minute scramble.</span></li>
+      <li><span class="idx">03</span><span>Give struggling students access to peer support alongside teacher guidance.</span></li>
+      <li><span class="idx">04</span><span>Build stronger exam results and lower stress across the batch.</span></li>
+    </ul>
+  </div>
+
+  <!-- LEADERSHIP STRUCTURE -->
+  <div class="section-block">
+    <div class="section-kicker">Our Teams</div>
+    <h2 class="section-title">Leadership structure</h2>
+    <p class="section-lede">Two teams. One goal. Better together.</p>
+
+    <div class="leader-grid">
+      <div class="leader-col">
+        <div class="leader-col-head">
+          <span class="leader-badge">A</span>
+          <h3>Team Alpha</h3>
+        </div>
+        <div class="role-item"><span class="role-label">Team Captain</span><span>Leads the team</span></div>
+        <div class="role-item"><span class="role-label">Vice Captain</span><span>Supports the captain</span></div>
+        <div class="role-item"><span class="role-label">Subject Leaders</span><span>Run study sessions</span></div>
+        <div class="role-item"><span class="role-label">Attendance Coord.</span><span>Tracks participation</span></div>
+      </div>
+      <div class="leader-col">
+        <div class="leader-col-head">
+          <span class="leader-badge">Ω</span>
+          <h3>Team Omega</h3>
+        </div>
+        <div class="role-item"><span class="role-label">Team Captain</span><span>Leads the team</span></div>
+        <div class="role-item"><span class="role-label">Vice Captain</span><span>Supports the captain</span></div>
+        <div class="role-item"><span class="role-label">Subject Leaders</span><span>Run study sessions</span></div>
+        <div class="role-item"><span class="role-label">Attendance Coord.</span><span>Tracks participation</span></div>
+      </div>
+    </div>
+
+    <div class="duties-strip">
+      <div class="duty-item">
+        <div class="duty-title">Team Captain</div>
+        <p>Leads the team and represents it.</p>
+      </div>
+      <div class="duty-item">
+        <div class="duty-title">Vice Captain</div>
+        <p>Assists the captain and takes over when needed.</p>
+      </div>
+      <div class="duty-item">
+        <div class="duty-title">Subject Leaders</div>
+        <p>Organize study sessions and help classmates in their subject.</p>
+      </div>
+      <div class="duty-item">
+        <div class="duty-title">Attendance Coordinator</div>
+        <p>Tracks attendance and participation.</p>
+      </div>
+      <div class="duty-item">
+        <div class="duty-title">Study Resources Coordinator</div>
+        <p>Collects and shares notes, past papers, and summaries.</p>
+      </div>
+      <div class="duty-item">
+        <div class="duty-title">Motivation & Events</div>
+        <p>Organizes challenges, quizzes, and keeps team morale high.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="section-block">
+    <div class="section-kicker">Timeline</div>
+    <h2 class="section-title">A phased rollout across the term</h2>
+    <div class="tl-grid">
+      <div class="tl-card">
+        <div class="wk">Week 1</div>
+        <h3>Approval & formation</h3>
+        <p>Get approval and form Team Alpha and Team Omega by stream.</p>
+      </div>
+      <div class="tl-card">
+        <div class="wk">Weeks 2–3</div>
+        <h3>Trial run</h3>
+        <p>Two-week trial — two sessions per week, per group.</p>
+      </div>
+      <div class="tl-card">
+        <div class="wk">End of Month 1</div>
+        <h3>First recap</h3>
+        <p>First recap paper sat, and the first monthly points awarded.</p>
+      </div>
+      <div class="tl-card">
+        <div class="wk">Ongoing</div>
+        <h3>Steady rhythm</h3>
+        <p>Repeat the weekly sessions and monthly recap for the rest of the term.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>Kuruduwatta Royal College · Grade 12 Study Group Initiative</footer>
+
+</body>
+</html>
