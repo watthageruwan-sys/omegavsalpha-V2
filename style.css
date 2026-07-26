@@ -20,14 +20,19 @@
 }
 
 body {
-    background-color: var(--color-bg-body);
+    /* CUSTOM BACKGROUND IMAGE WITH DARK OVERLAY */
+    background: linear-gradient(rgba(10, 12, 19, 0.85), rgba(10, 12, 19, 0.85)), url('download (4).jfif');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    
     color: var(--color-text-main);
     min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 20px;
-    background-image: radial-gradient(circle at 50% -20%, #1a1f2e 0%, var(--color-bg-body) 70%);
 }
 
 .container {
@@ -70,7 +75,7 @@ header h1 {
     -webkit-text-fill-color: transparent;
 }
 
-/* --- FIXED UNIFIED SCHOOL FLAG EMBLEM --- */
+/* UNIFIED SCHOOL FLAG EMBLEM */
 .college-name {
     color: var(--color-text-muted);
     font-size: 15px;
@@ -127,7 +132,6 @@ header h1 {
 .alpha-card { border-top: 5px solid var(--color-navy); }
 .omega-card { border-top: 5px solid var(--color-navy); }
 
-/* Winning states triggered by JS classes */
 .alpha-card.is-winning {
     border-top-color: var(--color-team-alpha);
     box-shadow: 0 4px 20px rgba(59, 130, 246, 0.25), 0 0 40px -5px rgba(59, 130, 246, 0.15);
@@ -227,7 +231,7 @@ header h1 {
 }
 
 #controlsSection {
-    background: rgba(24, 27, 40, 0.8);
+    background: rgba(24, 27, 40, 0.85);
     padding: 25px;
     border-radius: 16px;
     border: 1px solid rgba(253, 197, 0, 0.1);
