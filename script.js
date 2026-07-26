@@ -53,6 +53,7 @@ function toggleAdmin() {
             if (lockBadge) lockBadge.innerText = "🔓 Unlocked";
             adminBtn.innerText = "🔓 Admin (Unlocked)";
             adminBtn.classList.add('unlocked');
+            logActivity("Admin panel unlocked.");
         } else if (pwd !== null) {
             alert("Incorrect passcode!");
         }
@@ -63,11 +64,12 @@ function toggleAdmin() {
         if (lockBadge) lockBadge.innerText = "🔒 Locked";
         adminBtn.innerText = "🔒 Admin Login";
         adminBtn.classList.remove('unlocked');
+        logActivity("Admin panel locked.");
     }
 }
 
-function updateScore(team, pts) {
-    changePoints(team, pts);
+function updateScore(team, pts, reason = 'Manual adjustment') {
+    changePoints(team, pts, reason);
 }
 
 function awardCustomStreamScore(team) {
@@ -76,11 +78,13 @@ function awardCustomStreamScore(team) {
     
     let chosenStream = streamEl.value;
     let points = parseInt(achievementEl.value) || 0;
+    let achievementName = achievementEl.options[achievementEl.selectedIndex].text.split(' (')[0];
     
-    updateScore(team, points);
+    let reason = `[${chosenStream}] ${achievementName}`;
+    updateScore(team, points, reason);
 }
 
-async function changePoints(team, pts) {
+async function changePoints(team, pts, reason) {
     if (!isAdminUnlocked) {
         alert("Please unlock the Admin Panel first!");
         return;
@@ -91,6 +95,10 @@ async function changePoints(team, pts) {
     
     animateScoreChange(team === 'alpha' ? 'alphaScore' : 'omegaScore');
     updateUI();
+
+    let teamName = team === 'alpha' ? 'Team Alpha' : 'Team Omega';
+    let sign = pts >= 0 ? `+${pts}` : `${pts}`;
+    logActivity(`${teamName} awarded ${sign} pts (${reason})`);
 
     try {
         await fetch(`${WEB_APP_URL}?update=true&alpha=${scores.alpha}&omega=${scores.omega}`);
@@ -110,12 +118,30 @@ async function resetScores() {
     scores.alpha = 0;
     scores.omega = 0;
     updateUI();
+    logActivity("Scoreboard reset to zero.");
 
     try {
         await fetch(`${WEB_APP_URL}?update=true&alpha=0&omega=0`);
         alert("Scoreboard wiped clean!");
     } catch (error) {
         console.error("Error resetting scores:", error);
+    }
+}
+
+function logActivity(message) {
+    let logEl = document.getElementById('activityLog');
+    if (!logEl) return;
+
+    let timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    let item = document.createElement('div');
+    item.className = 'activity-item';
+    item.innerHTML = `<span class="activity-time">[${timeStr}]</span> ${message}`;
+    
+    logEl.prepend(item);
+
+    // Keep log clean by capping items
+    if (logEl.children.length > 15) {
+        logEl.removeChild(logEl.lastChild);
     }
 }
 
