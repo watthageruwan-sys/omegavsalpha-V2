@@ -15,10 +15,8 @@
 }
 
 body {
-    background-color: var(--color-bg);
+    background: #0b0d14 url('download (4).jfif') no-repeat center center fixed;
     background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
     color: var(--color-text-main);
     display: flex;
     justify-content: center;
