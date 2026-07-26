@@ -66,9 +66,14 @@ function toggleAdmin() {
     }
 }
 
-// Fixed alias so your HTML onclick="updateScore(...)" works correctly!
 function updateScore(team, pts) {
     changePoints(team, pts);
+}
+
+function awardStreamScore(team) {
+    let selectEl = document.getElementById('streamSelect');
+    let chosenStream = selectEl.value;
+    updateScore(team, 5);
 }
 
 async function changePoints(team, pts) {
@@ -120,12 +125,15 @@ function updateUI() {
     let omegaCard = document.querySelector('.omega-card');
 
     if (alphaCard && omegaCard) {
-        alphaCard.classList.remove('is-winning');
-        omegaCard.classList.remove('is-winning');
+        alphaCard.classList.remove('is-winning', 'is-tied');
+        omegaCard.classList.remove('is-winning', 'is-tied');
 
-        if (scores.alpha > scores.omega) {
+        if (scores.alpha === scores.omega) {
+            alphaCard.classList.add('is-tied');
+            omegaCard.classList.add('is-tied');
+        } else if (scores.alpha > scores.omega) {
             alphaCard.classList.add('is-winning');
-        } else if (scores.omega > scores.alpha) {
+        } else {
             omegaCard.classList.add('is-winning');
         }
     }
@@ -148,15 +156,15 @@ function updateUI() {
     let descEl = document.getElementById('statusDesc');
 
     if (titleEl && descEl) {
-        if (scores.alpha > scores.omega) {
+        if (scores.alpha === scores.omega && total > 0) {
+            titleEl.innerHTML = "🔥 Neck and Neck Fire Tie!";
+            descEl.innerHTML = "Both teams are matching each other point for point! Absolute intensity!";
+        } else if (scores.alpha > scores.omega) {
             titleEl.innerHTML = "👑 Team Alpha is Leading!";
             descEl.innerHTML = "Absolute dominance! Team Omega is right on your tail—keep pushing!";
         } else if (scores.omega > scores.alpha) {
             titleEl.innerHTML = "👑 Team Omega is Leading!";
             descEl.innerHTML = "Incredible momentum! Team Alpha is gearing up for a comeback—stay sharp!";
-        } else if (total > 0) {
-            titleEl.innerHTML = "⚔️ It's a Dead Heat!";
-            descEl.innerHTML = "Neck and neck! One good session can shift the balance!";
         } else {
             titleEl.innerHTML = "🔥 Battle Just Began!";
             descEl.innerHTML = "The scoreboard is clean. Step up, lock in, and claim the lead!";
