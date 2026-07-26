@@ -1,324 +1,326 @@
-/* --- 1. ROOT & FONTS --- */
 :root {
-    --color-navy: #002147;
-    --color-gold: #FDC500;
-    --color-bg-body: #0a0c13;
-    --color-text-main: #ffffff;
-    --color-text-muted: #cbd5e0;
-    --color-team-alpha: #3b82f6; /* Bright, punchy Alpha Blue */
-    --color-team-omega: #FDC500; /* True Omega Gold */
-    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --color-bg: #0b0d14;
+    --color-card-bg: #131722;
+    --color-text-main: #f3f4f6;
+    --color-text-muted: #9ca3af;
+    --color-team-alpha: #3b82f6;
+    --color-team-omega: #fdc500;
 }
 
 * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-    font-family: var(--font-family);
-    -webkit-font-smoothing: antialiased;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
-    background: url('download (4).jfif');
-    background-size: 100vw 100vh; 
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    
+    background-color: var(--color-bg);
     color: var(--color-text-main);
-    min-height: 100vh;
     display: flex;
     justify-content: center;
-    align-items: center;
     padding: 20px;
+    min-height: 100vh;
 }
 
 .container {
     width: 100%;
-    max-width: 640px;
-    background: #0f1219; 
-    padding: 40px;
-    border-radius: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 0, 0, 0.6);
-    position: relative;
-    overflow: hidden;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 header {
     text-align: center;
-    margin-bottom: 35px;
+    padding: 10px 0;
 }
 
 .battle-tag {
-    background: rgba(253, 197, 0, 0.15);
-    color: var(--color-gold);
-    padding: 6px 16px;
-    border-radius: 20px;
     font-size: 11px;
-    font-weight: bold;
-    letter-spacing: 1.5px;
     text-transform: uppercase;
-    border: 1px solid rgba(253, 197, 0, 0.4);
+    letter-spacing: 2px;
+    color: var(--color-team-omega);
+    font-weight: 700;
+    margin-bottom: 5px;
 }
 
 header h1 {
-    font-size: 36px;
+    font-size: 26px;
     font-weight: 800;
-    margin: 15px 0 8px;
-    background: linear-gradient(180deg, #ffffff 0%, #cbd5e0 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    letter-spacing: 0.5px;
 }
 
-/* UNIFIED SCHOOL FLAG EMBLEM */
 .college-name {
-    color: var(--color-text-muted);
-    font-size: 15px;
-    font-weight: 500;
-    margin-top: 8px;
-    display: inline-flex;
+    display: flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
-    background: rgba(255, 255, 255, 0.05);
-    padding: 6px 16px;
-    border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 13px;
+    color: var(--color-text-muted);
+    margin-top: 6px;
 }
 
 .school-flag {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
     display: flex;
-    height: 12px;
-    width: 20px;
-    border-radius: 2px;
     overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
-.school-flag .navy-half {
+.navy-half {
     width: 50%;
-    background-color: var(--color-navy);
+    background: #002D62;
 }
 
-.school-flag .gold-half {
+.gold-half {
     width: 50%;
-    background-color: var(--color-gold);
+    background: #FFD700;
 }
 
-/* --- SCOREBOARD --- */
 .scoreboard {
-    display: flex;
-    gap: 20px;
-    margin-bottom: 35px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
 }
 
 .team-card {
-    flex: 1;
-    background: #181d29;
-    padding: 30px 25px;
+    background: var(--color-card-bg);
+    border: 2px solid rgba(255, 255, 255, 0.05);
     border-radius: 16px;
+    padding: 20px;
     text-align: center;
-    position: relative;
-    overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    transition: all 0.4s ease;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-}
-
-.alpha-card { border-top: 5px solid var(--color-team-alpha); }
-.omega-card { border-top: 5px solid var(--color-team-omega); }
-
-/* --- DYNAMIC WINNING GLOW ANIMATIONS --- */
-@keyframes pulseGlowAlpha {
-    0% {
-        box-shadow: 0 0 15px rgba(59, 130, 246, 0.2), inset 0 0 15px rgba(59, 130, 246, 0.1);
-    }
-    50% {
-        box-shadow: 0 0 35px rgba(59, 130, 246, 0.5), inset 0 0 20px rgba(59, 130, 246, 0.2);
-    }
-    100% {
-        box-shadow: 0 0 15px rgba(59, 130, 246, 0.2), inset 0 0 15px rgba(59, 130, 246, 0.1);
-    }
-}
-
-@keyframes pulseGlowOmega {
-    0% {
-        box-shadow: 0 0 15px rgba(253, 197, 0, 0.2), inset 0 0 15px rgba(253, 197, 0, 0.1);
-    }
-    50% {
-        box-shadow: 0 0 35px rgba(253, 197, 0, 0.5), inset 0 0 20px rgba(253, 197, 0, 0.2);
-    }
-    100% {
-        box-shadow: 0 0 15px rgba(253, 197, 0, 0.2), inset 0 0 15px rgba(253, 197, 0, 0.1);
-    }
-}
-
-.alpha-card.is-winning {
-    background: #1a2538;
-    animation: pulseGlowAlpha 3s infinite ease-in-out;
-}
-
-.omega-card.is-winning {
-    background: #252216;
-    animation: pulseGlowOmega 3s infinite ease-in-out;
+    transition: all 0.3s ease;
 }
 
 .team-card h2 {
-    font-size: 14px;
-    letter-spacing: 1px;
-    color: var(--color-text-muted);
-    margin-bottom: 12px;
-    text-transform: uppercase;
+    font-size: 15px;
     font-weight: 600;
+    color: var(--color-text-muted);
+    margin-bottom: 8px;
 }
 
 .score-display {
-    font-size: 52px;
+    font-size: 38px;
     font-weight: 800;
-    margin-bottom: 8px;
-    line-height: 1;
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    margin-bottom: 4px;
+    transition: transform 0.2s ease;
 }
 
-.score-display.pop {
-    transform: scale(1.15);
-    color: var(--color-text-main);
-}
+.alpha-card .score-display { color: var(--color-team-alpha); }
+.omega-card .score-display { color: var(--color-team-omega); }
 
 .sub-text {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--color-text-muted);
-    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-/* --- STATUS BANNER & PROGRESS --- */
+/* Winning and Tie Glow States */
+.team-card.is-winning {
+    border-color: currentColor;
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.08);
+}
+
+@keyframes tieFireGlow {
+    0% {
+        box-shadow: 0 0 20px rgba(59, 130, 246, 0.4), 0 0 30px rgba(253, 197, 0, 0.4);
+        border-color: rgba(253, 197, 0, 0.6);
+    }
+    50% {
+        box-shadow: 0 0 40px rgba(59, 130, 246, 0.8), 0 0 60px rgba(253, 197, 0, 0.8);
+        border-color: rgba(59, 130, 246, 0.9);
+    }
+    100% {
+        box-shadow: 0 0 20px rgba(59, 130, 246, 0.4), 0 0 30px rgba(253, 197, 0, 0.4);
+        border-color: rgba(253, 197, 0, 0.6);
+    }
+}
+
+.team-card.is-tied {
+    animation: tieFireGlow 2s infinite ease-in-out;
+    background: #1c2130;
+}
+
 .status-banner {
-    background: #181d29;
+    background: var(--color-card-bg);
     border: 1px solid rgba(255, 255, 255, 0.05);
-    padding: 18px;
-    border-radius: 16px;
+    border-radius: 14px;
+    padding: 16px;
     text-align: center;
-    margin-bottom: 35px;
 }
 
-.status-banner h3 { font-size: 17px; margin-bottom: 6px; font-weight: 700; }
-.status-banner p { font-size: 14px; color: var(--color-text-muted); }
+.status-banner h3 {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: var(--color-team-omega);
+}
 
-.progress-container { margin-bottom: 40px; }
+.status-banner p {
+    font-size: 13px;
+    color: var(--color-text-muted);
+}
+
+.progress-container {
+    background: var(--color-card-bg);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 14px;
+    padding: 16px;
+}
 
 .progress-labels {
     display: flex;
     justify-content: space-between;
     font-size: 12px;
-    font-weight: 700;
-    margin-bottom: 10px;
-    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    margin-bottom: 8px;
 }
 
 .progress-bar-bg {
+    width: 100%;
+    height: 10px;
+    background: #1f293d;
+    border-radius: 5px;
     display: flex;
-    height: 12px;
-    background: #181d29;
-    border-radius: 6px;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.progress-fill { height: 100%; transition: width 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
-.alpha-fill { background: var(--color-team-alpha); box-shadow: 0 0 10px var(--color-team-alpha); }
-.omega-fill { background: var(--color-team-omega); box-shadow: 0 0 10px var(--color-team-omega); }
+.progress-fill {
+    height: 100%;
+    transition: width 0.5s ease;
+}
 
-/* --- ADMIN PANEL --- */
-.admin-top { display: flex; justify-content: flex-end; margin-bottom: 20px; }
+.alpha-fill { background: var(--color-team-alpha); }
+.omega-fill { background: var(--color-team-omega); }
+
+.admin-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.admin-top {
+    text-align: center;
+}
 
 #adminBtn {
-    background: #181d29;
-    color: var(--color-text-muted);
+    background: var(--color-card-bg);
+    color: var(--color-text-main);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 8px 18px;
+    padding: 10px 20px;
     border-radius: 10px;
-    cursor: pointer;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 600;
-    text-transform: uppercase;
-    transition: all 0.3s ease;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+}
+
+#adminBtn:hover {
+    background: #1c2230;
 }
 
 #adminBtn.unlocked {
-    color: var(--color-gold);
-    border-color: var(--color-gold);
-    box-shadow: 0 0 15px -3px var(--color-gold);
+    background: #10b981;
+    border-color: #10b981;
+    color: white;
 }
 
-#controlsSection {
-    background: #0b0d14;
-    padding: 25px;
+.controls-section {
+    background: var(--color-card-bg);
+    padding: 20px;
     border-radius: 16px;
     border: 1px solid rgba(253, 197, 0, 0.3);
     transition: all 0.4s ease;
 }
 
-#controlsSection.locked { opacity: 0.4; pointer-events: none; filter: grayscale(50%); }
-#controlsSection.unlocked { opacity: 1; pointer-events: auto; }
+.controls-section.locked {
+    opacity: 0.4;
+    pointer-events: none;
+    filter: grayscale(50%);
+}
+
+.controls-section.unlocked {
+    opacity: 1;
+    pointer-events: auto;
+    filter: none;
+}
 
 .section-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     padding-bottom: 10px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+.section-header h3 {
+    font-size: 15px;
+    font-weight: 700;
+}
+
 .lock-badge {
-    background: rgba(253, 197, 0, 0.15);
-    color: var(--color-gold);
-    font-size: 10px;
-    padding: 4px 10px;
+    font-size: 11px;
+    color: var(--color-team-omega);
+    background: rgba(253, 197, 0, 0.1);
+    padding: 3px 8px;
     border-radius: 6px;
-    text-transform: uppercase;
-    font-weight: bold;
 }
 
 .control-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 0;
+    padding: 10px 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.03);
 }
 
-.control-item:last-of-type { border-bottom: none; }
-.control-info h4 { font-size: 14px; font-weight: 600; }
-.control-info p { font-size: 12px; color: var(--color-text-muted); margin-top: 2px; }
+.control-item:last-child {
+    border-bottom: none;
+}
 
-.control-buttons { display: flex; gap: 8px; }
+.control-info h4 {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.control-info p {
+    font-size: 11px;
+    color: var(--color-text-muted);
+}
+
+.control-buttons {
+    display: flex;
+    gap: 6px;
+}
 
 .control-buttons button {
-    background: #181d29;
+    background: #1e2536;
     color: var(--color-text-main);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 8px 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 6px 10px;
+    border-radius: 6px;
     font-size: 12px;
-    transition: all 0.2s ease;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
 }
 
 .control-buttons button:hover {
-    background: var(--color-gold);
-    color: #0b0d14;
-    border-color: var(--color-gold);
+    background: #28324a;
 }
 
-.reset-container button {
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
-    width: 100%;
-    border: none;
-    padding: 12px;
-    border-radius: 8px;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
+@keyframes pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.15); color: #fff; }
+    100% { transform: scale(1); }
+}
+
+.pop {
+    animation: pop 0.3s ease;
 }
