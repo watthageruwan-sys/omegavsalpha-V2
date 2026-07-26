@@ -90,22 +90,24 @@ header h1 {
     background: var(--color-card-bg);
     border: 2px solid rgba(255, 255, 255, 0.05);
     border-radius: 16px;
-    padding: 20px;
+    padding: 16px;
     text-align: center;
     transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
 }
 
 .team-card h2 {
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
     color: var(--color-text-muted);
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .score-display {
-    font-size: 38px;
+    font-size: 32px;
     font-weight: 800;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
     transition: transform 0.2s ease;
 }
 
@@ -113,10 +115,38 @@ header h1 {
 .omega-card .score-display { color: var(--color-team-omega); }
 
 .sub-text {
-    font-size: 11px;
+    font-size: 10px;
     color: var(--color-text-muted);
     text-transform: uppercase;
     letter-spacing: 1px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* TEAM STREAM BREAKDOWNS STYLES */
+.team-streams-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    text-align: left;
+}
+
+.team-stream-item {
+    background: #181d29;
+    padding: 5px 8px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    color: var(--color-text-muted);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.team-stream-item strong {
+    color: var(--color-text-main);
+    font-size: 12px;
 }
 
 .team-card.is-winning {
@@ -142,54 +172,6 @@ header h1 {
 .team-card.is-tied {
     animation: tieFireGlow 2s infinite ease-in-out;
     background: #1c2130;
-}
-
-/* STREAM BREAKDOWN STYLES */
-.stream-breakdown-container {
-    background: var(--color-card-bg);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 14px;
-    padding: 14px 16px;
-}
-
-.stream-breakdown-header {
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--color-team-omega);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 10px;
-    padding-bottom: 6px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.stream-cards-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-}
-
-.stream-card {
-    background: #181d29;
-    border: 1px solid rgba(255, 255, 255, 0.04);
-    border-radius: 8px;
-    padding: 8px;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.stream-name {
-    font-size: 10px;
-    color: var(--color-text-muted);
-    font-weight: 600;
-}
-
-.stream-score {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--color-text-main);
 }
 
 .status-banner {
