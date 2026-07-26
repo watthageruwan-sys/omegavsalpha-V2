@@ -12,7 +12,7 @@ let streamScores = {
 };
 
 let isAdminLoggedIn = false;
-const ADMIN_PIN = "1234";
+const ADMIN_PIN = "royal123";
 
 function toggleAdmin() {
     const controls = document.getElementById("controlsSection");
