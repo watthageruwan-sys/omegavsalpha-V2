@@ -123,25 +123,36 @@
                     </div>
                 </div>
 
-                <!-- STREAM DROPDOWN CONTROLLER -->
+                <!-- STREAM & ACHIEVEMENT DROPDOWN CONTROLLER -->
                 <div class="control-item" style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; margin-top: 10px; display: block;">
                     <div class="control-info" style="margin-bottom: 12px;">
-                        <h4>Stream Bonus (+5 Points)</h4>
-                        <p>Select stream and award team points</p>
+                        <h4>Stream Achievement Bonus</h4>
+                        <p>Select stream, achievement type, and award points</p>
                     </div>
                     
-                    <div style="display: flex; gap: 10px; align-items: center;">
-                        <select id="streamSelect" style="flex: 2; background: #181d29; color: var(--color-text-main); border: 1px solid rgba(255, 255, 255, 0.1); padding: 9px 12px; border-radius: 8px; font-size: 13px; outline: none; cursor: pointer;">
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <!-- Stream Dropdown -->
+                        <select id="streamSelect" style="width: 100%; background: #181d29; color: var(--color-text-main); border: 1px solid rgba(255, 255, 255, 0.1); padding: 9px 12px; border-radius: 8px; font-size: 13px; outline: none; cursor: pointer;">
                             <option value="Physical Science">Physical Science</option>
                             <option value="Bio Science">Bio Science</option>
                             <option value="Commerce">Commerce</option>
                             <option value="Technology">Technology</option>
                             <option value="Arts">Arts</option>
                         </select>
-                        
-                        <div style="display: flex; gap: 6px; flex: 2;">
-                            <button onclick="awardStreamScore('alpha')" style="flex: 1; background: var(--color-team-alpha); color: white; border: none; padding: 9px 8px; border-radius: 8px; font-weight: 600; font-size: 12px; cursor: pointer;">+ Alpha</button>
-                            <button onclick="awardStreamScore('omega')" style="flex: 1; background: var(--color-team-omega); color: #0b0d14; border: none; padding: 9px 8px; border-radius: 8px; font-weight: 600; font-size: 12px; cursor: pointer;">+ Omega</button>
+
+                        <!-- Achievement Dropdown & Buttons -->
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <select id="achievementSelect" style="flex: 2; background: #181d29; color: var(--color-text-main); border: 1px solid rgba(255, 255, 255, 0.1); padding: 9px 12px; border-radius: 8px; font-size: 13px; outline: none; cursor: pointer;">
+                                <option value="10">Top Average (+10)</option>
+                                <option value="5">Most Improved (+5)</option>
+                                <option value="5">Full Attendance (+5)</option>
+                                <option value="3">Shared Resources (+3)</option>
+                            </select>
+                            
+                            <div style="display: flex; gap: 6px; flex: 2;">
+                                <button onclick="awardCustomStreamScore('alpha')" style="flex: 1; background: var(--color-team-alpha); color: white; border: none; padding: 9px 6px; border-radius: 8px; font-weight: 600; font-size: 12px; cursor: pointer;">+ Alpha</button>
+                                <button onclick="awardCustomStreamScore('omega')" style="flex: 1; background: var(--color-team-omega); color: #0b0d14; border: none; padding: 9px 6px; border-radius: 8px; font-weight: 600; font-size: 12px; cursor: pointer;">+ Omega</button>
+                            </div>
                         </div>
                     </div>
                 </div>
