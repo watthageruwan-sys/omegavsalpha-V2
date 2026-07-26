@@ -10,11 +10,10 @@
     --color-text-main: #ffffff;
     --color-text-muted: #a0aec0;
     
-    /* Team Colors (Slightly brighter for glow effects) */
-    --color-team-alpha: #3b82f6; /* Vibrant Blue */
-    --color-team-omega: #eab308; /* Bright Gold (for glow) */
+    /* Team Colors */
+    --color-team-alpha: #3b82f6; 
+    --color-team-omega: #eab308; 
 
-    /* Modern Font */
     --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
@@ -36,27 +35,25 @@ body {
     justify-content: center;
     align-items: center;
     padding: 20px;
-    /* Adding a subtle radial gradient for depth */
     background-image: radial-gradient(circle at 50% -20%, #1a1f2e 0%, var(--color-bg-body) 70%);
 }
 
 /* --- 3. MAIN CONTAINER (Glassmorphism) --- */
 .container {
     width: 100%;
-    max-width: 640px; /* Slightly wider */
-    background: rgba(24, 27, 40, 0.6); /* Semi-transparent dark base */
-    backdrop-filter: blur(12px); /* The frosted glass effect */
+    max-width: 640px;
+    background: rgba(24, 27, 40, 0.6);
+    backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     padding: 40px;
     border-radius: 24px;
-    /* Sophisticated Double Border: Inner Navy, Outer Gold Shadow */
     border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5), 0 0 60px -5px var(--color-navy);
     position: relative;
-    overflow: hidden; /* Keep things tidy inside */
+    overflow: hidden;
 }
 
-/* --- 4. HEADER & COLLEGE FLAG (New Integration) --- */
+/* --- 4. HEADER & COLLEGE FLAG --- */
 header {
     text-align: center;
     margin-bottom: 35px;
@@ -64,7 +61,7 @@ header {
 }
 
 .battle-tag {
-    background: rgba(253, 197, 0, 0.1); /* Subtle gold background */
+    background: rgba(253, 197, 0, 0.1);
     color: var(--color-gold);
     padding: 6px 16px;
     border-radius: 20px;
@@ -77,16 +74,14 @@ header {
 
 header h1 {
     font-size: 36px;
-    font-weight: 800; /* Bold weight */
+    font-weight: 800;
     margin: 15px 0 8px;
     letter-spacing: 0.5px;
-    /* Text Gradient: Navy to White */
     background: linear-gradient(180deg, #ffffff 0%, #a0aec0 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
-/* COLLEGE NAME + FLAG (The Magic Trick) */
 .college-name {
     color: var(--color-text-muted);
     font-size: 15px;
@@ -95,10 +90,9 @@ header h1 {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px; /* Space between text and flag */
+    gap: 8px;
 }
 
-/* The CSS Flag Graphic */
 .college-name::before,
 .college-name::after {
     content: '';
@@ -109,19 +103,16 @@ header h1 {
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
-/* Left Half: Navy Blue */
 .college-name::before {
     background-color: var(--color-navy);
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Right Half: Gold Yellow */
 .college-name::after {
     background-color: var(--color-gold);
 }
 
-
-/* --- 5. SCOREBOARD (Neon Glows) --- */
+/* --- 5. SCOREBOARD --- */
 .scoreboard {
     display: flex;
     gap: 20px;
@@ -136,19 +127,16 @@ header h1 {
     text-align: center;
     position: relative;
     overflow: hidden;
-    /* Base border */
     border: 1px solid rgba(255, 255, 255, 0.05);
     transition: all 0.4s ease;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-/* Card Hover Effect */
 .team-card:hover {
     transform: translateY(-3px);
     background: rgba(255, 255, 255, 0.05);
 }
 
-/* Default Top Borders (Navy) */
 .alpha-card {
     border-top: 5px solid var(--color-navy);
 }
@@ -156,17 +144,12 @@ header h1 {
     border-top: 5px solid var(--color-navy);
 }
 
-/* --- THE WINNING NEON PULSE (JavaScript Class Hook) --- */
-/* When a team is winning, the JavaScript adds '.is-winning' to the card */
-
-/* Alpha Winning Neon Glow */
 .alpha-card.is-winning {
     border-top-color: var(--color-team-alpha);
     box-shadow: 0 4px 20px rgba(59, 130, 246, 0.25), 0 0 40px -5px rgba(59, 130, 246, 0.15);
     border-bottom: 1px solid rgba(59, 130, 246, 0.2);
 }
 
-/* Omega Winning Neon Glow (Uses the school gold color) */
 .omega-card.is-winning {
     border-top-color: var(--color-gold);
     box-shadow: 0 4px 20px rgba(253, 197, 0, 0.3), 0 0 40px -5px rgba(253, 197, 0, 0.2);
@@ -182,22 +165,18 @@ header h1 {
     font-weight: 600;
 }
 
-/* Score Text (Pop Animation Hook) */
 .score-display {
     font-size: 52px;
     font-weight: 800;
     margin-bottom: 8px;
     line-height: 1;
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Springy animation */
-    /* Text Gradient matching card color */
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* Score Display Colors when not winning */
 .alpha-card .score-display {
     color: var(--color-text-main); 
 }
 
-/* Score Display colors when winning (Pops harder) */
 .alpha-card.is-winning .score-display {
     color: #ffffff;
     text-shadow: 0 0 15px rgba(59, 130, 246, 0.6);
@@ -212,7 +191,6 @@ header h1 {
     text-shadow: 0 0 15px rgba(253, 197, 0, 0.7);
 }
 
-/* The "Popped" state added by JS */
 .score-display.pop {
     transform: scale(1.1);
 }
@@ -247,7 +225,7 @@ header h1 {
     line-height: 1.5;
 }
 
-/* --- 7. PROGRESS BAR (Navy and Gold Fill) --- */
+/* --- 7. PROGRESS BAR --- */
 .progress-container {
     margin-bottom: 40px;
 }
@@ -265,7 +243,7 @@ header h1 {
 
 .progress-bar-bg {
     display: flex;
-    height: 12px; /* Sleeker bar */
+    height: 12px;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 6px;
     overflow: hidden;
@@ -274,10 +252,9 @@ header h1 {
 
 .progress-fill {
     height: 100%;
-    transition: width 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Super smooth animation */
+    transition: width 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-/* Custom Fills: Navy and Gold */
 .alpha-fill {
     background: var(--color-navy);
     box-shadow: 0 0 10px var(--color-navy);
@@ -288,7 +265,7 @@ header h1 {
     box-shadow: 0 0 10px var(--color-gold);
 }
 
-/* --- 8. ADMIN PANEL (Upgraded) --- */
+/* --- 8. ADMIN PANEL --- */
 .admin-top {
     display: flex;
     justify-content: flex-end;
@@ -315,7 +292,6 @@ header h1 {
     border-color: rgba(255, 255, 255, 0.2);
 }
 
-/* Unlocked State */
 #adminBtn.unlocked {
     color: var(--color-gold);
     border-color: var(--color-gold);
@@ -323,10 +299,10 @@ header h1 {
 }
 
 #controlsSection {
-    background: rgba(24, 27, 40, 0.8); /* Slightly lighter base for contrast */
+    background: rgba(24, 27, 40, 0.8);
     padding: 25px;
     border-radius: 16px;
-    border: 1px solid rgba(253, 197, 0, 0.1); /* Subtle gold outline */
+    border: 1px solid rgba(253, 197, 0, 0.1);
     transition: all 0.4s ease;
     position: relative;
 }
@@ -403,4 +379,25 @@ header h1 {
     color: var(--color-text-main);
     border: 1px solid rgba(255, 255, 255, 0.1);
     padding: 8px 12px;
-    border-radius
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 12px;
+    transition: all 0.2s ease;
+}
+
+.control-buttons button:hover {
+    background: var(--color-gold);
+    color: var(--color-navy);
+    border-color: var(--color-gold);
+}
+
+.reset-container button {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+    transition: all 0.3s ease !important;
+}
+
+.reset-container button:hover {
+    opacity: 0.9;
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.5) !important;
+}
