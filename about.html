@@ -1,430 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About - Grade 12 Study Group Initiative</title>
-    <link rel="stylesheet" href="style.css">
-    <style>
-        /* Extra styles for About page only */
-        .nav-bar {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin-bottom: 22px;
-            flex-wrap: wrap;
-        }
-        .nav-btn {
-            background: rgba(0, 0, 80, 0.85);
-            border: 1px solid rgba(255, 215, 0, 0.4);
-            color: #ffd700;
-            padding: 8px 18px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-        .nav-btn:hover {
-            background: rgba(255, 215, 0, 0.2);
-            transform: translateY(-2px);
-        }
-        .nav-btn.active {
-            background: rgba(255, 215, 0, 0.25);
-            border-color: #ffd700;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — Grade 12 Study Group Initiative</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#122A5E;
+    --navy-deep:#0B1E45;
+    --gold:#F2B705;
+    --blue:#1E3A8A;
+    --teal:#0E6E6E;
+    --ink:#122A5E;
+    --gray:#5B6478;
+    --paper:#FFFFFF;
+    --mist:#F6F7FA;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    overflow-x:hidden;
+    position:relative;
+  }
+  h1,h2,h3{font-family:'Poppins',sans-serif;margin:0;}
 
-        .section-card {
-            background: rgba(0, 0, 60, 0.85);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 215, 0, 0.3);
-            border-radius: 16px;
-            padding: 22px;
-            margin-bottom: 22px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-        }
-        .section-card h2 {
-            color: #ffd700;
-            font-size: 1.2rem;
-            margin-bottom: 16px;
-        }
-        .section-card p, .section-card li {
-            color: #cbd5e1;
-            line-height: 1.6;
-            font-size: 0.95rem;
-        }
-        .section-card ul {
-            padding-left: 20px;
-            margin-top: 8px;
-        }
+  .arc-top{
+    position:fixed;top:-260px;right:-220px;width:640px;height:640px;
+    border-radius:50%;
+    background:conic-gradient(from 220deg, var(--gold) 0deg, var(--gold) 14deg, transparent 15deg);
+    z-index:0;pointer-events:none;
+  }
+  .arc-top::after{
+    content:'';position:absolute;inset:26px;border-radius:50%;
+    background:var(--navy);
+  }
+  .dot-grid{
+    position:fixed;top:40px;right:60px;width:220px;height:220px;z-index:0;pointer-events:none;
+    background-image:radial-gradient(rgba(18,42,94,.18) 2px, transparent 2px);
+    background-size:20px 20px;
+    -webkit-mask-image:linear-gradient(135deg, black 30%, transparent 75%);
+    mask-image:linear-gradient(135deg, black 30%, transparent 75%);
+  }
+  .arc-bottom{
+    position:fixed;bottom:-300px;left:-260px;width:620px;height:620px;
+    border-radius:50%;z-index:0;pointer-events:none;
+    background:conic-gradient(from 30deg, var(--gold) 0deg, var(--gold) 10deg, transparent 11deg);
+  }
+  .arc-bottom::after{
+    content:'';position:absolute;inset:22px;border-radius:50%;background:var(--navy-deep);
+  }
 
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
-        }
-        .grid-3 {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 14px;
-        }
-        .grid-4 {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-        }
+  .page{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:40px 28px 90px;}
 
-        .info-box {
-            background: rgba(0, 0, 40, 0.9);
-            border: 1px solid rgba(51, 65, 85, 0.8);
-            border-radius: 12px;
-            padding: 16px;
-            text-align: center;
-        }
-        .info-box h3 {
-            color: #60a5fa;
-            font-size: 1rem;
-            margin-bottom: 6px;
-        }
-        .info-box.omega h3 {
-            color: #ffd700;
-        }
-        .info-box p {
-            font-size: 0.85rem;
-            color: #94a3b8;
-            margin: 0;
-        }
+  /* NAV */
+  .nav-bar{display:flex;justify-content:center;gap:12px;margin-bottom:36px;flex-wrap:wrap;}
+  .nav-btn{
+    background:#fff;border:1.5px solid #E3E6EE;color:var(--navy);
+    padding:9px 20px;border-radius:20px;font-weight:600;font-size:0.9rem;
+    text-decoration:none;transition:all 0.2s;
+  }
+  .nav-btn:hover{border-color:var(--gold);transform:translateY(-1px);}
+  .nav-btn.active{background:var(--navy-deep);border-color:var(--navy-deep);color:#fff;}
 
-        .step-box {
-            background: rgba(0, 0, 40, 0.9);
-            border: 1px solid rgba(51, 65, 85, 0.8);
-            border-radius: 12px;
-            padding: 14px;
-            text-align: center;
-        }
-        .step-num {
-            width: 28px;
-            height: 28px;
-            background: #000080;
-            border: 1px solid #ffd700;
-            color: #ffd700;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 0.85rem;
-            margin: 0 auto 8px;
-        }
-        .step-box h4 {
-            color: #f8fafc;
-            font-size: 0.95rem;
-            margin-bottom: 4px;
-        }
-        .step-box p {
-            font-size: 0.8rem;
-            color: #94a3b8;
-            margin: 0;
-        }
+  /* HEADER */
+  .header{display:flex;align-items:flex-start;gap:22px;margin-bottom:8px;}
+  .trophy-badge{width:78px;height:78px;flex:none;display:flex;align-items:center;justify-content:center;}
+  .header-text .kicker{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.15em;text-transform:uppercase;
+    color:var(--gray);font-weight:600;
+  }
+  .header-text h1{
+    font-size:clamp(28px,4.6vw,42px);font-weight:800;color:var(--navy);line-height:1.05;margin-top:6px;
+  }
+  .underline{width:70px;height:4px;background:var(--gold);border-radius:2px;margin-top:14px;}
+  .subtitle{color:var(--gray);font-size:16px;margin-top:16px;max-width:560px;}
 
-        .points-row {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            background: rgba(0, 0, 40, 0.9);
-            border: 1px solid rgba(51, 65, 85, 0.8);
-            border-radius: 12px;
-            padding: 14px 16px;
-            margin-bottom: 10px;
-        }
-        .points-value {
-            font-size: 1.4rem;
-            font-weight: 800;
-            color: #ffd700;
-            min-width: 50px;
-        }
-        .points-text h4 {
-            color: #f8fafc;
-            font-size: 0.95rem;
-            margin-bottom: 2px;
-        }
-        .points-text p {
-            color: #94a3b8;
-            font-size: 0.85rem;
-            margin: 0;
-        }
+  .section-block{margin-top:52px;}
+  .section-kicker{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--gold);font-weight:600;
+  }
+  .section-title{font-size:clamp(22px,3vw,28px);color:var(--navy);font-weight:700;margin-top:8px;margin-bottom:22px;}
+  .section-lede{color:var(--gray);font-size:14.5px;margin-top:-14px;margin-bottom:24px;max-width:600px;}
 
-        .timeline {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-        .timeline-item {
-            display: flex;
-            gap: 14px;
-            align-items: flex-start;
-        }
-        .timeline-dot {
-            width: 12px;
-            height: 12px;
-            background: #ffd700;
-            border-radius: 50%;
-            margin-top: 5px;
-            flex-shrink: 0;
-        }
-        .timeline-content h4 {
-            color: #f8fafc;
-            font-size: 0.95rem;
-            margin-bottom: 2px;
-        }
-        .timeline-content p {
-            font-size: 0.85rem;
-            color: #94a3b8;
-            margin: 0;
-        }
+  /* Challenge */
+  .challenge-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  @media (max-width:760px){.challenge-grid{grid-template-columns:1fr;}}
+  .challenge-card{
+    background:var(--mist);border-radius:14px;padding:22px 20px;
+    box-shadow:0 10px 26px -20px rgba(18,42,94,.4);
+  }
+  .icon-box.small{width:44px;height:44px;border-radius:10px;margin-bottom:14px;display:flex;align-items:center;justify-content:center;}
+  .icon-box.c-navy{background:var(--navy-deep);}
+  .icon-box.c-blue{background:var(--blue);}
+  .icon-box.c-teal{background:var(--teal);}
+  .icon-box .glyph{font-family:'Poppins',sans-serif;font-weight:800;font-size:20px;color:var(--gold);}
+  .challenge-card h3{font-size:16.5px;color:var(--navy);font-weight:700;}
+  .challenge-card p{font-size:13.5px;color:var(--gray);margin-top:6px;line-height:1.5;}
 
-        @media (max-width: 700px) {
-            .grid-2, .grid-3, .grid-4 {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
+  /* Objective */
+  .objective-list{list-style:none;margin:0;padding:0;}
+  .objective-list li{
+    display:flex;gap:16px;padding:16px 4px;border-top:1px solid #E3E6EE;font-size:14.5px;color:var(--ink);
+  }
+  .objective-list li:last-child{border-bottom:1px solid #E3E6EE;}
+  .objective-list .idx{font-family:'IBM Plex Mono',monospace;color:var(--gold);font-weight:700;font-size:13px;padding-top:1px;}
 
-        <!-- NAVIGATION -->
-        <div class="nav-bar">
-            <a href="index.html" class="nav-btn">⚔️ Battle Arena</a>
-            <a href="about.html" class="nav-btn active">📖 About the Initiative</a>
-        </div>
+  /* Leadership */
+  .leader-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  @media (max-width:760px){.leader-grid{grid-template-columns:1fr;}}
+  .leader-col{
+    background:var(--navy-deep);border:1.5px solid var(--gold);border-radius:16px;padding:22px;
+  }
+  .leader-col-head{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+  .leader-badge{
+    width:38px;height:38px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;
+    font-family:'Poppins',sans-serif;font-weight:800;font-size:16px;color:var(--navy-deep);
+    background:linear-gradient(135deg,#F2B705,#D99A00);
+  }
+  .leader-col-head h3{color:var(--gold);font-size:19px;font-weight:700;}
+  .role-item{
+    display:flex;align-items:center;gap:12px;padding:11px 0;
+    border-bottom:1px solid rgba(242,183,5,.18);color:#fff;font-size:14px;
+  }
+  .role-item:last-child{border-bottom:none;}
+  .role-label{font-weight:600;min-width:160px;}
 
-        <!-- HEADER -->
-        <header>
-            <div class="subtitle">Kuruduwatta Royal College</div>
-            <h1>Grade 12 Study Group Initiative</h1>
-            <div class="college-name">
-                <div class="school-flag">
-                    <div class="navy-half"></div>
-                    <div class="gold-half"></div>
-                </div>
-                Learning together, achieving more
-            </div>
-        </header>
-
-        <!-- THE CHALLENGE -->
-        <div class="section-card">
-            <h2>⚡ The Challenge</h2>
-            <div class="grid-3">
-                <div class="info-box">
-                    <h3>Heavy Syllabus</h3>
-                    <p>A.L. subjects pack dense content, leaving little time to revise deeply before exams.</p>
-                </div>
-                <div class="info-box">
-                    <h3>Studying Alone</h3>
-                    <p>Many students struggle with the same topics without realizing classmates could help.</p>
-                </div>
-                <div class="info-box">
-                    <h3>Exam Pressure</h3>
-                    <p>Rising stress makes it harder to stay motivated and organized in the final stretch.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- OBJECTIVE -->
-        <div class="section-card">
-            <h2>🎯 Our Objective</h2>
-            <ul>
-                <li>Create small, subject-focused peer groups for Grade 12 students</li>
-                <li>Turn revision into a shared, consistent habit rather than a last-minute scramble</li>
-                <li>Give struggling students access to peer support alongside teacher guidance</li>
-                <li>Build stronger exam results and lower stress across the batch</li>
-            </ul>
-        </div>
-
-        <!-- HOW IT WORKS -->
-        <div class="section-card">
-            <h2>⚙️ How It Works</h2>
-            <div class="grid-2">
-                <div class="info-box">
-                    <h3>Group Size</h3>
-                    <p>4–6 students per group, mixed by subject stream</p>
-                </div>
-                <div class="info-box">
-                    <h3>Frequency</h3>
-                    <p>Two sessions per week, after school, 60–90 minutes</p>
-                </div>
-                <div class="info-box">
-                    <h3>Format</h3>
-                    <p>Rotate a “lead” each week who prepares a topic summary + practice questions</p>
-                </div>
-                <div class="info-box">
-                    <h3>Teacher Support</h3>
-                    <p>A subject teacher checks in every fortnight</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- WHY TWO TEAMS -->
-        <div class="section-card">
-            <h2>α vs Ω — Why Two Teams?</h2>
-            <div class="grid-2">
-                <div class="info-box">
-                    <h3>Manageable Size</h3>
-                    <p>Two mid-sized teams are easier to coordinate than one large batch.</p>
-                </div>
-                <div class="info-box">
-                    <h3>Friendly Competition</h3>
-                    <p>A bit of rivalry between Alpha and Omega keeps energy high.</p>
-                </div>
-                <div class="info-box">
-                    <h3>Shared Ownership</h3>
-                    <p>Each team can run its own streams without waiting on everyone.</p>
-                </div>
-                <div class="info-box">
-                    <h3>Easier to Track</h3>
-                    <p>Teachers can monitor progress and give feedback more easily.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- TEAM STRUCTURE -->
-        <div class="section-card">
-            <h2>👥 Team Structure</h2>
-            <div class="grid-2">
-                <div class="info-box">
-                    <h3 style="color:#60a5fa;">α – Team Alpha</h3>
-                    <p>Maths • Science • Commerce • Arts • Technology groups</p>
-                </div>
-                <div class="info-box omega">
-                    <h3>Ω – Team Omega</h3>
-                    <p>Maths • Science • Commerce • Arts • Technology groups</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- TYPICAL WEEK -->
-        <div class="section-card">
-            <h2>📅 A Typical Week</h2>
-            <div class="grid-4">
-                <div class="step-box">
-                    <div class="step-num">1</div>
-                    <h4>Pick a Topic</h4>
-                    <p>Lead chooses a focus area from the syllabus</p>
-                </div>
-                <div class="step-box">
-                    <div class="step-num">2</div>
-                    <h4>Prepare Notes</h4>
-                    <p>Lead brings a short summary + 3–5 questions</p>
-                </div>
-                <div class="step-box">
-                    <div class="step-num">3</div>
-                    <h4>Group Session</h4>
-                    <p>Discuss, solve problems, clear doubts</p>
-                </div>
-                <div class="step-box">
-                    <div class="step-num">4</div>
-                    <h4>Reflect & Plan</h4>
-                    <p>Note what to revisit and set next topic</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- POINTS SYSTEM -->
-        <div class="section-card">
-            <h2>🏆 How Points Are Earned</h2>
-            <div class="points-row">
-                <div class="points-value">+10</div>
-                <div class="points-text">
-                    <h4>Top Average Score</h4>
-                    <p>Team with the higher average mark on the recap paper</p>
-                </div>
-            </div>
-            <div class="points-row">
-                <div class="points-value">+5</div>
-                <div class="points-text">
-                    <h4>Most Improved</h4>
-                    <p>Biggest score increase from the previous month</p>
-                </div>
-            </div>
-            <div class="points-row">
-                <div class="points-value">+5</div>
-                <div class="points-text">
-                    <h4>Full Attendance</h4>
-                    <p>Every member attends all scheduled sessions that month</p>
-                </div>
-            </div>
-            <div class="points-row">
-                <div class="points-value">+3</div>
-                <div class="points-text">
-                    <h4>Shared Resources</h4>
-                    <p>Notes, summaries or past papers shared with the batch</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- BENEFITS -->
-        <div class="section-card">
-            <h2>💡 Why It Will Help</h2>
-            <div class="grid-2">
-                <div class="info-box">
-                    <h3>Better Understanding</h3>
-                    <p>Explaining topics to peers deepens your own grasp.</p>
-                </div>
-                <div class="info-box">
-                    <h3>Accountability</h3>
-                    <p>A scheduled group session is harder to skip than solo revision.</p>
-                </div>
-                <div class="info-box">
-                    <h3>Shared Resources</h3>
-                    <p>Notes and past papers get pooled instead of duplicated.</p>
-                </div>
-                <div class="info-box">
-                    <h3>Lower Stress</h3>
-                    <p>Facing exams with friends feels far less overwhelming.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- TIMELINE -->
-        <div class="section-card">
-            <h2>📌 Timeline & Next Steps</h2>
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <h4>Week 1</h4>
-                        <p>Get approval and form Team Alpha and Team Omega by stream</p>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <h4>Weeks 2–3</h4>
-                        <p>Two-week trial run — two sessions per week per group</p>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <h4>End of Month 1</h4>
-                        <p>First recap paper and the first monthly points awarded</p>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <h4>Ongoing</h4>
-                        <p>Repeat the weekly rhythm and monthly recap for the rest of the term</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- FOOTER -->
-        <footer>
-            Kuruduwatta Royal College • Grade 12 Study Group Initiative © 2026
-        </footer>
-    </div>
-</body>
-</html>
+  /* Duties */
+  .duties-strip{
+    margin-top:26px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;
+  }
+  @media (max-width:760px){.duties-strip{grid-template-columns:1fr 1fr;}}
+  @media (max-width:480px){.duties-strip{grid-template-columns:1fr;}}
+  .duty-item{
+    background:var(--mist);border:1px solid #E3E6EE;border-radius:12
