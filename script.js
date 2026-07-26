@@ -70,10 +70,14 @@ function updateScore(team, pts) {
     changePoints(team, pts);
 }
 
-function awardStreamScore(team) {
-    let selectEl = document.getElementById('streamSelect');
-    let chosenStream = selectEl.value;
-    updateScore(team, 5);
+function awardCustomStreamScore(team) {
+    let streamEl = document.getElementById('streamSelect');
+    let achievementEl = document.getElementById('achievementSelect');
+    
+    let chosenStream = streamEl.value;
+    let points = parseInt(achievementEl.value) || 0;
+    
+    updateScore(team, points);
 }
 
 async function changePoints(team, pts) {
