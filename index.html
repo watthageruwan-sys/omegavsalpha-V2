@@ -11,214 +11,152 @@
     <div class="container">
         <!-- HEADER -->
         <header>
-            <div class="battle-tag">Battle Arena</div>
+            <div class="subtitle">Battle Arena</div>
             <h1>α-ALPHA vs Ω-OMEGA</h1>
-           <div class="college-name">
-                    <div class="school-flag">
-                        <div class="navy-half"></div>
-                        <div class="gold-half"></div>
-                    </div>
-                    Kuruduwatta Royal College
+            <div class="college-name">
+                <div class="school-flag">
+                    <div class="navy-half"></div>
+                    <div class="gold-half"></div>
                 </div>
-                <div class="viewer-badge-container">
-                    <span class="viewer-dot"></span>
-                    👀 Live Viewers: <span id="viewerCount">1</span>
-                </div>
-            </header>
+                Kuruduwatta Royal College
+            </div>
+            <div class="viewer-badge-container">
+                <span class="viewer-dot"></span>
+                👀 Live Viewers: <span id="viewerCount">1</span>
+            </div>
+        </header>
 
-        <!-- SCOREBOARD -->
-        <div class="scoreboard">
+        <!-- SCOREBOARD OVERVIEW -->
+        <div class="scoreboard-overview">
+            <!-- Team Alpha Card -->
             <div class="team-card alpha-card" id="alphaCard">
-                <h2>α - Team Alpha</h2>
+                <div class="team-title">α - Team Alpha</div>
                 <div class="score-display" id="alphaScore">0</div>
-                <div class="sub-text">Total Points</div>
+                <div class="score-subtitle">Total Points</div>
+                
+                <!-- Admin Quick Point Buttons -->
+                <div class="quick-points">
+                    <button class="btn-point" onclick="updateScore('alpha', 1, 'Quick +1')">+1</button>
+                    <button class="btn-point" onclick="updateScore('alpha', 5, 'Quick +5')">+5</button>
+                    <button class="btn-point" onclick="updateScore('alpha', 10, 'Quick +10')">+10</button>
+                    <button class="btn-point" onclick="updateScore('alpha', -1, 'Quick -1')">-1</button>
+                </div>
             </div>
 
+            <!-- Team Omega Card -->
             <div class="team-card omega-card" id="omegaCard">
-                <h2>Ω - Team Omega</h2>
+                <div class="team-title">Ω - Team Omega</div>
                 <div class="score-display" id="omegaScore">0</div>
-                <div class="sub-text">Total Points</div>
-            </div>
-        </div>
-
-        <!-- PUBLIC STREAM SCORE BREAKDOWN SECTION -->
-        <div class="stream-breakdown-container">
-            <div class="stream-breakdown-header">
-                <span>📚 Stream Score Breakdown (Public)</span>
-            </div>
-            <div class="stream-breakdown-grid">
-                <div class="stream-box">
-                    <span class="stream-title">Physical Science</span>
-                    <div class="stream-score-display" id="stream-Physical-Science">0</div>
-                    <span class="stream-sub">Public Points</span>
-                </div>
-                <div class="stream-box">
-                    <span class="stream-title">Bio Science</span>
-                    <div class="stream-score-display" id="stream-Bio-Science">0</div>
-                    <span class="stream-sub">Public Points</span>
-                </div>
-                <div class="stream-box">
-                    <span class="stream-title">Commerce</span>
-                    <div class="stream-score-display" id="stream-Commerce">0</div>
-                    <span class="stream-sub">Public Points</span>
-                </div>
-                <div class="stream-box">
-                    <span class="stream-title">Technology</span>
-                    <div class="stream-score-display" id="stream-Technology">0</div>
-                    <span class="stream-sub">Public Points</span>
-                </div>
-                <div class="stream-box" style="grid-column: span 2;">
-                    <span class="stream-title">Arts</span>
-                    <div class="stream-score-display" id="stream-Arts">0</div>
-                    <span class="stream-sub">Public Points</span>
+                <div class="score-subtitle">Total Points</div>
+                
+                <!-- Admin Quick Point Buttons -->
+                <div class="quick-points">
+                    <button class="btn-point" onclick="updateScore('omega', 1, 'Quick +1')">+1</button>
+                    <button class="btn-point" onclick="updateScore('omega', 5, 'Quick +5')">+5</button>
+                    <button class="btn-point" onclick="updateScore('omega', 10, 'Quick +10')">+10</button>
+                    <button class="btn-point" onclick="updateScore('omega', -1, 'Quick -1')">-1</button>
                 </div>
             </div>
         </div>
 
-        <!-- STATUS BANNER -->
-        <div class="status-banner" id="statusBanner">
-            <h3 id="statusTitle">🔥 Battle Just Began!</h3>
-            <p id="statusDesc">The scoreboard is clean. Step up, lock in, and claim the lead!</p>
-        </div>
-
-        <!-- LIVE ACTIVITY FEED -->
-        <div class="activity-feed-container">
-            <div class="activity-header">
-                <span>📡 Live Activity Feed</span>
-                <span class="activity-pulse"></span>
+        <!-- BATTLE STATUS BANNER -->
+        <div class="battle-status">
+            <div class="status-content">
+                <h3 id="statusTitle">🔥 Battle Just Began!</h3>
+                <p id="statusDesc">The scoreboard is clean. Step up, lock in, and claim the lead!</p>
             </div>
-            <div class="activity-log" id="activityLog">
-                <div class="activity-item">Battle arena initialized. Standing by for points...</div>
-            </div>
-        </div>
-
-        <!-- PROGRESS BAR -->
-        <div class="progress-container">
-            <div class="progress-labels">
-                <span id="alphaPct">α-Alpha (50%)</span>
-                <span id="omegaPct">Ω-Omega (50%)</span>
-            </div>
-            <div class="progress-bar-bg">
-                <div class="progress-fill alpha-fill" id="alphaBar" style="width: 50%;"></div>
-                <div class="progress-fill omega-fill" id="omegaBar" style="width: 50%;"></div>
+            <div class="progress-container">
+                <div class="progress-labels">
+                    <span id="alphaPct">α-Alpha (50%)</span>
+                    <span id="omegaPct">Ω-Omega (50%)</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-alpha" id="alphaBar"></div>
+                    <div class="progress-omega" id="omegaBar"></div>
+                </div>
             </div>
         </div>
 
-        <!-- ADMIN PANEL -->
-        <div class="admin-panel">
-            <div class="admin-top">
-                <button id="adminBtn" onclick="toggleAdmin()">🔒 Admin Login</button>
+        <!-- STREAMS & ADVANCED BREAKDOWN -->
+        <div class="streams-section">
+            <h2>📚 Stream Score Breakdown (Public)</h2>
+            <div class="streams-grid">
+                <div class="stream-card">
+                    <div class="stream-name">Physical Science</div>
+                    <div class="stream-score" id="stream-Physical-Science">0</div>
+                </div>
+                <div class="stream-card">
+                    <div class="stream-name">Bio Science</div>
+                    <div class="stream-score" id="stream-Bio-Science">0</div>
+                </div>
+                <div class="stream-card">
+                    <div class="stream-name">Commerce</div>
+                    <div class="stream-score" id="stream-Commerce">0</div>
+                </div>
+                <div class="stream-card">
+                    <div class="stream-name">Technology</div>
+                    <div class="stream-score" id="stream-Technology">0</div>
+                </div>
+                <div class="stream-card">
+                    <div class="stream-name">Arts</div>
+                    <div class="stream-score" id="stream-Arts">0</div>
+                </div>
             </div>
+        </div>
 
-            <div id="controlsSection" class="controls-section locked">
-                <div class="section-header">
-                    <h3>Admin Point Controller</h3>
+        <!-- CONTROLS / ADMIN PANEL -->
+        <div class="controls-section locked" id="controlsSection">
+            <div class="controls-header">
+                <h2>🛠️ Admin Point Controller</h2>
+                <div style="display: flex; gap: 10px; align-items: center;">
                     <span class="lock-badge" id="lockBadge">🔒 Locked</span>
+                    <button class="admin-login-btn" id="adminBtn" onclick="toggleAdmin()">🔒 Admin Login</button>
+                </div>
+            </div>
+            
+            <div class="controls-body">
+                <div class="control-group">
+                    <label for="streamSelect">Select Academic Stream</label>
+                    <select id="streamSelect">
+                        <option value="Physical Science">Physical Science</option>
+                        <option value="Bio Science">Bio Science</option>
+                        <option value="Commerce">Commerce</option>
+                        <option value="Technology">Technology</option>
+                        <option value="Arts">Arts</option>
+                    </select>
                 </div>
 
-                <!-- Top Average Score -->
-                <div class="control-item">
-                    <div class="control-info">
-                        <h4>Top Average Score</h4>
-                        <p>+10 Points</p>
-                    </div>
-                    <div class="control-buttons">
-                        <button onclick="updateScore('alpha', 10, 'Top Average Score')">+ α-Alpha</button>
-                        <button onclick="updateScore('alpha', -10, 'Top Average Score (Deduction)')">-</button>
-                        <button onclick="updateScore('omega', 10, 'Top Average Score')">+ Ω-Omega</button>
-                        <button onclick="updateScore('omega', -10, 'Top Average Score (Deduction)')">-</button>
-                    </div>
+                <div class="control-group">
+                    <label for="achievementSelect">Select Achievement / Event</label>
+                    <select id="achievementSelect">
+                        <option value="10">Quiz Win / Challenge Completed (+10 pts)</option>
+                        <option value="5">Participation / Attendance (+5 pts)</option>
+                        <option value="15">Special Presentation / Project (+15 pts)</option>
+                        <option value="20">Major Championship Victory (+20 pts)</option>
+                    </select>
                 </div>
 
-                <!-- Most Improved -->
-                <div class="control-item">
-                    <div class="control-info">
-                        <h4>Most Improved</h4>
-                        <p>+5 Points</p>
-                    </div>
-                    <div class="control-buttons">
-                        <button onclick="updateScore('alpha', 5, 'Most Improved')">+ α-Alpha</button>
-                        <button onclick="updateScore('alpha', -5, 'Most Improved (Deduction)')">-</button>
-                        <button onclick="updateScore('omega', 5, 'Most Improved')">+ Ω-Omega</button>
-                        <button onclick="updateScore('omega', -5, 'Most Improved (Deduction)')">-</button>
-                    </div>
+                <div class="control-row">
+                    <button class="btn-action" style="background-color: #3b82f6;" onclick="awardCustomStreamScore('alpha')">Award to α-Alpha</button>
+                    <button class="btn-action" style="background-color: #ef4444;" onclick="awardCustomStreamScore('omega')">Award to Ω-Omega</button>
                 </div>
 
-                <!-- Full Attendance -->
-                <div class="control-item">
-                    <div class="control-info">
-                        <h4>Full Attendance</h4>
-                        <p>+5 Points</p>
-                    </div>
-                    <div class="control-buttons">
-                        <button onclick="updateScore('alpha', 5, 'Full Attendance')">+ α-Alpha</button>
-                        <button onclick="updateScore('alpha', -5, 'Full Attendance (Deduction)')">-</button>
-                        <button onclick="updateScore('omega', 5, 'Full Attendance')">+ Ω-Omega</button>
-                        <button onclick="updateScore('omega', -5, 'Full Attendance (Deduction)')">-</button>
-                    </div>
-                </div>
-
-                <!-- Shared Resources -->
-                <div class="control-item">
-                    <div class="control-info">
-                        <h4>Shared Resources</h4>
-                        <p>+3 Points</p>
-                    </div>
-                    <div class="control-buttons">
-                        <button onclick="updateScore('alpha', 3, 'Shared Resources')">+ α-Alpha</button>
-                        <button onclick="updateScore('alpha', -3, 'Shared Resources (Deduction)')">-</button>
-                        <button onclick="updateScore('omega', 3, 'Shared Resources')">+ Ω-Omega</button>
-                        <button onclick="updateScore('omega', -3, 'Shared Resources (Deduction)')">-</button>
-                    </div>
-                </div>
-
-                <!-- STREAM & ACHIEVEMENT DROPDOWN CONTROLLER -->
-                <div class="control-item" style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; margin-top: 10px; display: block;">
-                    <div class="control-info" style="margin-bottom: 12px;">
-                        <h4>Stream Achievement Bonus</h4>
-                        <p>Select stream, achievement type, and award points</p>
-                    </div>
-                    
-                    <div style="display: flex; flex-direction: column; gap: 8px;">
-                        <!-- Stream Dropdown -->
-                        <select id="streamSelect" style="width: 100%; background: #181d29; color: var(--color-text-main); border: 1px solid rgba(255, 255, 255, 0.1); padding: 9px 12px; border-radius: 8px; font-size: 13px; outline: none; cursor: pointer;">
-                            <option value="Physical Science">Physical Science</option>
-                            <option value="Bio Science">Bio Science</option>
-                            <option value="Commerce">Commerce</option>
-                            <option value="Technology">Technology</option>
-                            <option value="Arts">Arts</option>
-                        </select>
-
-                        <!-- Achievement Dropdown & Buttons -->
-                        <div style="display: flex; gap: 8px; align-items: center;">
-                            <select id="achievementSelect" style="flex: 2; background: #181d29; color: var(--color-text-main); border: 1px solid rgba(255, 255, 255, 0.1); padding: 9px 12px; border-radius: 8px; font-size: 13px; outline: none; cursor: pointer;">
-                                <option value="10">Top Average (+10)</option>
-                                <option value="5">Most Improved (+5)</option>
-                                <option value="5">Full Attendance (+5)</option>
-                                <option value="3">Shared Resources (+3)</option>
-                            </select>
-                            
-                            <div style="display: flex; gap: 6px; flex: 2;">
-                                <button onclick="awardCustomStreamScore('alpha')" style="flex: 1; background: var(--color-team-alpha); color: white; border: none; padding: 9px 6px; border-radius: 8px; font-weight: 600; font-size: 12px; cursor: pointer;">+ α-Alpha</button>
-                                <button onclick="awardCustomStreamScore('omega')" style="flex: 1; background: var(--color-team-omega); color: #0b0d14; border: none; padding: 9px 6px; border-radius: 8px; font-weight: 600; font-size: 12px; cursor: pointer;">+ Ω-Omega</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Reset Button -->
-                <div class="control-item reset-container" style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px;">
-                    <div class="control-info">
-                        <h4>Reset Board</h4>
-                        <p>Clear all points back to zero</p>
-                    </div>
-                    <div class="control-buttons">
-                        <button onclick="resetScores()" style="background: #ef4444; border: none; color: white;">Reset All</button>
-                    </div>
-                </div>
-
+                <button class="btn-danger" onclick="resetScores()">⚠️ Reset All Scores</button>
             </div>
         </div>
+
+        <!-- ACTIVITY LOG -->
+        <div class="activity-section">
+            <h2>📜 Live Activity Feed</h2>
+            <div class="activity-log" id="activityLog">
+                <div class="activity-item"><span class="activity-time">[System]</span> Battle arena initialized successfully.</div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <footer>
+            Kuruduwatta Royal College Battle Arena &copy; 2026
+        </footer>
     </div>
 
     <script src="script.js"></script>
