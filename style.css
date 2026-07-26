@@ -3,7 +3,7 @@
     --color-navy: #002147;
     --color-gold: #FDC500;
     --color-bg-body: #0a0c13;
-    --color-bg-card: rgba(15, 20, 30, 0.45);
+    --color-bg-card: rgba(10, 14, 23, 0.45);
     --color-text-main: #ffffff;
     --color-text-muted: #cbd5e0;
     --color-team-alpha: #3b82f6; 
@@ -20,10 +20,10 @@
 }
 
 body {
-    /* LIGHTER OVERLAY TO LET YOUR BACKGROUND SHINE */
-    background: linear-gradient(rgba(10, 12, 19, 0.35), rgba(10, 12, 19, 0.45)), url('download (4).jfif');
+    /* CENTERED ON THE YELLOW MIDDLE, BLUES TOP AND BOTTOM */
+    background: linear-gradient(rgba(10, 12, 19, 0.25), rgba(10, 12, 19, 0.35)), url('download (4).jfif');
     background-size: cover;
-    background-position: center;
+    background-position: center 50%; /* Locks the image framing directly on the yellow center stripe */
     background-repeat: no-repeat;
     background-attachment: fixed;
     
@@ -38,7 +38,6 @@ body {
 .container {
     width: 100%;
     max-width: 640px;
-    /* MADE CONTAINER TRANSLUCENT SO THE BACKGROUND SHOWS THROUGH */
     background: rgba(10, 14, 23, 0.55);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
