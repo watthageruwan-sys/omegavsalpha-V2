@@ -1,3 +1,5 @@
+const API_URL = "https://script.google.com/macros/s/AKfycbzPCvtp7q-pjK-Dsn7F0sUx4Bs6ZdZLduEQ2hRHuwH2LTYglg6O5wMQJymohaQo4JyIqg/exec";
+
 let scores = {
     alpha: 0,
     omega: 0
@@ -13,6 +15,41 @@ let streamScores = {
 
 let isAdminLoggedIn = false;
 const ADMIN_PIN = "royal123";
+
+// Fetch scores from Google Sheet on page load
+window.addEventListener("DOMContentLoaded", () => {
+    fetchScores();
+});
+
+function fetchScores() {
+    fetch(API_URL)
+        .then(response => response.json())
+        .then(data => {
+            if (data && data.scores) {
+                scores.alpha = data.scores.alpha || 0;
+                scores.omega = data.scores.omega || 0;
+            }
+            if (data && data.streams) {
+                streamScores = data.streams;
+            }
+            updateDisplay();
+        })
+        .catch(err => console.error("Error fetching scores:", err));
+}
+
+function syncToSheet() {
+    fetch(API_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            scores: scores,
+            streams: streamScores
+        })
+    }).catch(err => console.error("Error syncing to sheet:", err));
+}
 
 function toggleAdmin() {
     const controls = document.getElementById("controlsSection");
@@ -48,6 +85,7 @@ function updateScore(team, points, reason) {
     if (scores[team] < 0) scores[team] = 0;
 
     updateDisplay();
+    syncToSheet(); // Send update to Google Sheet
     
     let teamName = team === 'alpha' ? 'α-Alpha' : 'Ω-Omega';
     logActivity(`${teamName} received ${points > 0 ? '+' + points : points} pts for "${reason}".`);
@@ -65,6 +103,7 @@ function awardCustomStreamScore(team) {
     streamScores[selectedStream] += points;
 
     updateDisplay();
+    syncToSheet(); // Send update to Google Sheet
 
     let teamName = team === 'alpha' ? 'α-Alpha' : 'Ω-Omega';
     logActivity(`${teamName} earned +${points} pts in [${selectedStream}] for ${achievementText}!`);
@@ -76,6 +115,7 @@ function resetScores() {
         scores.omega = 0;
         Object.keys(streamScores).forEach(stream => streamScores[stream] = 0);
         updateDisplay();
+        syncToSheet(); // Send update to Google Sheet
         logActivity("Scoreboard has been reset to zero.");
     }
 }
