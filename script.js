@@ -23,7 +23,7 @@ async function fetchScores() {
         let response = await fetch(WEB_APP_URL);
         let data = await response.json();
         
-        // Ensure values are cleanly parsed as numbers to prevent text bugs
+        // Ensure values are cleanly parsed as numbers
         scores.alpha = Number(data.alpha) || 0;
         scores.omega = Number(data.omega) || 0;
         
@@ -44,6 +44,7 @@ function toggleAdmin() {
             isAdminUnlocked = true;
             document.getElementById('controlsSection').classList.add('unlocked');
             document.getElementById('lockNotice').style.display = 'none';
+            document.getElementById('adminBtn').innerText = "🔓 Admin (Unlocked)";
             alert("Admin mode activated successfully!");
         } else if (pwd !== null) {
             alert("Incorrect passcode!");
@@ -52,6 +53,7 @@ function toggleAdmin() {
         isAdminUnlocked = false;
         document.getElementById('controlsSection').classList.remove('unlocked');
         document.getElementById('lockNotice').style.display = 'block';
+        document.getElementById('adminBtn').innerText = "🔒 Admin";
         alert("Admin mode locked.");
     }
 }
@@ -59,7 +61,7 @@ function toggleAdmin() {
 async function changePoints(team, pts) {
     if (!isAdminUnlocked) return;
     
-    // Update locally first so it feels instant
+    // Update locally first for instant feedback
     scores[team] += pts;
     if (scores[team] < 0) scores[team] = 0;
     updateUI();
@@ -69,6 +71,27 @@ async function changePoints(team, pts) {
         await fetch(`${WEB_APP_URL}?update=true&alpha=${scores.alpha}&omega=${scores.omega}`);
     } catch (error) {
         console.error("Error saving scores to cloud:", error);
+    }
+}
+
+async function resetScores() {
+    if (!isAdminUnlocked) return;
+    
+    let confirmReset = confirm("Are you sure you want to wipe all scores and start a fresh month?");
+    if (!confirmReset) return;
+
+    // Set local scores to zero
+    scores.alpha = 0;
+    scores.omega = 0;
+    updateUI();
+
+    // Send zeroed scores to Google Sheets
+    try {
+        await fetch(`${WEB_APP_URL}?update=true&alpha=0&omega=0`);
+        alert("Scoreboard has been successfully wiped clean for the new month!");
+    } catch (error) {
+        console.error("Error resetting scores on cloud:", error);
+        alert("Failed to sync reset to cloud. Check connection.");
     }
 }
 
@@ -83,7 +106,7 @@ function updateUI() {
     document.getElementById('alphaBar').style.width = alphaPercent + '%';
     document.getElementById('omegaBar').style.width = omegaPercent + '%';
 
-    // Added Greek signs inside brackets here!
+    // Greek signs included
     document.getElementById('alphaPct').innerText = `Alpha (α) (${Math.round(alphaPercent)}%)`;
     document.getElementById('omegaPct').innerText = `Omega (Ω) (${Math.round(omegaPercent)}%)`;
 
