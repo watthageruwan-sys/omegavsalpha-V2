@@ -1,7 +1,9 @@
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbybAtE2AllK3WQ3S2NHakdilPUBA4xPtKRkKPIjRLSbNRiV26rYdvTa5JsSy3srNaBzHg/exec";
+let scores = {
+    alpha: 0,
+    omega: 0
+};
 
-let scores = { alpha: 0, omega: 0 };
-let publicStreams = {
+let streamScores = {
     "Physical Science": 0,
     "Bio Science": 0,
     "Commerce": 0,
@@ -9,217 +11,159 @@ let publicStreams = {
     "Arts": 0
 };
 
-let lastAlpha = 0;
-let lastOmega = 0;
+let isAdminLoggedIn = false;
+const ADMIN_PIN = "1234"; // You can change your admin pin here
 
-let isAdminUnlocked = false;
-const secretPasscode = "royal123";
-
-async function fetchScores() {
-    try {
-        let response = await fetch(WEB_APP_URL);
-        let data = await response.json();
-        
-        let newAlpha = Number(data.alpha) || 0;
-        let newOmega = Number(data.omega) || 0;
-
-        if (newAlpha !== lastAlpha) animateScoreChange('alphaScore');
-        if (newOmega !== lastOmega) animateScoreChange('omegaScore');
-
-        scores.alpha = newAlpha;
-        scores.omega = newOmega;
-        lastAlpha = newAlpha;
-        lastOmega = newOmega;
-        
-        updateUI();
-    } catch (error) {
-        console.error("Error fetching scores from cloud:", error);
-    }
-}
-
-fetchScores();
-setInterval(fetchScores, 3000); 
-
-function animateScoreChange(elementId) {
-    let el = document.getElementById(elementId);
-    if (!el) return;
-    el.classList.add('pop');
-    setTimeout(() => el.classList.remove('pop'), 300);
-}
-
+// Toggle Admin Authentication
 function toggleAdmin() {
-    let controlsSection = document.getElementById('controlsSection');
-    let lockBadge = document.getElementById('lockBadge');
-    let adminBtn = document.getElementById('adminBtn');
+    const controls = document.getElementById("controlsSection");
+    const adminBtn = document.getElementById("adminBtn");
+    const lockBadge = document.getElementById("lockBadge");
 
-    if (!isAdminUnlocked) {
-        let pwd = prompt("Enter Admin Passcode to edit scores:");
-        if (pwd === secretPasscode) {
-            isAdminUnlocked = true;
-            controlsSection.classList.remove('locked');
-            controlsSection.classList.add('unlocked');
-            if (lockBadge) lockBadge.innerText = "🔓 Unlocked";
-            adminBtn.innerText = "🔓 Admin (Unlocked)";
-            adminBtn.classList.add('unlocked');
-            logActivity("Admin panel unlocked.");
-        } else if (pwd !== null) {
-            alert("Incorrect passcode!");
+    if (!isAdminLoggedIn) {
+        let enteredPin = prompt("Enter Admin PIN:");
+        if (enteredPin === ADMIN_PIN) {
+            isAdminLoggedIn = true;
+            controls.classList.remove("locked");
+            controls.classList.add("unlocked");
+            adminBtn.classList.add("unlocked");
+            adminBtn.textContent = "🔓 Admin Logged In";
+            lockBadge.textContent = "🔓 Unlocked";
+            logActivity("Admin access granted.");
+        } else if (enteredPin !== null) {
+            alert("Incorrect PIN!");
         }
     } else {
-        isAdminUnlocked = false;
-        controlsSection.classList.remove('unlocked');
-        controlsSection.classList.add('locked');
-        if (lockBadge) lockBadge.innerText = "🔒 Locked";
-        adminBtn.innerText = "🔒 Admin Login";
-        adminBtn.classList.remove('unlocked');
-        logActivity("Admin panel locked.");
+        isAdminLoggedIn = false;
+        controls.classList.remove("unlocked");
+        controls.classList.add("locked");
+        adminBtn.classList.remove("unlocked");
+        adminBtn.textContent = "🔒 Admin Login";
+        lockBadge.textContent = "🔒 Locked";
+        logActivity("Admin logged out.");
     }
 }
 
-function updateScore(team, pts, reason = 'Manual adjustment') {
-    changePoints(team, pts, reason);
+// Update Score Function for Quick Controls
+function updateScore(team, points, reason) {
+    scores[team] += points;
+    if (scores[team] < 0) scores[team] = 0; // Prevent negative scores
+
+    updateDisplay();
+    
+    let teamName = team === 'alpha' ? 'α-Alpha' : 'ω-Omega';
+    logActivity(`${teamName} received ${points > 0 ? '+' + points : points} pts for "${reason}".`);
 }
 
+// Award Custom Stream Score
 function awardCustomStreamScore(team) {
-    let streamEl = document.getElementById('streamSelect');
-    let achievementEl = document.getElementById('achievementSelect');
+    const streamSelect = document.getElementById("streamSelect");
+    const achievementSelect = document.getElementById("achievementSelect");
     
-    let chosenStream = streamEl.value;
-    let points = parseInt(achievementEl.value) || 0;
-    let achievementName = achievementEl.options[achievementEl.selectedIndex].text.split(' (')[0];
-    
-    // Aggregate points into the public stream score regardless of which team scored it
-    if (publicStreams[chosenStream] !== undefined) {
-        publicStreams[chosenStream] += points;
-        if (publicStreams[chosenStream] < 0) publicStreams[chosenStream] = 0;
-    }
+    const selectedStream = streamSelect.value;
+    const points = parseInt(achievementSelect.value);
+    const achievementText = achievementSelect.options[achievementSelect.selectedIndex].text.split(" (")[0];
 
-    let reason = `[${chosenStream}] ${achievementName}`;
-    updateScore(team, points, reason);
+    // Update Team Score
+    scores[team] += points;
+    
+    // Update Stream Score breakdown
+    streamScores[selectedStream] += points;
+
+    updateDisplay();
+
+    let teamName = team === 'alpha' ? 'α-Alpha' : 'ω-Omega';
+    logActivity(`${teamName} earned +${points} pts in [${selectedStream}] for ${achievementText}!`);
 }
 
-async function changePoints(team, pts, reason) {
-    if (!isAdminUnlocked) {
-        alert("Please unlock the Admin Panel first!");
-        return;
-    }
-    
-    scores[team] += pts;
-    if (scores[team] < 0) scores[team] = 0;
-    
-    animateScoreChange(team === 'alpha' ? 'alphaScore' : 'omegaScore');
-    updateUI();
-
-    let teamName = team === 'alpha' ? 'Team Alpha' : 'Team Omega';
-    let sign = pts >= 0 ? `+${pts}` : `${pts}`;
-    logActivity(`${teamName} awarded ${sign} pts (${reason})`);
-
-    try {
-        await fetch(`${WEB_APP_URL}?update=true&alpha=${scores.alpha}&omega=${scores.omega}`);
-    } catch (error) {
-        console.error("Error saving scores to cloud:", error);
+// Reset All Scores
+function resetScores() {
+    if (confirm("Are you sure you want to reset all scores back to zero?")) {
+        scores.alpha = 0;
+        scores.omega = 0;
+        Object.keys(streamScores).forEach(stream => streamScores[stream] = 0);
+        updateDisplay();
+        logActivity("Scoreboard has been reset to zero.");
     }
 }
 
-async function resetScores() {
-    if (!isAdminUnlocked) {
-        alert("Please unlock the Admin Panel first!");
-        return;
-    }
-    let confirmReset = confirm("Are you sure you want to wipe all scores and start fresh?");
-    if (!confirmReset) return;
+// Update UI Elements, Progress Bars, and Status
+function updateDisplay() {
+    // Update Score Numbers with Pop animation effect
+    let alphaElem = document.getElementById("alphaScore");
+    let omegaElem = document.getElementById("omegaScore");
 
-    scores.alpha = 0;
-    scores.omega = 0;
-    Object.keys(publicStreams).forEach(k => publicStreams[k] = 0);
+    alphaElem.textContent = scores.alpha;
+    omegaElem.textContent = scores.omega;
 
-    updateUI();
-    logActivity("Scoreboard reset to zero.");
+    alphaElem.classList.add("pop");
+    omegaElem.classList.add("pop");
+    setTimeout(() => {
+        alphaElem.classList.remove("pop");
+        omegaElem.classList.remove("pop");
+    }, 300);
 
-    try {
-        await fetch(`${WEB_APP_URL}?update=true&alpha=0&omega=0`);
-        alert("Scoreboard wiped clean!");
-    } catch (error) {
-        console.error("Error resetting scores:", error);
-    }
-}
-
-function logActivity(message) {
-    let logEl = document.getElementById('activityLog');
-    if (!logEl) return;
-
-    let timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    let item = document.createElement('div');
-    item.className = 'activity-item';
-    item.innerHTML = `<span class="activity-time">[${timeStr}]</span> ${message}`;
-    
-    logEl.prepend(item);
-
-    if (logEl.children.length > 15) {
-        logEl.removeChild(logEl.lastChild);
-    }
-}
-
-function updateUI() {
-    let alphaScoreEl = document.getElementById('alphaScore');
-    let omegaScoreEl = document.getElementById('omegaScore');
-    if (alphaScoreEl) alphaScoreEl.innerText = scores.alpha;
-    if (omegaScoreEl) omegaScoreEl.innerText = scores.omega;
-
-    // Update public stream elements
-    for (let streamName in publicStreams) {
-        let safeId = streamName.replace(/\s+/g, '-');
-        let el = document.getElementById(`stream-${safeId}`);
-        if (el) el.innerText = publicStreams[streamName];
-    }
-
-    let alphaCard = document.querySelector('.alpha-card');
-    let omegaCard = document.querySelector('.omega-card');
-
-    if (alphaCard && omegaCard) {
-        alphaCard.classList.remove('is-winning', 'is-tied');
-        omegaCard.classList.remove('is-winning', 'is-tied');
-
-        if (scores.alpha === scores.omega) {
-            alphaCard.classList.add('is-tied');
-            omegaCard.classList.add('is-tied');
-        } else if (scores.alpha > scores.omega) {
-            alphaCard.classList.add('is-winning');
-        } else {
-            omegaCard.classList.add('is-winning');
+    // Update Stream Breakdown UI
+    for (let stream in streamScores) {
+        let streamId = "stream-" + stream.replace(/\s+/g, '-');
+        let elem = document.getElementById(streamId);
+        if (elem) {
+            elem.textContent = streamScores[stream];
         }
     }
 
+    // Update Progress Bar
     let total = scores.alpha + scores.omega;
-    let alphaPercent = total === 0 ? 50 : (scores.alpha / total) * 100;
-    let omegaPercent = total === 0 ? 50 : (scores.omega / total) * 100;
+    let alphaPct = 50;
+    let omegaPct = 50;
 
-    let alphaBar = document.getElementById('alphaBar');
-    let omegaBar = document.getElementById('omegaBar');
-    if (alphaBar) alphaBar.style.width = alphaPercent + '%';
-    if (omegaBar) omegaBar.style.width = omegaPercent + '%';
-
-    let alphaPctEl = document.getElementById('alphaPct');
-    let omegaPctEl = document.getElementById('omegaPct');
-    if (alphaPctEl) alphaPctEl.innerText = `Alpha (${Math.round(alphaPercent)}%)`;
-    if (omegaPctEl) omegaPctEl.innerText = `Omega (${Math.round(omegaPercent)}%)`;
-
-    let titleEl = document.getElementById('statusTitle');
-    let descEl = document.getElementById('statusDesc');
-
-    if (titleEl && descEl) {
-        if (scores.alpha === scores.omega && total > 0) {
-            titleEl.innerHTML = "🔥 Neck and Neck Fire Tie!";
-            descEl.innerHTML = "Both teams are matching each other point for point! Absolute intensity!";
-        } else if (scores.alpha > scores.omega) {
-            titleEl.innerHTML = "👑 Team Alpha is Leading!";
-            descEl.innerHTML = "Absolute dominance! Team Omega is right on your tail—keep pushing!";
-        } else if (scores.omega > scores.alpha) {
-            titleEl.innerHTML = "👑 Team Omega is Leading!";
-            descEl.innerHTML = "Incredible momentum! Team Alpha is gearing up for a comeback—stay sharp!";
-        } else {
-            titleEl.innerHTML = "🔥 Battle Just Began!";
-            descEl.innerHTML = "The scoreboard is clean. Step up, lock in, and claim the lead!";
-        }
+    if (total > 0) {
+        alphaPct = (scores.alpha / total) * 100;
+        omegaPct = (scores.omega / total) * 100;
     }
+
+    document.getElementById("alphaBar").style.width = alphaPct + "%";
+    document.getElementById("omegaBar").style.width = omegaPct + "%";
+
+    document.getElementById("alphaPct").textContent = `α-Alpha (${Math.round(alphaPct)}%)`;
+    document.getElementById("omegaPct").textContent = `ω-Omega (${Math.round(omegaPct)}%)`;
+
+    // Status Banner & Card Glow States
+    let statusTitle = document.getElementById("statusTitle");
+    let statusDesc = document.getElementById("statusDesc");
+    let alphaCard = document.getElementById("alphaCard");
+    let omegaCard = document.getElementById("omegaCard");
+
+    alphaCard.className = "team-card alpha-card";
+    omegaCard.className = "team-card omega-card";
+
+    if (scores.alpha === 0 && scores.omega === 0) {
+        statusTitle.textContent = "🔥 Battle Just Began!";
+        statusDesc.textContent = "The scoreboard is clean. Step up, lock in, and claim the lead!";
+    } else if (scores.alpha === scores.omega) {
+        statusTitle.textContent = "⚖️ It's a Tie Game!";
+        statusDesc.textContent = "Both teams are locked in neck-and-neck intensity!";
+        alphaCard.classList.add("is-tied");
+        omegaCard.classList.add("is-tied");
+    } else if (scores.alpha > scores.omega) {
+        statusTitle.textContent = "👑 α-Alpha is Leading!";
+        statusDesc.textContent = "Team Alpha is currently dominating the scoreboard.";
+        alphaCard.classList.add("is-winning");
+    } else {
+        statusTitle.textContent = "👑 ω-Omega is Leading!";
+        statusDesc.textContent = "Team Omega is currently dominating the scoreboard.";
+        omegaCard.classList.add("is-winning");
+    }
+}
+
+// Log Activity Feed
+function logActivity(message) {
+    const activityLog = document.getElementById("activityLog");
+    const timeString = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    
+    const item = document.createElement("div");
+    item.className = "activity-item";
+    item.innerHTML = `<span class="activity-time">[${timeString}]</span> ${message}`;
+    
+    activityLog.prepend(item);
 }
