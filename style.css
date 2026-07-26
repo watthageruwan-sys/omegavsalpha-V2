@@ -28,38 +28,40 @@ header {
     text-align: center;
     margin-bottom: 25px;
     padding: 20px;
-    background: rgba(15, 23, 42, 0.85);
+    background: rgba(0, 0, 80, 0.85); /* Royal Navy Blue tint */
     backdrop-filter: blur(8px);
-    border: 1px solid rgba(51, 65, 85, 0.6);
+    border: 1px solid rgba(255, 215, 0, 0.4); /* Gold border accent */
     border-radius: 16px;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6);
 }
 
 header h1 {
     font-size: 2.2rem;
     margin-bottom: 8px;
-    background: linear-gradient(90deg, #38bdf8, #818cf8);
+    background: linear-gradient(90deg, #ffd700, #38bdf8); /* Gold to Sky Blue */
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
 .subtitle {
-    color: #94a3b8;
+    color: #ffd700; /* Gold */
     font-size: 1rem;
+    font-weight: 600;
     margin-bottom: 15px;
+    letter-spacing: 0.5px;
 }
 
 .college-name {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    background: rgba(56, 189, 248, 0.15);
-    border: 1px solid rgba(56, 189, 248, 0.3);
+    background: rgba(255, 215, 0, 0.15);
+    border: 1px solid rgba(255, 215, 0, 0.4);
     padding: 6px 16px;
     border-radius: 20px;
     font-size: 0.9rem;
     font-weight: 600;
-    color: #38bdf8;
+    color: #ffd700;
 }
 
 .school-flag {
@@ -90,9 +92,9 @@ header h1 {
 }
 
 .team-card {
-    background: rgba(30, 41, 59, 0.9);
+    background: rgba(0, 0, 60, 0.85); /* Deep Navy card background */
     backdrop-filter: blur(8px);
-    border: 2px solid #334155;
+    border: 2px solid rgba(255, 215, 0, 0.3);
     border-radius: 16px;
     padding: 25px;
     text-align: center;
@@ -103,20 +105,20 @@ header h1 {
 }
 
 .team-card.alpha-card {
-    border-color: rgba(59, 130, 246, 0.5);
+    border-color: rgba(59, 130, 246, 0.6);
 }
 
 .team-card.omega-card {
-    border-color: rgba(239, 68, 68, 0.5);
+    border-color: rgba(255, 215, 0, 0.6);
 }
 
 .team-card.is-winning {
-    box-shadow: 0 0 25px rgba(16, 185, 129, 0.35);
-    border-color: #10b981;
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.4);
+    border-color: #ffd700;
 }
 
 .team-card.is-tied {
-    border-color: #f59e0b;
+    border-color: #38bdf8;
 }
 
 .team-title {
@@ -126,13 +128,14 @@ header h1 {
 }
 
 .alpha-card .team-title { color: #60a5fa; }
-.omega-card .team-title { color: #f87171; }
+.omega-card .team-title { color: #ffd700; } /* Gold for Omega */
 
 .score-display {
     font-size: 3.5rem;
     font-weight: 800;
     margin-bottom: 15px;
     letter-spacing: -1px;
+    color: #f8fafc;
 }
 
 .score-display.pop {
@@ -149,9 +152,9 @@ header h1 {
 }
 
 .btn-point {
-    background: #334155;
-    color: #f8fafc;
-    border: none;
+    background: rgba(255, 215, 0, 0.15);
+    color: #ffd700;
+    border: 1px solid rgba(255, 215, 0, 0.3);
     padding: 6px 12px;
     border-radius: 8px;
     font-size: 0.85rem;
@@ -161,15 +164,15 @@ header h1 {
 }
 
 .btn-point:hover {
-    background: #475569;
+    background: rgba(255, 215, 0, 0.3);
     transform: translateY(-2px);
 }
 
 /* --- STREAMS & ADVANCED BREAKDOWN --- */
 .streams-section {
-    background: rgba(30, 41, 59, 0.9);
+    background: rgba(0, 0, 60, 0.85);
     backdrop-filter: blur(8px);
-    border: 1px solid #334155;
+    border: 1px solid rgba(255, 215, 0, 0.3);
     border-radius: 16px;
     padding: 20px;
     margin-bottom: 25px;
@@ -179,7 +182,7 @@ header h1 {
 .streams-section h2 {
     font-size: 1.1rem;
     margin-bottom: 15px;
-    color: #f1f5f9;
+    color: #ffd700;
 }
 
 .streams-grid {
@@ -190,8 +193,8 @@ header h1 {
 }
 
 .stream-card {
-    background: rgba(15, 23, 42, 0.9);
-    border: 1px solid #334155;
+    background: rgba(0, 0, 40, 0.9);
+    border: 1px solid rgba(51, 65, 85, 0.8);
     border-radius: 10px;
     padding: 12px;
     text-align: center;
@@ -212,14 +215,14 @@ header h1 {
 .stream-score {
     font-size: 1.3rem;
     font-weight: 700;
-    color: #38bdf8;
+    color: #ffd700;
 }
 
 /* --- BATTLE STATUS BANNER --- */
 .battle-status {
-    background: rgba(30, 41, 59, 0.9);
+    background: rgba(0, 0, 60, 0.85);
     backdrop-filter: blur(8px);
-    border: 1px solid #334155;
+    border: 1px solid rgba(255, 215, 0, 0.3);
     border-radius: 16px;
     padding: 20px;
     margin-bottom: 25px;
@@ -229,11 +232,11 @@ header h1 {
 .status-content h3 {
     font-size: 1.1rem;
     margin-bottom: 6px;
-    color: #f1f5f9;
+    color: #ffd700;
 }
 
 .status-content p {
-    color: #94a3b8;
+    color: #cbd5e1;
     font-size: 0.9rem;
     margin-bottom: 15px;
 }
@@ -244,15 +247,17 @@ header h1 {
     font-size: 0.85rem;
     font-weight: 600;
     margin-bottom: 6px;
+    color: #f8fafc;
 }
 
 .progress-bar-container {
     display: flex;
     height: 12px;
-    background: #334155;
+    background: rgba(15, 23, 42, 0.9);
     border-radius: 6px;
     overflow: hidden;
     gap: 2px;
+    border: 1px solid rgba(51, 65, 85, 0.8);
 }
 
 .progress-alpha {
@@ -263,7 +268,7 @@ header h1 {
 }
 
 .progress-omega {
-    background: #ef4444;
+    background: #ffd700; /* Gold */
     height: 100%;
     width: 50%;
     transition: width 0.5s ease;
@@ -271,9 +276,9 @@ header h1 {
 
 /* --- ACTIVITY LOG --- */
 .activity-section {
-    background: rgba(30, 41, 59, 0.9);
+    background: rgba(0, 0, 60, 0.85);
     backdrop-filter: blur(8px);
-    border: 1px solid #334155;
+    border: 1px solid rgba(255, 215, 0, 0.3);
     border-radius: 16px;
     padding: 20px;
     margin-bottom: 25px;
@@ -283,12 +288,12 @@ header h1 {
 .activity-section h2 {
     font-size: 1.1rem;
     margin-bottom: 12px;
-    color: #f1f5f9;
+    color: #ffd700;
 }
 
 .activity-log {
-    background: rgba(15, 23, 42, 0.9);
-    border: 1px solid #334155;
+    background: rgba(0, 0, 40, 0.9);
+    border: 1px solid rgba(51, 65, 85, 0.8);
     border-radius: 10px;
     height: 120px;
     overflow-y: auto;
@@ -306,16 +311,16 @@ header h1 {
 }
 
 .activity-time {
-    color: #64748b;
+    color: #ffd700;
     font-family: monospace;
     margin-right: 6px;
 }
 
 /* --- CONTROLS / ADMIN PANEL --- */
 .controls-section {
-    background: rgba(30, 41, 59, 0.9);
+    background: rgba(0, 0, 60, 0.85);
     backdrop-filter: blur(8px);
-    border: 1px solid #334155;
+    border: 1px solid rgba(255, 215, 0, 0.3);
     border-radius: 16px;
     padding: 20px;
     margin-bottom: 25px;
@@ -332,29 +337,29 @@ header h1 {
 
 .controls-header h2 {
     font-size: 1.1rem;
-    color: #f1f5f9;
+    color: #ffd700;
 }
 
 .lock-badge {
     font-size: 0.8rem;
-    background: rgba(239, 68, 68, 0.15);
+    background: rgba(239, 68, 68, 0.2);
     color: #ef4444;
-    border: 1px solid rgba(239, 68, 68, 0.3);
+    border: 1px solid rgba(239, 68, 68, 0.4);
     padding: 4px 10px;
     border-radius: 20px;
     font-weight: 600;
 }
 
 .controls-section.unlocked .lock-badge {
-    background: rgba(16, 185, 129, 0.15);
+    background: rgba(16, 185, 129, 0.2);
     color: #10b981;
-    border-color: rgba(16, 185, 129, 0.3);
+    border-color: rgba(16, 185, 129, 0.4);
 }
 
 .admin-login-btn {
-    background: #334155;
-    color: #f8fafc;
-    border: none;
+    background: rgba(255, 215, 0, 0.15);
+    color: #ffd700;
+    border: 1px solid rgba(255, 215, 0, 0.3);
     padding: 6px 14px;
     border-radius: 8px;
     font-size: 0.85rem;
@@ -364,11 +369,13 @@ header h1 {
 }
 
 .admin-login-btn:hover {
-    background: #475569;
+    background: rgba(255, 215, 0, 0.3);
 }
 
 .admin-login-btn.unlocked {
     background: #059669;
+    color: white;
+    border-color: #059669;
 }
 
 .controls-body {
@@ -388,7 +395,7 @@ header h1 {
 .control-group label {
     display: block;
     font-size: 0.85rem;
-    color: #94a3b8;
+    color: #cbd5e1;
     margin-bottom: 6px;
 }
 
@@ -400,9 +407,9 @@ header h1 {
 
 select {
     width: 100%;
-    background: #0f172a;
+    background: rgba(0, 0, 40, 0.9);
     color: #f8fafc;
-    border: 1px solid #334155;
+    border: 1px solid rgba(255, 215, 0, 0.3);
     padding: 10px;
     border-radius: 8px;
     font-size: 0.9rem;
@@ -410,13 +417,13 @@ select {
 }
 
 select:focus {
-    border-color: #38bdf8;
+    border-color: #ffd700;
 }
 
 .btn-action {
-    background: #2563eb;
-    color: white;
-    border: none;
+    background: #000080; /* Navy Blue */
+    color: #ffd700; /* Gold Text */
+    border: 1px solid rgba(255, 215, 0, 0.5);
     padding: 10px;
     border-radius: 8px;
     font-weight: 600;
@@ -426,13 +433,13 @@ select:focus {
 }
 
 .btn-action:hover {
-    background: #1d4ed8;
+    background: #0000a0;
 }
 
 .btn-danger {
-    background: #dc2626;
-    color: white;
-    border: none;
+    background: #7f1d1d;
+    color: #f8fafc;
+    border: 1px solid #991b1b;
     padding: 10px;
     border-radius: 8px;
     font-weight: 600;
@@ -443,7 +450,7 @@ select:focus {
 }
 
 .btn-danger:hover {
-    background: #b91c1c;
+    background: #991b1b;
 }
 
 /* --- FOOTER --- */
@@ -452,9 +459,10 @@ footer {
     color: #cbd5e1;
     font-size: 0.8rem;
     margin-bottom: 20px;
-    background: rgba(15, 23, 42, 0.8);
+    background: rgba(0, 0, 60, 0.85);
     padding: 10px;
     border-radius: 8px;
+    border: 1px solid rgba(255, 215, 0, 0.2);
 }
 
 /* --- LIVE VIEWER BADGE STYLES --- */
