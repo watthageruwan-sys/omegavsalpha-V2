@@ -7,108 +7,135 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <!-- Admin Toggle Button -->
-        <div class="admin-top">
-            <button onclick="toggleAdmin()" id="adminBtn">🔒 Admin</button>
-        </div>
 
+    <div class="container">
+        <!-- HEADER -->
         <header>
-            <span class="battle-tag">BATTLE ARENA</span>
+            <div class="battle-tag">Battle Arena</div>
             <h1>ALPHA vs OMEGA</h1>
-            <p class="college-name">
-                <span class="school-flag"><span class="navy-half"></span><span class="gold-half"></span></span>
+            <div class="college-name">
+                <div class="school-flag">
+                    <div class="navy-half"></div>
+                    <div class="gold-half"></div>
+                </div>
                 Kuruduwatta Royal College
-            </p>
+            </div>
         </header>
 
-        <!-- Scoreboard Cards -->
+        <!-- SCOREBOARD -->
         <div class="scoreboard">
-            <div class="team-card alpha-card">
-                <h2>TEAM ALPHA</h2>
+            <div class="team-card alpha-card" id="alphaCard">
+                <h2>Team Alpha</h2>
                 <div class="score-display" id="alphaScore">0</div>
-                <span class="sub-text">Total Points</span>
+                <div class="sub-text">Total Points</div>
             </div>
 
-            <div class="team-card omega-card">
-                <h2>TEAM OMEGA</h2>
+            <div class="team-card omega-card" id="omegaCard">
+                <h2>Team Omega</h2>
                 <div class="score-display" id="omegaScore">0</div>
-                <span class="sub-text">Total Points</span>
+                <div class="sub-text">Total Points</div>
             </div>
         </div>
 
-        <!-- Status Banner -->
-        <div class="status-banner">
-            <h3 id="statusTitle">🔥 BATTLE JUST BEGAN!</h3>
-            <p id="statusMsg">The scoreboard is clean. Step up, lock in, and claim the lead!</p>
+        <!-- STATUS BANNER -->
+        <div class="status-banner" id="statusBanner">
+            <h3 id="statusTitle">🔥 Battle Just Began!</h3>
+            <p id="statusDesc">The scoreboard is clean. Step up, lock in, and claim the lead!</p>
         </div>
 
-        <!-- Progress Percentage Bar -->
+        <!-- PROGRESS BAR -->
         <div class="progress-container">
             <div class="progress-labels">
-                <span id="alphaPct">Alpha (α) (50%)</span>
-                <span id="omegaPct">Omega (Ω) (50%)</span>
+                <span id="alphaPct">Alpha (50%)</span>
+                <span id="omegaPct">Omega (50%)</span>
             </div>
             <div class="progress-bar-bg">
-                <div id="alphaBar" class="progress-fill alpha-fill" style="width: 50%;"></div>
-                <div id="omegaBar" class="progress-fill omega-fill" style="width: 50%;"></div>
+                <div class="progress-fill alpha-fill" id="alphaBar" style="width: 50%;"></div>
+                <div class="progress-fill omega-fill" id="omegaBar" style="width: 50%;"></div>
             </div>
         </div>
 
-        <!-- Admin Point Controller Section -->
-        <section id="controlsSection" class="locked">
-            <div class="section-header">
-                <h3>⚡ Admin Point Controller</h3>
-                <span id="lockNotice" class="lock-badge">Locked</span>
+        <!-- ADMIN PANEL -->
+        <div class="admin-panel">
+            <div class="admin-top">
+                <button id="adminBtn">Admin Login</button>
             </div>
 
-            <!-- Controller Items -->
-            <div class="control-item">
-                <div class="control-info">
-                    <h4>Top Average Score</h4>
-                    <p>+10 Points</p>
+            <div id="controlsSection" class="controls-section locked">
+                <div class="section-header">
+                    <h3>Admin Point Controller</h3>
+                    <span class="lock-badge" id="lockBadge">Locked</span>
                 </div>
-                <div class="control-buttons">
-                    <button onclick="changePoints('alpha', 10)">+α</button>
-                    <button onclick="changePoints('alpha', -10)">-α</button>
-                    <button onclick="changePoints('omega', 10)">+Ω</button>
-                    <button onclick="changePoints('omega', -10)">-Ω</button>
-                </div>
-            </div>
 
-            <div class="control-item">
-                <div class="control-info">
-                    <h4>Most Improved</h4>
-                    <p>+5 Points</p>
+                <!-- Top Average Score -->
+                <div class="control-item">
+                    <div class="control-info">
+                        <h4>Top Average Score</h4>
+                        <p>+10 Points</p>
+                    </div>
+                    <div class="control-buttons">
+                        <button onclick="updateScore('alpha', 10)">+ Alpha</button>
+                        <button onclick="updateScore('alpha', -10)">-</button>
+                        <button onclick="updateScore('omega', 10)">+ Omega</button>
+                        <button onclick="updateScore('omega', -10)">-</button>
+                    </div>
                 </div>
-                <div class="control-buttons">
-                    <button onclick="changePoints('alpha', 5)">+α</button>
-                    <button onclick="changePoints('alpha', -5)">-α</button>
-                    <button onclick="changePoints('omega', 5)">+Ω</button>
-                    <button onclick="changePoints('omega', -5)">-Ω</button>
-                </div>
-            </div>
 
-            <div class="control-item">
-                <div class="control-info">
-                    <h4>Full Attendance</h4>
-                    <p>+5 Points</p>
+                <!-- Most Improved -->
+                <div class="control-item">
+                    <div class="control-info">
+                        <h4>Most Improved</h4>
+                        <p>+5 Points</p>
+                    </div>
+                    <div class="control-buttons">
+                        <button onclick="updateScore('alpha', 5)">+ Alpha</button>
+                        <button onclick="updateScore('alpha', -5)">-</button>
+                        <button onclick="updateScore('omega', 5)">+ Omega</button>
+                        <button onclick="updateScore('omega', -5)">-</button>
+                    </div>
                 </div>
-                <div class="control-buttons">
-                    <button onclick="changePoints('alpha', 5)">+α</button>
-                    <button onclick="changePoints('alpha', -5)">-α</button>
-                    <button onclick="changePoints('omega', 5)">+Ω</button>
-                    <button onclick="changePoints('omega', -5)">-Ω</button>
-                </div>
-            </div>
 
-            <!-- End of Month Reset Button -->
-            <div class="reset-container" style="margin-top: 25px;">
-                <button onclick="resetScores()">
-                    ⚠️ Reset All Scores (New Month)
-                </button>
+                <!-- Full Attendance -->
+                <div class="control-item">
+                    <div class="control-info">
+                        <h4>Full Attendance</h4>
+                        <p>+5 Points</p>
+                    </div>
+                    <div class="control-buttons">
+                        <button onclick="updateScore('alpha', 5)">+ Alpha</button>
+                        <button onclick="updateScore('alpha', -5)">-</button>
+                        <button onclick="updateScore('omega', 5)">+ Omega</button>
+                        <button onclick="updateScore('omega', -5)">-</button>
+                    </div>
+                </div>
+
+                <!-- Shared Resources -->
+                <div class="control-item">
+                    <div class="control-info">
+                        <h4>Shared Resources</h4>
+                        <p>+3 Points</p>
+                    </div>
+                    <div class="control-buttons">
+                        <button onclick="updateScore('alpha', 3)">+ Alpha</button>
+                        <button onclick="updateScore('alpha', -3)">-</button>
+                        <button onclick="updateScore('omega', 3)">+ Omega</button>
+                        <button onclick="updateScore('omega', -3)">-</button>
+                    </div>
+                </div>
+
+                <!-- Reset Button -->
+                <div class="control-item reset-container" style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px;">
+                    <div class="control-info">
+                        <h4>Reset Board</h4>
+                        <p>Clear all points back to zero</p>
+                    </div>
+                    <div class="control-buttons">
+                        <button onclick="resetScores()" style="background: #ef4444; border: none; color: white;">Reset All</button>
+                    </div>
+                </div>
+
             </div>
-        </section>
+        </div>
     </div>
 
     <script src="script.js"></script>
