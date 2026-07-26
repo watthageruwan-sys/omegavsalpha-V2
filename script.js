@@ -1,6 +1,14 @@
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbybAtE2AllK3WQ3S2NHakdilPUBA4xPtKRkKPIjRLSbNRiV26rYdvTa5JsSy3srNaBzHg/exec";
 
 let scores = { alpha: 0, omega: 0 };
+let streamScores = {
+    "Physical Science": 0,
+    "Bio Science": 0,
+    "Commerce": 0,
+    "Technology": 0,
+    "Arts": 0
+};
+
 let lastAlpha = 0;
 let lastOmega = 0;
 
@@ -80,6 +88,12 @@ function awardCustomStreamScore(team) {
     let points = parseInt(achievementEl.value) || 0;
     let achievementName = achievementEl.options[achievementEl.selectedIndex].text.split(' (')[0];
     
+    // Add points to the specific stream breakdown tracker
+    if (streamScores[chosenStream] !== undefined) {
+        streamScores[chosenStream] += points;
+        if (streamScores[chosenStream] < 0) streamScores[chosenStream] = 0;
+    }
+
     let reason = `[${chosenStream}] ${achievementName}`;
     updateScore(team, points, reason);
 }
@@ -117,6 +131,8 @@ async function resetScores() {
 
     scores.alpha = 0;
     scores.omega = 0;
+    Object.keys(streamScores).forEach(k => streamScores[k] = 0);
+
     updateUI();
     logActivity("Scoreboard reset to zero.");
 
@@ -139,7 +155,6 @@ function logActivity(message) {
     
     logEl.prepend(item);
 
-    // Keep log clean by capping items
     if (logEl.children.length > 15) {
         logEl.removeChild(logEl.lastChild);
     }
@@ -150,6 +165,15 @@ function updateUI() {
     let omegaScoreEl = document.getElementById('omegaScore');
     if (alphaScoreEl) alphaScoreEl.innerText = scores.alpha;
     if (omegaScoreEl) omegaScoreEl.innerText = scores.omega;
+
+    // Update Stream Breakdown UI cards
+    for (let streamName in streamScores) {
+        let safeId = streamName.replace(/\s+/g, '-');
+        let el = document.getElementById(`stream-${safeId}`);
+        if (el) {
+            el.innerText = `${streamScores[streamName]} pts`;
+        }
+    }
 
     let alphaCard = document.querySelector('.alpha-card');
     let omegaCard = document.querySelector('.omega-card');
