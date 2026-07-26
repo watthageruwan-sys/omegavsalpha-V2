@@ -3,120 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ALPHA vs OMEGA | Battle Arena</title>
-
-
-        <link rel="stylesheet" href="style.css">
+    <title>ALPHA vs OMEGA - Battle Arena</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="container">
+        <!-- Admin Toggle Button -->
+        <div class="admin-top">
+            <button onclick="toggleAdmin()" id="adminBtn">🔒 Admin</button>
+        </div>
 
-<div class="arena-container">
-    <div class="header">
-        <button class="admin-toggle-btn" onclick="toggleAdmin()">🔒 Admin</button>
-        <div style="font-size: 0.7rem; color: var(--accent-gold); font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase;">Battle Arena</div>
-        <h1>ALPHA vs OMEGA</h1>
-        <div class="sub-title">Kuruduwatta Royal College</div>
+        <header>
+            <span class="battle-tag">BATTLE ARENA</span>
+            <h1>ALPHA vs OMEGA</h1>
+            <p class="college-name">Kuruduwatta Royal College</p>
+        </header>
+
+        <!-- Scoreboard Cards -->
+        <div class="scoreboard">
+            <div class="team-card alpha-card">
+                <h2>TEAM ALPHA</h2>
+                <div class="score-display" id="alphaScore">0</div>
+                <span class="sub-text">Total Points</span>
+            </div>
+
+            <div class="team-card omega-card">
+                <h2>TEAM OMEGA</h2>
+                <div class="score-display" id="omegaScore">0</div>
+                <span class="sub-text">Total Points</span>
+            </div>
+        </div>
+
+        <!-- Status Banner -->
+        <div class="status-banner">
+            <h3 id="statusTitle">🔥 BATTLE JUST BEGAN!</h3>
+            <p id="statusMsg">The scoreboard is clean. Step up, lock in, and claim the lead!</p>
+        </div>
+
+        <!-- Progress Percentage Bar -->
+        <div class="progress-container">
+            <div class="progress-labels">
+                <span id="alphaPct">Alpha (α) (50%)</span>
+                <span id="omegaPct">Omega (Ω) (50%)</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div id="alphaBar" class="progress-fill alpha-fill" style="width: 50%;"></div>
+                <div id="omegaBar" class="progress-fill omega-fill" style="width: 50%;"></div>
+            </div>
+        </div>
+
+        <!-- Admin Point Controller Section -->
+        <section id="controlsSection" class="locked">
+            <div class="section-header">
+                <h3>⚡ Admin Point Controller</h3>
+                <span id="lockNotice" class="lock-badge">Locked</span>
+            </div>
+
+            <!-- Controller Items -->
+            <div class="control-item">
+                <div class="control-info">
+                    <h4>Top Average Score</h4>
+                    <p>+10 Points</p>
+                </div>
+                <div class="control-buttons">
+                    <button onclick="changePoints('alpha', 10)">+α</button>
+                    <button onclick="changePoints('alpha', -10)">-α</button>
+                    <button onclick="changePoints('omega', 10)">+Ω</button>
+                    <button onclick="changePoints('omega', -10)">-Ω</button>
+                </div>
+            </div>
+
+            <div class="control-item">
+                <div class="control-info">
+                    <h4>Most Improved</h4>
+                    <p>+5 Points</p>
+                </div>
+                <div class="control-buttons">
+                    <button onclick="changePoints('alpha', 5)">+α</button>
+                    <button onclick="changePoints('alpha', -5)">-α</button>
+                    <button onclick="changePoints('omega', 5)">+Ω</button>
+                    <button onclick="changePoints('omega', -5)">-Ω</button>
+                </div>
+            </div>
+
+            <div class="control-item">
+                <div class="control-info">
+                    <h4>Full Attendance</h4>
+                    <p>+5 Points</p>
+                </div>
+                <div class="control-buttons">
+                    <button onclick="changePoints('alpha', 5)">+α</button>
+                    <button onclick="changePoints('alpha', -5)">-α</button>
+                    <button onclick="changePoints('omega', 5)">+Ω</button>
+                    <button onclick="changePoints('omega', -5)">-Ω</button>
+                </div>
+            </div>
+
+            <!-- End of Month Reset Button -->
+            <div class="reset-container" style="margin-top: 25px; text-align: center;">
+                <button onclick="resetScores()" style="background-color: #ff4757; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; box-shadow: 0 4px 12px rgba(255, 71, 87, 0.3);">
+                    ⚠️ Reset All Scores (New Month)
+                </button>
+            </div>
+        </section>
     </div>
-
-    <div class="battle-grid">
-        <div class="team-box alpha">
-            <h3>Team Alpha</h3>
-            <div class="score-num" id="alphaScore">0</div>
-            <div class="team-label">Total Points</div>
-        </div>
-        <div class="team-box omega">
-            <h3>Team Omega</h3>
-            <div class="score-num" id="omegaScore">0</div>
-            <div class="team-label">Total Points</div>
-        </div>
-    </div>
-
-    <div class="status-banner" id="statusBanner">
-        <div class="status-title" id="statusTitle">🔥 Scoreboard Active</div>
-        <div class="status-msg" id="statusMsg">Scores save locally and persist perfectly across refreshes.</div>
-    </div>
-
-    <div class="progress-section">
-        <div class="progress-labels">
-            <span id="alphaPct">Alpha (50%)</span>
-            <span id="omegaPct">Omega (50%)</span>
-        </div>
-        <div class="bar-container">
-            <div class="bar-alpha" id="alphaBar"></div>
-            <div class="bar-omega" id="omegaBar"></div>
-        </div>
-    </div>
-
-    <div class="lock-notice" id="lockNotice">
-        👁️ Public View-Only Mode. Only authorized group leaders can edit scores.
-    </div>
-
-    <div class="controls-section" id="controlsSection">
-        <div class="controls-title">
-            <span>⚡ Admin Point Controller</span>
-            <span style="color: #10b981; font-size: 0.75rem; font-weight: 600;">● Unlocked</span>
-        </div>
-
-        <div class="category-row">
-            <div>
-                <div class="cat-name">Top Average Score</div>
-                <div class="cat-val">+10 Points</div>
-            </div>
-            <div class="btn-group">
-                <button onclick="changePoints('alpha', 10)" style="color: #2563eb; font-weight: 700;">+A</button>
-                <button onclick="changePoints('alpha', -10)">-A</button>
-                <button onclick="changePoints('omega', 10)" style="color: #0d9488; font-weight: 700;">+Ω</button>
-                <button onclick="changePoints('omega', -10)">-Ω</button>
-            </div>
-        </div>
-
-        <div class="category-row">
-            <div>
-                <div class="cat-name">Most Improved</div>
-                <div class="cat-val">+5 Points</div>
-            </div>
-            <div class="btn-group">
-                <button onclick="changePoints('alpha', 5)" style="color: #2563eb; font-weight: 700;">+A</button>
-                <button onclick="changePoints('alpha', -5)">-A</button>
-                <button onclick="changePoints('omega', 5)" style="color: #0d9488; font-weight: 700;">+Ω</button>
-                <button onclick="changePoints('omega', -5)">-Ω</button>
-            </div>
-        </div>
-
-        <div class="category-row">
-            <div>
-                <div class="cat-name">Full Attendance</div>
-                <div class="cat-val">+5 Points</div>
-            </div>
-            <div class="btn-group">
-                <button onclick="changePoints('alpha', 5)" style="color: #2563eb; font-weight: 700;">+A</button>
-                <button onclick="changePoints('alpha', -5)">-A</button>
-                <button onclick="changePoints('omega', 5)" style="color: #0d9488; font-weight: 700;">+Ω</button>
-                <button onclick="changePoints('omega', -5)">-Ω</button>
-            </div>
-        </div>
-
-        <div class="category-row">
-            <div>
-                <div class="cat-name">Shared Resources</div>
-                <div class="cat-val">+3 Points</div>
-            </div>
-            <div class="btn-group">
-                <button onclick="changePoints('alpha', 3)" style="color: #2563eb; font-weight: 700;">+A</button>
-                <button onclick="changePoints('alpha', -3)">-A</button>
-                <button onclick="changePoints('omega', 3)" style="color: #0d9488; font-weight: 700;">+Ω</button>
-                <button onclick="changePoints('omega', -3)">-Ω</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="footer">
-        Stay sharp, stay ahead—let's claim the crown! 👑
-    </div>
-</div>
 
     <script src="script.js"></script>
-
-
 </body>
 </html>
