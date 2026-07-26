@@ -3,11 +3,10 @@
     --color-navy: #002147;
     --color-gold: #FDC500;
     --color-bg-body: #0a0c13;
-    --color-bg-card: rgba(10, 14, 23, 0.45);
     --color-text-main: #ffffff;
     --color-text-muted: #cbd5e0;
-    --color-team-alpha: #3b82f6; 
-    --color-team-omega: #eab308; 
+    --color-team-alpha: #3b82f6; /* Bright, punchy Alpha Blue */
+    --color-team-omega: #FDC500; /* True Omega Gold */
     --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
@@ -20,10 +19,10 @@
 }
 
 body {
-    /* CENTERED ON THE YELLOW MIDDLE, BLUES TOP AND BOTTOM */
-    background: linear-gradient(rgba(10, 12, 19, 0.25), rgba(10, 12, 19, 0.35)), url('download (4).jfif');
-    background-size: cover;
-    background-position: center 50%; /* Locks the image framing directly on the yellow center stripe */
+    /* BACKGROUND REMAINS THE SAME - PERFECT FOR PHONE & PC */
+    background: url('download (4).jfif');
+    background-size: 100vw 100vh; 
+    background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
     
@@ -38,13 +37,13 @@ body {
 .container {
     width: 100%;
     max-width: 640px;
-    background: rgba(10, 14, 23, 0.55);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    /* SOLID BACKGROUND TO MAKE IT STAND OUT */
+    background: #0f1219; 
     padding: 40px;
     border-radius: 24px;
     border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 0 60px -5px rgba(0, 33, 71, 0.4);
+    /* HEAVY DROPSHADOW TO LIFT IT OFF THE BACKGROUND PICTURE */
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 0, 0, 0.6);
     position: relative;
     overflow: hidden;
 }
@@ -55,7 +54,7 @@ header {
 }
 
 .battle-tag {
-    background: rgba(253, 197, 0, 0.2);
+    background: rgba(253, 197, 0, 0.15);
     color: var(--color-gold);
     padding: 6px 16px;
     border-radius: 20px;
@@ -84,7 +83,7 @@ header h1 {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.05);
     padding: 6px 16px;
     border-radius: 20px;
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -118,30 +117,30 @@ header h1 {
 
 .team-card {
     flex: 1;
-    background: rgba(255, 255, 255, 0.04);
+    /* SOLID CARD BACKGROUNDS */
+    background: #181d29;
     padding: 30px 25px;
     border-radius: 16px;
     text-align: center;
     position: relative;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.05);
     transition: all 0.4s ease;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
 }
 
-.alpha-card { border-top: 5px solid var(--color-navy); }
-.omega-card { border-top: 5px solid var(--color-navy); }
+/* TRUE TEAM COLORS ON THE CARDS */
+.alpha-card { border-top: 5px solid var(--color-team-alpha); }
+.omega-card { border-top: 5px solid var(--color-team-omega); }
 
 .alpha-card.is-winning {
-    border-top-color: var(--color-team-alpha);
-    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3), 0 0 40px -5px rgba(59, 130, 246, 0.2);
-    background: rgba(59, 130, 246, 0.08);
+    box-shadow: 0 4px 25px rgba(59, 130, 246, 0.4), 0 0 40px -5px rgba(59, 130, 246, 0.2);
+    background: #1a2538; /* Slight blue tint when winning */
 }
 
 .omega-card.is-winning {
-    border-top-color: var(--color-gold);
-    box-shadow: 0 4px 20px rgba(253, 197, 0, 0.35), 0 0 40px -5px rgba(253, 197, 0, 0.25);
-    background: rgba(253, 197, 0, 0.08);
+    box-shadow: 0 4px 25px rgba(253, 197, 0, 0.4), 0 0 40px -5px rgba(253, 197, 0, 0.2);
+    background: #252216; /* Slight gold tint when winning */
 }
 
 .team-card h2 {
@@ -163,7 +162,7 @@ header h1 {
 
 .score-display.pop {
     transform: scale(1.15);
-    color: var(--color-gold);
+    color: var(--color-text-main);
 }
 
 .sub-text {
@@ -174,8 +173,8 @@ header h1 {
 
 /* --- STATUS BANNER & PROGRESS --- */
 .status-banner {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: #181d29; /* Solid */
+    border: 1px solid rgba(255, 255, 255, 0.05);
     padding: 18px;
     border-radius: 16px;
     text-align: center;
@@ -199,22 +198,23 @@ header h1 {
 .progress-bar-bg {
     display: flex;
     height: 12px;
-    background: rgba(255, 255, 255, 0.08);
+    background: #181d29;
     border-radius: 6px;
     overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .progress-fill { height: 100%; transition: width 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
-.alpha-fill { background: var(--color-navy); box-shadow: 0 0 10px var(--color-navy); }
-.omega-fill { background: var(--color-gold); box-shadow: 0 0 10px var(--color-gold); }
+.alpha-fill { background: var(--color-team-alpha); box-shadow: 0 0 10px var(--color-team-alpha); }
+.omega-fill { background: var(--color-team-omega); box-shadow: 0 0 10px var(--color-team-omega); }
 
 /* --- ADMIN PANEL --- */
 .admin-top { display: flex; justify-content: flex-end; margin-bottom: 20px; }
 
 #adminBtn {
-    background: rgba(255, 255, 255, 0.06);
+    background: #181d29;
     color: var(--color-text-muted);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     padding: 8px 18px;
     border-radius: 10px;
     cursor: pointer;
@@ -231,10 +231,10 @@ header h1 {
 }
 
 #controlsSection {
-    background: rgba(10, 14, 23, 0.7);
+    background: #0b0d14; /* Extra dark solid admin panel */
     padding: 25px;
     border-radius: 16px;
-    border: 1px solid rgba(253, 197, 0, 0.25);
+    border: 1px solid rgba(253, 197, 0, 0.3);
     transition: all 0.4s ease;
 }
 
@@ -247,11 +247,11 @@ header h1 {
     align-items: center;
     margin-bottom: 20px;
     padding-bottom: 10px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .lock-badge {
-    background: rgba(253, 197, 0, 0.2);
+    background: rgba(253, 197, 0, 0.15);
     color: var(--color-gold);
     font-size: 10px;
     padding: 4px 10px;
@@ -265,7 +265,7 @@ header h1 {
     justify-content: space-between;
     align-items: center;
     padding: 12px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
 }
 
 .control-item:last-of-type { border-bottom: none; }
@@ -275,9 +275,9 @@ header h1 {
 .control-buttons { display: flex; gap: 8px; }
 
 .control-buttons button {
-    background: rgba(255, 255, 255, 0.06);
+    background: #181d29;
     color: var(--color-text-main);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     padding: 8px 12px;
     border-radius: 8px;
     cursor: pointer;
@@ -288,7 +288,7 @@ header h1 {
 
 .control-buttons button:hover {
     background: var(--color-gold);
-    color: var(--color-navy);
+    color: #0b0d14; /* Deep dark text on hover */
     border-color: var(--color-gold);
 }
 
