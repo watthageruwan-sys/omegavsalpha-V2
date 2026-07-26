@@ -3,9 +3,9 @@
     --color-navy: #002147;
     --color-gold: #FDC500;
     --color-bg-body: #0a0c13;
-    --color-bg-card: rgba(255, 255, 255, 0.03);
+    --color-bg-card: rgba(24, 27, 40, 0.75); /* Slightly more opaque glass to keep text readable */
     --color-text-main: #ffffff;
-    --color-text-muted: #a0aec0;
+    --color-text-muted: #cbd5e0;
     --color-team-alpha: #3b82f6; 
     --color-team-omega: #eab308; 
     --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -20,8 +20,8 @@
 }
 
 body {
-    /* CUSTOM BACKGROUND IMAGE WITH DARK OVERLAY */
-    background: linear-gradient(rgba(10, 12, 19, 0.85), rgba(10, 12, 19, 0.85)), url('download (4).jfif');
+    /* LIGHTER OVERLAY SO YOUR BACKGROUND TEXTURE STANDS OUT */
+    background: linear-gradient(rgba(10, 12, 19, 0.4), rgba(10, 12, 19, 0.5)), url('download (4).jfif');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -38,13 +38,13 @@ body {
 .container {
     width: 100%;
     max-width: 640px;
-    background: rgba(24, 27, 40, 0.6);
+    background: rgba(18, 21, 31, 0.85); /* Rich frosted glass background */
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     padding: 40px;
     border-radius: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5), 0 0 60px -5px var(--color-navy);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 60px -5px var(--color-navy);
     position: relative;
     overflow: hidden;
 }
@@ -55,7 +55,7 @@ header {
 }
 
 .battle-tag {
-    background: rgba(253, 197, 0, 0.1);
+    background: rgba(253, 197, 0, 0.15);
     color: var(--color-gold);
     padding: 6px 16px;
     border-radius: 20px;
@@ -63,14 +63,14 @@ header {
     font-weight: bold;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    border: 1px solid rgba(253, 197, 0, 0.3);
+    border: 1px solid rgba(253, 197, 0, 0.4);
 }
 
 header h1 {
     font-size: 36px;
     font-weight: 800;
     margin: 15px 0 8px;
-    background: linear-gradient(180deg, #ffffff 0%, #a0aec0 100%);
+    background: linear-gradient(180deg, #ffffff 0%, #cbd5e0 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -84,10 +84,10 @@ header h1 {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(255, 255, 255, 0.05);
     padding: 6px 16px;
     border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .school-flag {
@@ -118,13 +118,13 @@ header h1 {
 
 .team-card {
     flex: 1;
-    background: var(--color-bg-card);
+    background: rgba(255, 255, 255, 0.03);
     padding: 30px 25px;
     border-radius: 16px;
     text-align: center;
     position: relative;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     transition: all 0.4s ease;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
@@ -134,14 +134,14 @@ header h1 {
 
 .alpha-card.is-winning {
     border-top-color: var(--color-team-alpha);
-    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.25), 0 0 40px -5px rgba(59, 130, 246, 0.15);
-    background: rgba(59, 130, 246, 0.04);
+    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3), 0 0 40px -5px rgba(59, 130, 246, 0.2);
+    background: rgba(59, 130, 246, 0.06);
 }
 
 .omega-card.is-winning {
     border-top-color: var(--color-gold);
-    box-shadow: 0 4px 20px rgba(253, 197, 0, 0.3), 0 0 40px -5px rgba(253, 197, 0, 0.2);
-    background: rgba(253, 197, 0, 0.04);
+    box-shadow: 0 4px 20px rgba(253, 197, 0, 0.35), 0 0 40px -5px rgba(253, 197, 0, 0.25);
+    background: rgba(253, 197, 0, 0.06);
 }
 
 .team-card h2 {
@@ -174,8 +174,8 @@ header h1 {
 
 /* --- STATUS BANNER & PROGRESS --- */
 .status-banner {
-    background: var(--color-bg-card);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     padding: 18px;
     border-radius: 16px;
     text-align: center;
@@ -199,7 +199,7 @@ header h1 {
 .progress-bar-bg {
     display: flex;
     height: 12px;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.08);
     border-radius: 6px;
     overflow: hidden;
 }
@@ -212,9 +212,9 @@ header h1 {
 .admin-top { display: flex; justify-content: flex-end; margin-bottom: 20px; }
 
 #adminBtn {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.06);
     color: var(--color-text-muted);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     padding: 8px 18px;
     border-radius: 10px;
     cursor: pointer;
@@ -231,10 +231,10 @@ header h1 {
 }
 
 #controlsSection {
-    background: rgba(24, 27, 40, 0.85);
+    background: rgba(18, 21, 31, 0.9);
     padding: 25px;
     border-radius: 16px;
-    border: 1px solid rgba(253, 197, 0, 0.1);
+    border: 1px solid rgba(253, 197, 0, 0.2);
     transition: all 0.4s ease;
 }
 
@@ -247,11 +247,11 @@ header h1 {
     align-items: center;
     margin-bottom: 20px;
     padding-bottom: 10px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .lock-badge {
-    background: rgba(253, 197, 0, 0.1);
+    background: rgba(253, 197, 0, 0.15);
     color: var(--color-gold);
     font-size: 10px;
     padding: 4px 10px;
@@ -265,7 +265,7 @@ header h1 {
     justify-content: space-between;
     align-items: center;
     padding: 12px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .control-item:last-of-type { border-bottom: none; }
@@ -275,9 +275,9 @@ header h1 {
 .control-buttons { display: flex; gap: 8px; }
 
 .control-buttons button {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.06);
     color: var(--color-text-main);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     padding: 8px 12px;
     border-radius: 8px;
     cursor: pointer;
