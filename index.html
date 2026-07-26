@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ALPHA vs OMEGA - Battle Arena</title>
+    <title>α-ALPHA vs ω-OMEGA - Battle Arena</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,7 +12,7 @@
         <!-- HEADER -->
         <header>
             <div class="battle-tag">Battle Arena</div>
-            <h1>ALPHA vs OMEGA</h1>
+            <h1>α-ALPHA vs ω-OMEGA</h1>
             <div class="college-name">
                 <div class="school-flag">
                     <div class="navy-half"></div>
@@ -25,19 +25,19 @@
         <!-- SCOREBOARD -->
         <div class="scoreboard">
             <div class="team-card alpha-card" id="alphaCard">
-                <h2>Team Alpha</h2>
+                <h2>α - Team Alpha</h2>
                 <div class="score-display" id="alphaScore">0</div>
                 <div class="sub-text">Total Points</div>
             </div>
 
             <div class="team-card omega-card" id="omegaCard">
-                <h2>Team Omega</h2>
+                <h2>ω - Team Omega</h2>
                 <div class="score-display" id="omegaScore">0</div>
                 <div class="sub-text">Total Points</div>
             </div>
         </div>
 
-        <!-- PUBLIC STREAM BREAKDOWN SECTION (ONE SCORE CARD PER STREAM) -->
+        <!-- PUBLIC STREAM SCORE BREAKDOWN SECTION -->
         <div class="stream-breakdown-container">
             <div class="stream-breakdown-header">
                 <span>📚 Stream Score Breakdown (Public)</span>
@@ -91,8 +91,8 @@
         <!-- PROGRESS BAR -->
         <div class="progress-container">
             <div class="progress-labels">
-                <span id="alphaPct">Alpha (50%)</span>
-                <span id="omegaPct">Omega (50%)</span>
+                <span id="alphaPct">α-Alpha (50%)</span>
+                <span id="omegaPct">ω-Omega (50%)</span>
             </div>
             <div class="progress-bar-bg">
                 <div class="progress-fill alpha-fill" id="alphaBar" style="width: 50%;"></div>
@@ -119,9 +119,9 @@
                         <p>+10 Points</p>
                     </div>
                     <div class="control-buttons">
-                        <button onclick="updateScore('alpha', 10, 'Top Average Score')">+ Alpha</button>
+                        <button onclick="updateScore('alpha', 10, 'Top Average Score')">+ α-Alpha</button>
                         <button onclick="updateScore('alpha', -10, 'Top Average Score (Deduction)')">-</button>
-                        <button onclick="updateScore('omega', 10, 'Top Average Score')">+ Omega</button>
+                        <button onclick="updateScore('omega', 10, 'Top Average Score')">+ ω-Omega</button>
                         <button onclick="updateScore('omega', -10, 'Top Average Score (Deduction)')">-</button>
                     </div>
                 </div>
@@ -133,9 +133,9 @@
                         <p>+5 Points</p>
                     </div>
                     <div class="control-buttons">
-                        <button onclick="updateScore('alpha', 5, 'Most Improved')">+ Alpha</button>
+                        <button onclick="updateScore('alpha', 5, 'Most Improved')">+ α-Alpha</button>
                         <button onclick="updateScore('alpha', -5, 'Most Improved (Deduction)')">-</button>
-                        <button onclick="updateScore('omega', 5, 'Most Improved')">+ Omega</button>
+                        <button onclick="updateScore('omega', 5, 'Most Improved')">+ ω-Omega</button>
                         <button onclick="updateScore('omega', -5, 'Most Improved (Deduction)')">-</button>
                     </div>
                 </div>
@@ -147,9 +147,9 @@
                         <p>+5 Points</p>
                     </div>
                     <div class="control-buttons">
-                        <button onclick="updateScore('alpha', 5, 'Full Attendance')">+ Alpha</button>
+                        <button onclick="updateScore('alpha', 5, 'Full Attendance')">+ α-Alpha</button>
                         <button onclick="updateScore('alpha', -5, 'Full Attendance (Deduction)')">-</button>
-                        <button onclick="updateScore('omega', 5, 'Full Attendance')">+ Omega</button>
+                        <button onclick="updateScore('omega', 5, 'Full Attendance')">+ ω-Omega</button>
                         <button onclick="updateScore('omega', -5, 'Full Attendance (Deduction)')">-</button>
                     </div>
                 </div>
@@ -161,9 +161,9 @@
                         <p>+3 Points</p>
                     </div>
                     <div class="control-buttons">
-                        <button onclick="updateScore('alpha', 3, 'Shared Resources')">+ Alpha</button>
+                        <button onclick="updateScore('alpha', 3, 'Shared Resources')">+ α-Alpha</button>
                         <button onclick="updateScore('alpha', -3, 'Shared Resources (Deduction)')">-</button>
-                        <button onclick="updateScore('omega', 3, 'Shared Resources')">+ Omega</button>
+                        <button onclick="updateScore('omega', 3, 'Shared Resources')">+ ω-Omega</button>
                         <button onclick="updateScore('omega', -3, 'Shared Resources (Deduction)')">-</button>
                     </div>
                 </div>
@@ -195,8 +195,8 @@
                             </select>
                             
                             <div style="display: flex; gap: 6px; flex: 2;">
-                                <button onclick="awardCustomStreamScore('alpha')" style="flex: 1; background: var(--color-team-alpha); color: white; border: none; padding: 9px 6px; border-radius: 8px; font-weight: 600; font-size: 12px; cursor: pointer;">+ Alpha</button>
-                                <button onclick="awardCustomStreamScore('omega')" style="flex: 1; background: var(--color-team-omega); color: #0b0d14; border: none; padding: 9px 6px; border-radius: 8px; font-weight: 600; font-size: 12px; cursor: pointer;">+ Omega</button>
+                                <button onclick="awardCustomStreamScore('alpha')" style="flex: 1; background: var(--color-team-alpha); color: white; border: none; padding: 9px 6px; border-radius: 8px; font-weight: 600; font-size: 12px; cursor: pointer;">+ α-Alpha</button>
+                                <button onclick="awardCustomStreamScore('omega')" style="flex: 1; background: var(--color-team-omega); color: #0b0d14; border: none; padding: 9px 6px; border-radius: 8px; font-weight: 600; font-size: 12px; cursor: pointer;">+ ω-Omega</button>
                             </div>
                         </div>
                     </div>
