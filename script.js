@@ -22,8 +22,11 @@ async function fetchScores() {
     try {
         let response = await fetch(WEB_APP_URL);
         let data = await response.json();
-        scores.alpha = data.alpha;
-        scores.omega = data.omega;
+        
+        // Ensure values are cleanly parsed as numbers to prevent text bugs
+        scores.alpha = Number(data.alpha) || 0;
+        scores.omega = Number(data.omega) || 0;
+        
         updateUI();
     } catch (error) {
         console.error("Error fetching scores from cloud:", error);
@@ -80,18 +83,19 @@ function updateUI() {
     document.getElementById('alphaBar').style.width = alphaPercent + '%';
     document.getElementById('omegaBar').style.width = omegaPercent + '%';
 
-    document.getElementById('alphaPct').innerText = `Alpha (${Math.round(alphaPercent)}%)`;
-    document.getElementById('omegaPct').innerText = `Omega (${Math.round(omegaPercent)}%)`;
+    // Added Greek signs inside brackets here!
+    document.getElementById('alphaPct').innerText = `Alpha (α) (${Math.round(alphaPercent)}%)`;
+    document.getElementById('omegaPct').innerText = `Omega (Ω) (${Math.round(omegaPercent)}%)`;
 
     let titleEl = document.getElementById('statusTitle');
     let msgEl = document.getElementById('statusMsg');
 
     if (scores.alpha > scores.omega) {
-        titleEl.innerHTML = "👑 Team Alpha is Leading!";
-        msgEl.innerHTML = "Absolute dominance! Team Omega is right on your tail though—keep pushing the limits!";
+        titleEl.innerHTML = "👑 Team Alpha (α) is Leading!";
+        msgEl.innerHTML = "Absolute dominance! Team Omega (Ω) is right on your tail though—keep pushing the limits!";
     } else if (scores.omega > scores.alpha) {
-        titleEl.innerHTML = "👑 Team Omega is Leading!";
-        msgEl.innerHTML = "Incredible momentum! Team Alpha is gearing up for a comeback—stay sharp!";
+        titleEl.innerHTML = "👑 Team Omega (Ω) is Leading!";
+        msgEl.innerHTML = "Incredible momentum! Team Alpha (α) is gearing up for a comeback—stay sharp!";
     } else if (total > 0) {
         titleEl.innerHTML = "⚔️ It's a Dead Heat!";
         msgEl.innerHTML = "Neck and neck! One good study session or shared resource can tilt the entire scale!";
