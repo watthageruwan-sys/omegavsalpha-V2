@@ -16,7 +16,7 @@
 
 body {
     background: #0b0d14 url('download (4).jfif') no-repeat center center fixed;
-    background-size: cover;
+    background-size: 100% 100%; /* Fixed: Stretches the image to display both blue and yellow portions */
     color: var(--color-text-main);
     display: flex;
     justify-content: center;
