@@ -28,9 +28,9 @@ header {
     text-align: center;
     margin-bottom: 25px;
     padding: 20px;
-    background: rgba(0, 0, 80, 0.85); /* Royal Navy Blue tint */
+    background: rgba(0, 0, 80, 0.85);
     backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 215, 0, 0.4); /* Gold border accent */
+    border: 1px solid rgba(255, 215, 0, 0.4);
     border-radius: 16px;
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6);
 }
@@ -38,13 +38,13 @@ header {
 header h1 {
     font-size: 2.2rem;
     margin-bottom: 8px;
-    background: linear-gradient(90deg, #ffd700, #38bdf8); /* Gold to Sky Blue */
+    background: linear-gradient(90deg, #ffd700, #38bdf8);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
 .subtitle {
-    color: #ffd700; /* Gold */
+    color: #ffd700;
     font-size: 1rem;
     font-weight: 600;
     margin-bottom: 15px;
@@ -92,7 +92,7 @@ header h1 {
 }
 
 .team-card {
-    background: rgba(0, 0, 60, 0.85); /* Deep Navy card background */
+    background: rgba(0, 0, 60, 0.85);
     backdrop-filter: blur(8px);
     border: 2px solid rgba(255, 215, 0, 0.3);
     border-radius: 16px;
@@ -112,9 +112,41 @@ header h1 {
     border-color: rgba(255, 215, 0, 0.6);
 }
 
+/* --- LEADING TEAM GLOW & CELEBRATION ANIMATIONS --- */
+@keyframes leaderGlow {
+    0% {
+        box-shadow: 0 0 15px rgba(255, 215, 0, 0.4), inset 0 0 10px rgba(255, 215, 0, 0.2);
+        border-color: #ffd700;
+    }
+    50% {
+        box-shadow: 0 0 35px rgba(255, 215, 0, 0.8), inset 0 0 20px rgba(255, 215, 0, 0.4);
+        border-color: #fff;
+    }
+    100% {
+        box-shadow: 0 0 15px rgba(255, 215, 0, 0.4), inset 0 0 10px rgba(255, 215, 0, 0.2);
+        border-color: #ffd700;
+    }
+}
+
+@keyframes celebrateBounce {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-6px) scale(1.03); }
+}
+
 .team-card.is-winning {
-    box-shadow: 0 0 25px rgba(255, 215, 0, 0.4);
-    border-color: #ffd700;
+    animation: leaderGlow 2s infinite ease-in-out, celebrateBounce 1.5s infinite ease-in-out;
+    border-color: #ffd700 !important;
+}
+
+.team-card.is-winning .team-title::after {
+    content: " ✨";
+    animation: spinSparkle 1s infinite linear;
+    display: inline-block;
+}
+
+@keyframes spinSparkle {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 .team-card.is-tied {
@@ -128,7 +160,7 @@ header h1 {
 }
 
 .alpha-card .team-title { color: #60a5fa; }
-.omega-card .team-title { color: #ffd700; } /* Gold for Omega */
+.omega-card .team-title { color: #ffd700; }
 
 .score-display {
     font-size: 3.5rem;
@@ -141,31 +173,6 @@ header h1 {
 .score-display.pop {
     transform: scale(1.15);
     transition: transform 0.2s ease-in-out;
-}
-
-/* --- QUICK POINT BUTTONS (ADMIN ONLY) --- */
-.quick-points {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-.btn-point {
-    background: rgba(255, 215, 0, 0.15);
-    color: #ffd700;
-    border: 1px solid rgba(255, 215, 0, 0.3);
-    padding: 6px 12px;
-    border-radius: 8px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.1s;
-}
-
-.btn-point:hover {
-    background: rgba(255, 215, 0, 0.3);
-    transform: translateY(-2px);
 }
 
 /* --- STREAMS & ADVANCED BREAKDOWN --- */
@@ -268,7 +275,7 @@ header h1 {
 }
 
 .progress-omega {
-    background: #ffd700; /* Gold */
+    background: #ffd700;
     height: 100%;
     width: 50%;
     transition: width 0.5s ease;
@@ -421,8 +428,8 @@ select:focus {
 }
 
 .btn-action {
-    background: #000080; /* Navy Blue */
-    color: #ffd700; /* Gold Text */
+    background: #000080;
+    color: #ffd700;
     border: 1px solid rgba(255, 215, 0, 0.5);
     padding: 10px;
     border-radius: 8px;
