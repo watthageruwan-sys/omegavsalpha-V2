@@ -1,417 +1,155 @@
 // =======================================
 // ALPHA OMEGA ARENA - SCRIPT.JS
-// PART 1/3 - CORE + FETCH + ADMIN + SCORES
+// PART 1/3
+// API + DATA + ADMIN + SCORE CONTROL
 // =======================================
 
 
-const API_URL = "https://script.google.com/macros/s/AKfycbyEE5g2xVdhi69w6UvSRwz1VloJ6bX-drsUqn4xyMi9SDMllf7ihKHeUPcSrbyIdsWa5g/exec";
+// =======================================
+// GOOGLE SHEET API
+// =======================================
+
+const API_URL =
+"https://script.google.com/macros/s/AKfycbyEE5g2xVdhi69w6UvSRwz1VloJ6bX-drsUqn4xyMi9SDMllf7ihKHeUPcSrbyIdsWa5g/exec";
 
 
-// Detect page
-const isAdminPage = window.location.pathname.includes("admin.html");
 
 
-// -------------------------------
-// DATA
-// -------------------------------
+// =======================================
+// PAGE DETECTION
+// =======================================
+
+const isAdminPage =
+window.location.pathname.includes("admin.html");
+
+
+
+
+// =======================================
+// MAIN SCORE DATA
+// =======================================
 
 let scores = {
+
     alpha: 0,
+
     omega: 0
+
 };
+
 
 
 let streamScores = {
-    "Physical Science": 0,
-    "Bio Science": 0,
-    "Commerce": 0,
-    "Technology": 0,
-    "Arts": 0
+
+
+    "Physical Science":0,
+
+    "Bio Science":0,
+
+    "Commerce":0,
+
+    "Technology":0,
+
+    "Arts":0
+
 };
 
 
-// Countdown date loaded from JSON
+
+
+// Countdown
+
 let recapDate = null;
 
 
-// Admin
+
+
+
+// =======================================
+// ADMIN SYSTEM
+// =======================================
+
 let isAdminLoggedIn = false;
+
+
 const ADMIN_PIN = "royal123";
 
 
-// Viewer ID
-let viewerId = Math.random().toString(36).substring(2);
 
 
 
-// -------------------------------
-// VIEWER HEARTBEAT
-// -------------------------------
 
-if (!isAdminPage) {
+// =======================================
+// VIEWER SYSTEM
+// =======================================
 
-    setInterval(() => {
-
-        fetch(API_URL, {
-
-            method: "POST",
-
-            mode: "no-cors",
-
-            headers: {
-                "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify({
-
-                type: "heartbeat",
-
-                viewerId: viewerId
-
-            })
-
-        });
-
-    },15000);
-
-}
+let viewerId =
+Math.random()
+.toString(36)
+.substring(2);
 
 
 
-// -------------------------------
-// PAGE LOAD
-// -------------------------------
-
-window.addEventListener("DOMContentLoaded", () => {
-
-
-    fetchScores();
 
 
 
-    if(!isAdminPage){
 
-        fetch(API_URL, {
 
-            method:"POST",
+// =======================================
+// SEND VIEWER HEARTBEAT
+// =======================================
 
-            mode:"no-cors",
+function sendHeartbeat(){
 
-            headers:{
-                "Content-Type":"application/json"
-            },
 
-            body:JSON.stringify({
+fetch(API_URL,{
 
-                type:"heartbeat",
+    method:"POST",
 
-                viewerId:viewerId
+    mode:"no-cors",
 
-            })
+    headers:{
 
-        });
 
-    }
+        "Content-Type":
+        "application/json"
+
+    },
+
+
+    body:JSON.stringify({
+
+        type:"heartbeat",
+
+        viewerId:viewerId,
+
+        time:Date.now()
+
+    })
 
 
 });
 
 
-
-
-
-// -------------------------------
-// FETCH GOOGLE SHEET DATA
-// -------------------------------
-
-function fetchScores(){
-
-
-    fetch(API_URL)
-
-    .then(response => response.json())
-
-    .then(data => {
-
-
-
-        // Scores
-
-        if(data && data.scores){
-
-            scores.alpha = data.scores.alpha || 0;
-
-            scores.omega = data.scores.omega || 0;
-
-        }
-
-
-
-        // Streams
-
-        if(data && data.streams){
-
-            streamScores = data.streams;
-
-        }
-
-
-
-
-        // Recap Countdown Date
-
-        if(data && data.recapDate){
-
-            recapDate = new Date(data.recapDate);
-
-            console.log("Recap Date Loaded:", recapDate);
-
-        }
-
-
-
-
-        // Viewer Count
-
-        let viewerElem = document.getElementById("viewerCount");
-
-
-        if(viewerElem && data.viewers !== undefined){
-
-            viewerElem.textContent = data.viewers;
-
-        }
-
-
-
-
-        updateDisplay();
-
-
-
-    })
-
-    .catch(err => {
-
-        console.error("Error fetching data:",err);
-
-    });
-
-
 }
 
 
 
 
 
-// -------------------------------
-// SYNC TO GOOGLE SHEET
-// -------------------------------
 
-function syncToSheet(){
+if(!isAdminPage){
 
 
-    fetch(API_URL, {
+    sendHeartbeat();
 
 
-        method:"POST",
+    setInterval(
 
-        mode:"no-cors",
+        sendHeartbeat,
 
+        15000
 
-        headers:{
-
-            "Content-Type":"application/json"
-
-        },
-
-
-        body:JSON.stringify({
-
-
-            scores:scores,
-
-            streams:streamScores
-
-
-        })
-
-
-    })
-
-    .catch(err=>{
-
-        console.error("Sync Error:",err);
-
-    });
-
-
-}
-
-
-
-
-
-// -------------------------------
-// ADMIN LOGIN
-// -------------------------------
-
-function toggleAdmin(){
-
-
-
-    const controls =
-    document.getElementById("controlsSection");
-
-
-    const adminBtn =
-    document.getElementById("adminBtn");
-
-
-    const lockBadge =
-    document.getElementById("lockBadge");
-
-
-
-
-    if(!isAdminLoggedIn){
-
-
-
-        let enteredPin = prompt("Enter Admin PIN:");
-
-
-
-        if(enteredPin === ADMIN_PIN){
-
-
-            isAdminLoggedIn = true;
-
-
-            controls.classList.remove("locked");
-
-            controls.classList.add("unlocked");
-
-
-            adminBtn.classList.add("unlocked");
-
-
-            adminBtn.textContent =
-            "🔓 Admin Logged In";
-
-
-            lockBadge.textContent =
-            "🔓 Unlocked";
-
-
-            logActivity("Admin access granted.");
-
-
-
-        }
-
-        else if(enteredPin !== null){
-
-
-            alert("Incorrect PIN!");
-
-        }
-
-
-
-    }
-
-    else{
-
-
-        isAdminLoggedIn=false;
-
-
-        controls.classList.remove("unlocked");
-
-        controls.classList.add("locked");
-
-
-        adminBtn.classList.remove("unlocked");
-
-
-        adminBtn.textContent =
-        "🔒 Admin Login";
-
-
-        lockBadge.textContent =
-        "🔒 Locked";
-
-
-        logActivity("Admin logged out.");
-
-
-    }
-
-
-}
-
-
-
-
-
-// -------------------------------
-// ADD POINTS
-// -------------------------------
-
-function awardCustomStreamScore(team){
-
-
-    const streamSelect =
-    document.getElementById("streamSelect");
-
-
-    const achievementSelect =
-    document.getElementById("achievementSelect");
-
-
-
-    const selectedStream =
-    streamSelect.value;
-
-
-
-    const points =
-    parseInt(achievementSelect.value);
-
-
-
-    const achievementText =
-    achievementSelect.options[
-    achievementSelect.selectedIndex
-    ].text.split(" (")[0];
-
-
-
-
-    scores[team] += points;
-
-
-    streamScores[selectedStream] += points;
-
-
-
-    updateDisplay();
-
-
-    syncToSheet();
-
-
-
-    let teamName =
-    team === "alpha"
-    ? "α-Alpha"
-    : "Ω-Omega";
-
-
-
-    logActivity(
-    `${teamName} earned +${points} pts in [${selectedStream}] for ${achievementText}!`
     );
 
 
@@ -421,357 +159,1132 @@ function awardCustomStreamScore(team){
 
 
 
-// -------------------------------
-// RESET
-// -------------------------------
+
+
+// =======================================
+// PAGE LOAD
+// =======================================
+
+window.addEventListener(
+
+"DOMContentLoaded",
+
+()=>{
+
+
+    fetchScores();
+
+
+}
+
+);
+
+
+
+
+
+
+
+
+
+// =======================================
+// GET DATA FROM GOOGLE SHEET
+// =======================================
+
+function fetchScores(){
+
+
+
+fetch(API_URL)
+
+
+
+.then(response=>response.json())
+
+
+
+.then(data=>{
+
+
+
+console.log(
+"Sheet Data:",
+data
+);
+
+
+
+
+
+// ===============================
+// SCORE LOAD
+// ===============================
+
+
+if(data.scores){
+
+
+    scores.alpha =
+    Number(data.scores.alpha) || 0;
+
+
+
+    scores.omega =
+    Number(data.scores.omega) || 0;
+
+
+}
+
+
+
+
+
+
+
+
+// ===============================
+// STREAM LOAD
+// ===============================
+
+
+if(data.streams){
+
+
+    streamScores = {
+
+
+        ...streamScores,
+
+        ...data.streams
+
+
+    };
+
+
+}
+
+
+
+
+
+
+
+// ===============================
+// COUNTDOWN DATE
+// ===============================
+
+
+if(data.recapDate){
+
+
+
+    let fixedDate =
+    data.recapDate;
+
+
+
+    if(
+    !fixedDate.includes("GMT")
+    ){
+
+        fixedDate +=
+        " GMT+0530";
+
+    }
+
+
+
+    recapDate =
+    new Date(fixedDate);
+
+
+
+    console.log(
+    "Recap:",
+    recapDate
+    );
+
+
+}
+
+
+
+
+
+
+
+
+// ===============================
+// VIEWER COUNT
+// ===============================
+
+
+const viewer =
+document.getElementById(
+"viewerCount"
+);
+
+
+
+
+if(
+viewer &&
+data.viewers !== undefined
+){
+
+
+    viewer.textContent =
+    data.viewers;
+
+
+}
+
+
+
+
+
+
+
+updateDisplay();
+
+
+
+
+
+})
+
+
+
+.catch(error=>{
+
+
+console.error(
+"Loading error:",
+error
+);
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =======================================
+// SAVE TO GOOGLE SHEET
+// =======================================
+
+function syncToSheet(){
+
+
+
+fetch(API_URL,{
+
+    method:"POST",
+
+    mode:"no-cors",
+
+
+    headers:{
+
+
+        "Content-Type":
+        "application/json"
+
+
+    },
+
+
+    body:JSON.stringify({
+
+
+        scores:scores,
+
+
+        streams:streamScores
+
+
+    })
+
+
+})
+
+.catch(error=>{
+
+
+console.error(
+"Sync Error:",
+error
+);
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =======================================
+// ADMIN LOGIN
+// =======================================
+
+function toggleAdmin(){
+
+
+
+const controls =
+document.getElementById(
+"controlsSection"
+);
+
+
+
+const button =
+document.getElementById(
+"adminBtn"
+);
+
+
+
+const badge =
+document.getElementById(
+"lockBadge"
+);
+
+
+
+
+
+
+if(!isAdminLoggedIn){
+
+
+
+let pin =
+prompt(
+"Enter Admin PIN:"
+);
+
+
+
+
+
+
+if(pin === ADMIN_PIN){
+
+
+
+    isAdminLoggedIn = true;
+
+
+
+
+    if(controls){
+
+        controls.classList.remove(
+        "locked"
+        );
+
+
+        controls.classList.add(
+        "unlocked"
+        );
+
+    }
+
+
+
+
+
+    if(button){
+
+        button.classList.add(
+        "unlocked"
+        );
+
+
+        button.textContent =
+        "🔓 Admin Logged In";
+
+    }
+
+
+
+
+
+
+    if(badge){
+
+        badge.textContent =
+        "🔓 Unlocked";
+
+    }
+
+
+
+
+
+    logActivity(
+    "Admin login successful."
+    );
+
+
+
+}
+
+
+
+else if(pin !== null){
+
+
+
+    alert(
+    "Wrong PIN!"
+    );
+
+
+}
+
+
+
+}
+
+
+
+
+
+else{
+
+
+
+isAdminLoggedIn = false;
+
+
+
+
+if(controls){
+
+controls.classList.remove(
+"unlocked"
+);
+
+
+controls.classList.add(
+"locked"
+);
+
+
+}
+
+
+
+
+if(button){
+
+button.classList.remove(
+"unlocked"
+);
+
+
+button.textContent =
+"🔒 Admin Login";
+
+
+}
+
+
+
+
+if(badge){
+
+badge.textContent =
+"🔒 Locked";
+
+
+}
+
+
+
+
+
+logActivity(
+"Admin logged out."
+);
+
+
+
+}
+
+
+
+
+}
+// =======================================
+// ALPHA OMEGA ARENA - SCRIPT.JS
+// PART 2/3
+// SCORE CONTROL + DISPLAY + LOGS
+// =======================================
+
+
+
+
+
+// =======================================
+// ADD SCORE
+// =======================================
+
+function awardCustomStreamScore(team){
+
+
+
+// Safety check
+
+if(
+team !== "alpha" &&
+team !== "omega"
+){
+
+    return;
+
+}
+
+
+
+
+
+
+if(!isAdminLoggedIn){
+
+
+alert(
+"Admin login required!"
+);
+
+
+return;
+
+
+}
+
+
+
+
+
+
+
+const stream =
+document.getElementById(
+"streamSelect"
+);
+
+
+
+const achievement =
+document.getElementById(
+"achievementSelect"
+);
+
+
+
+
+
+if(
+!stream ||
+!achievement
+){
+
+return;
+
+}
+
+
+
+
+
+
+
+const selectedStream =
+stream.value;
+
+
+
+const points =
+Number(
+achievement.value
+);
+
+
+
+
+
+
+if(
+isNaN(points)
+){
+
+return;
+
+}
+
+
+
+
+
+
+
+
+scores[team] += points;
+
+
+
+streamScores[selectedStream] += points;
+
+
+
+
+
+
+updateDisplay();
+
+
+
+syncToSheet();
+
+
+
+
+
+
+const name =
+team === "alpha"
+?
+"α-Alpha"
+:
+"Ω-Omega";
+
+
+
+
+
+logActivity(
+
+`${name} earned +${points} points in ${selectedStream}`
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =======================================
+// RESET SCORES
+// =======================================
 
 function resetScores(){
 
 
-    if(confirm(
-    "Are you sure you want to reset all scores back to zero?"
-    )){
+
+if(!isAdminLoggedIn){
 
 
-        scores.alpha = 0;
+alert(
+"Admin login required!"
+);
 
-        scores.omega = 0;
+
+return;
 
 
-
-        Object.keys(streamScores)
-        .forEach(stream => {
-
-            streamScores[stream]=0;
-
-        });
+}
 
 
 
-        updateDisplay();
-
-        syncToSheet();
 
 
-        logActivity(
-        "Scoreboard has been reset to zero."
+
+if(
+confirm(
+"Reset all scores?"
+)
+
+){
+
+
+
+scores.alpha = 0;
+
+scores.omega = 0;
+
+
+
+Object.keys(streamScores)
+.forEach(stream=>{
+
+
+streamScores[stream]=0;
+
+
+});
+
+
+
+
+updateDisplay();
+
+
+syncToSheet();
+
+
+
+logActivity(
+"Scores reset."
+);
+
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =======================================
+// UPDATE EVERYTHING ON SCREEN
+// =======================================
+
+function updateDisplay(){
+
+
+
+// =======================================
+// SCORE CARDS
+// =======================================
+
+
+const alphaScore =
+document.getElementById(
+"alphaScore"
+);
+
+
+
+const omegaScore =
+document.getElementById(
+"omegaScore"
+);
+
+
+
+
+if(alphaScore){
+
+    alphaScore.textContent =
+    scores.alpha;
+
+}
+
+
+
+if(omegaScore){
+
+    omegaScore.textContent =
+    scores.omega;
+
+}
+
+
+
+
+
+
+
+
+// =======================================
+// STREAM SCORE DISPLAY
+// =======================================
+
+
+for(let stream in streamScores){
+
+
+
+    let id =
+    "stream-" +
+    stream.replace(/\s+/g,"-");
+
+
+
+    let element =
+    document.getElementById(id);
+
+
+
+    if(element){
+
+        element.textContent =
+        streamScores[stream];
+
+    }
+
+
+}
+
+
+
+
+
+
+
+
+
+// =======================================
+// TEAM PERCENTAGES
+// =======================================
+
+
+let total =
+scores.alpha + scores.omega;
+
+
+
+let alphaPercent = 50;
+
+let omegaPercent = 50;
+
+
+
+
+if(total > 0){
+
+
+    alphaPercent =
+    (scores.alpha / total) * 100;
+
+
+
+    omegaPercent =
+    (scores.omega / total) * 100;
+
+
+}
+
+
+
+
+
+
+
+
+// =======================================
+// PROGRESS BARS
+// =======================================
+
+
+const alphaBar =
+document.getElementById(
+"alphaBar"
+);
+
+
+
+const omegaBar =
+document.getElementById(
+"omegaBar"
+);
+
+
+
+
+
+if(alphaBar){
+
+    alphaBar.style.width =
+    alphaPercent + "%";
+
+}
+
+
+
+
+
+if(omegaBar){
+
+    omegaBar.style.width =
+    omegaPercent + "%";
+
+}
+
+
+
+
+
+
+
+
+
+// =======================================
+// PERCENTAGE TEXT
+// =======================================
+
+
+const alphaPct =
+document.getElementById(
+"alphaPct"
+);
+
+
+
+const omegaPct =
+document.getElementById(
+"omegaPct"
+);
+
+
+
+
+
+
+if(alphaPct){
+
+
+    alphaPct.textContent =
+    `α-Alpha (${Math.round(alphaPercent)}%)`;
+
+
+}
+
+
+
+
+
+if(omegaPct){
+
+
+    omegaPct.textContent =
+    `Ω-Omega (${Math.round(omegaPercent)}%)`;
+
+
+}
+
+
+
+
+
+
+
+
+
+// =======================================
+// BATTLE STATUS
+// =======================================
+
+
+const statusTitle =
+document.getElementById(
+"statusTitle"
+);
+
+
+
+const statusDesc =
+document.getElementById(
+"statusDesc"
+);
+
+
+
+const alphaCard =
+document.getElementById(
+"alphaCard"
+);
+
+
+
+const omegaCard =
+document.getElementById(
+"omegaCard"
+);
+
+
+
+
+
+
+
+if(
+statusTitle &&
+statusDesc &&
+alphaCard &&
+omegaCard
+){
+
+
+
+    alphaCard.className =
+    "team-card alpha-card";
+
+
+    omegaCard.className =
+    "team-card omega-card";
+
+
+
+
+
+
+
+
+
+    if(
+    scores.alpha === 0 &&
+    scores.omega === 0
+    ){
+
+
+
+        statusTitle.textContent =
+        "🔥 Battle Just Began!";
+
+
+
+        statusDesc.textContent =
+        "The scoreboard is clean. Step up and claim the lead!";
+
+
+    }
+
+
+
+
+
+
+
+
+    else if(
+    scores.alpha === scores.omega
+    ){
+
+
+
+        statusTitle.textContent =
+        "⚖️ It's a Tie Game!";
+
+
+
+        statusDesc.textContent =
+        "Both teams are fighting equally!";
+
+
+
+        alphaCard.classList.add(
+        "is-tied"
+        );
+
+
+        omegaCard.classList.add(
+        "is-tied"
         );
 
 
     }
 
 
+
+
+
+
+
+
+    else if(
+    scores.alpha > scores.omega
+    ){
+
+
+
+        statusTitle.textContent =
+        "👑 α-Alpha is Leading!";
+
+
+
+        statusDesc.textContent =
+        "Alpha currently controls the arena!";
+
+
+
+        alphaCard.classList.add(
+        "is-winning"
+        );
+
+
+
+    }
+
+
+
+
+
+
+
+
+    else{
+
+
+
+        statusTitle.textContent =
+        "👑 Ω-Omega is Leading!";
+
+
+
+        statusDesc.textContent =
+        "Omega currently controls the arena!";
+
+
+
+        omegaCard.classList.add(
+        "is-winning"
+        );
+
+
+    }
+
+
+
 }
-// =======================================
-// PART 2/3 - DISPLAY + LOGS + NOTICES
-// =======================================
 
 
 
-// -------------------------------
-// UPDATE DISPLAY
-// -------------------------------
-
-function updateDisplay(){
-
-
-
-    // -----------------------------
-    // Score Cards
-    // -----------------------------
-
-    const alphaElem =
-    document.getElementById("alphaScore");
-
-
-    const omegaElem =
-    document.getElementById("omegaScore");
-
-
-
-    if(alphaElem)
-        alphaElem.textContent = scores.alpha;
-
-
-    if(omegaElem)
-        omegaElem.textContent = scores.omega;
-
-
-
-    if(alphaElem)
-        alphaElem.classList.add("pop");
-
-
-    if(omegaElem)
-        omegaElem.classList.add("pop");
-
-
-
-    setTimeout(()=>{
-
-
-        if(alphaElem)
-            alphaElem.classList.remove("pop");
-
-
-        if(omegaElem)
-            omegaElem.classList.remove("pop");
-
-
-    },300);
-
-
-
-
-
-    // -----------------------------
-    // Stream Scores
-    // -----------------------------
-
-    for(let stream in streamScores){
-
-
-        let streamId =
-        "stream-" + stream.replace(/\s+/g,'-');
-
-
-
-        let elem =
-        document.getElementById(streamId);
-
-
-
-        if(elem){
-
-            elem.textContent =
-            streamScores[stream];
-
-        }
-
-
-    }
-
-
-
-
-
-    // -----------------------------
-    // Progress Bar
-    // -----------------------------
-
-
-    let total =
-    scores.alpha + scores.omega;
-
-
-
-    let alphaPct = 50;
-
-    let omegaPct = 50;
-
-
-
-    if(total > 0){
-
-
-        alphaPct =
-        (scores.alpha / total) * 100;
-
-
-
-        omegaPct =
-        (scores.omega / total) * 100;
-
-
-    }
-
-
-
-
-    const alphaBar =
-    document.getElementById("alphaBar");
-
-
-    const omegaBar =
-    document.getElementById("omegaBar");
-
-
-
-    if(alphaBar)
-
-        alphaBar.style.width =
-        alphaPct + "%";
-
-
-
-    if(omegaBar)
-
-        omegaBar.style.width =
-        omegaPct + "%";
-
-
-
-
-
-
-    // -----------------------------
-    // Percentage Labels
-    // -----------------------------
-
-
-    const alphaPctElem =
-    document.getElementById("alphaPct");
-
-
-    const omegaPctElem =
-    document.getElementById("omegaPct");
-
-
-
-    if(alphaPctElem)
-
-        alphaPctElem.textContent =
-        `α-Alpha (${Math.round(alphaPct)}%)`;
-
-
-
-    if(omegaPctElem)
-
-        omegaPctElem.textContent =
-        `Ω-Omega (${Math.round(omegaPct)}%)`;
-
-
-
-
-
-
-    // -----------------------------
-    // Battle Status
-    // -----------------------------
-
-
-    const statusTitle =
-    document.getElementById("statusTitle");
-
-
-    const statusDesc =
-    document.getElementById("statusDesc");
-
-
-    const alphaCard =
-    document.getElementById("alphaCard");
-
-
-    const omegaCard =
-    document.getElementById("omegaCard");
-
-
-
-
-    if(statusTitle &&
-       statusDesc &&
-       alphaCard &&
-       omegaCard){
-
-
-
-        alphaCard.className =
-        "team-card alpha-card";
-
-
-        omegaCard.className =
-        "team-card omega-card";
-
-
-
-
-
-        if(scores.alpha === 0 &&
-           scores.omega === 0){
-
-
-
-            statusTitle.textContent =
-            "🔥 Battle Just Began!";
-
-
-
-            statusDesc.textContent =
-            "The scoreboard is clean. Step up, lock in, and claim the lead!";
-
-
-
-        }
-
-
-
-        else if(scores.alpha === scores.omega){
-
-
-
-            statusTitle.textContent =
-            "⚖️ It's a Tie Game!";
-
-
-
-            statusDesc.textContent =
-            "Both teams are locked in neck-and-neck intensity!";
-
-
-
-            alphaCard.classList.add("is-tied");
-
-            omegaCard.classList.add("is-tied");
-
-
-
-        }
-
-
-
-        else if(scores.alpha > scores.omega){
-
-
-
-            statusTitle.textContent =
-            "👑 α-Alpha is Leading!";
-
-
-
-            statusDesc.textContent =
-            "Team Alpha is currently dominating the scoreboard.";
-
-
-
-            alphaCard.classList.add("is-winning");
-
-
-
-        }
-
-
-
-        else {
-
-
-
-            statusTitle.textContent =
-            "👑 Ω-Omega is Leading!";
-
-
-
-            statusDesc.textContent =
-            "Team Omega is currently dominating the scoreboard.";
-
-
-
-            omegaCard.classList.add("is-winning");
-
-
-        }
-
-
-    }
 
 
 }
@@ -782,59 +1295,26 @@ function updateDisplay(){
 
 
 
-// -------------------------------
+
+
+// =======================================
 // ACTIVITY LOG
-// -------------------------------
-
+// =======================================
 
 function logActivity(message){
 
 
 
-    const activityLog =
-    document.getElementById("activityLog");
+const log =
+document.getElementById(
+"activityLog"
+);
 
 
 
-    if(!activityLog)
-        return;
+if(!log){
 
-
-
-    const timeString =
-    new Date().toLocaleTimeString([],{
-
-        hour:'2-digit',
-
-        minute:'2-digit',
-
-        second:'2-digit'
-
-    });
-
-
-
-
-    const item =
-    document.createElement("div");
-
-
-
-    item.className =
-    "activity-item";
-
-
-
-    item.innerHTML =
-
-    `<span class="activity-time">
-    [${timeString}]
-    </span> ${message}`;
-
-
-
-    activityLog.prepend(item);
-
+    return;
 
 }
 
@@ -843,10 +1323,73 @@ function logActivity(message){
 
 
 
+const time =
+new Date()
+.toLocaleTimeString([],{
 
-// -------------------------------
-// ROTATING NOTICES
-// -------------------------------
+    hour:"2-digit",
+
+    minute:"2-digit",
+
+    second:"2-digit"
+
+});
+
+
+
+
+
+
+
+const item =
+document.createElement(
+"div"
+);
+
+
+
+
+
+item.className =
+"activity-item";
+
+
+
+
+
+
+item.innerHTML =
+
+`
+<span class="activity-time">
+[${time}]
+</span>
+${message}
+`;
+
+
+
+
+
+
+log.prepend(item);
+
+
+
+}
+// =======================================
+// ALPHA OMEGA ARENA - SCRIPT.JS
+// PART 3/3
+// NOTICES + COUNTDOWN + AUTO SYNC
+// =======================================
+
+
+
+
+
+// =======================================
+// ROTATING NOTICE SYSTEM
+// =======================================
 
 
 const notices = [
@@ -861,13 +1404,18 @@ const notices = [
 "🏆 Monthly Recap Paper coming soon!",
 
 
-"⚡ Alpha and Omega are battling for the championship!",
+"⚡ Alpha and Omega are fighting for the championship!",
 
 
-"💙 Help your teammates whenever possible."
+"💙 Support your teammates!"
+
 
 
 ];
+
+
+
+
 
 
 
@@ -876,213 +1424,363 @@ let noticeIndex = 0;
 
 
 
+
+
 setInterval(()=>{
 
 
 
-    noticeIndex++;
-
-
-
-    if(noticeIndex >= notices.length){
-
-        noticeIndex = 0;
-
-    }
+noticeIndex++;
 
 
 
 
-
-    const notice =
-    document.getElementById("noticeText");
-
-
+if(
+noticeIndex >= notices.length
+){
 
 
-
-    if(notice){
-
+    noticeIndex = 0;
 
 
-        notice.style.opacity = 0;
+}
 
 
 
-        setTimeout(()=>{
 
 
 
-            notice.textContent =
-            notices[noticeIndex];
+const notice =
+document.getElementById(
+"noticeText"
+);
 
 
 
-            notice.style.opacity = 1;
 
 
 
-        },250);
+if(notice){
 
 
 
-    }
+    notice.style.opacity = 0;
+
+
+
+
+    setTimeout(()=>{
+
+
+
+        notice.textContent =
+        notices[noticeIndex];
+
+
+
+        notice.style.opacity =
+        1;
+
+
+
+    },250);
+
+
+
+}
+
 
 
 
 },7000);
+
+
+
+
+
+
+
+
+
 // =======================================
-// PART 3/3 - COUNTDOWN TIMER
+// COUNTDOWN LOOP
 // =======================================
 
 
-// Update every second
-setInterval(updateCountdown,1000);
+setInterval(
+
+updateCountdown,
+
+1000
+
+);
 
 
-// Run once immediately
+
+// Run immediately
+
 updateCountdown();
 
 
 
-// -------------------------------
+
+
+
+
+
+// =======================================
 // COUNTDOWN FUNCTION
-// -------------------------------
+// =======================================
 
 function updateCountdown(){
 
 
-    const daysElem =
-    document.getElementById("days");
 
+const days =
+document.getElementById(
+"days"
+);
 
-    const hoursElem =
-    document.getElementById("hours");
 
 
-    const minutesElem =
-    document.getElementById("minutes");
+const hours =
+document.getElementById(
+"hours"
+);
 
 
-    const secondsElem =
-    document.getElementById("seconds");
 
+const minutes =
+document.getElementById(
+"minutes"
+);
 
 
-    // No countdown elements on this page
-    if(!daysElem ||
-       !hoursElem ||
-       !minutesElem ||
-       !secondsElem){
 
-        return;
+const seconds =
+document.getElementById(
+"seconds"
+);
 
-    }
 
 
 
-    // Wait until JSON loads
-    if(!recapDate){
 
-        return;
 
-    }
 
+// No countdown section
 
+if(
+!days ||
+!hours ||
+!minutes ||
+!seconds
+){
 
+    return;
 
-    const now =
-    new Date();
+}
 
 
 
-    const difference =
-    recapDate - now;
 
 
 
 
+// Wait for Google Sheet date
 
-    if(difference <= 0){
+if(!recapDate){
 
+    return;
 
-        daysElem.textContent = "00";
+}
 
-        hoursElem.textContent = "00";
 
-        minutesElem.textContent = "00";
 
-        secondsElem.textContent = "00";
 
 
-        return;
 
-    }
 
+const now =
+new Date();
 
 
 
 
 
+const difference =
+recapDate - now;
 
-    const days =
-    Math.floor(
-        difference /
-        (1000 * 60 * 60 * 24)
-    );
 
 
 
 
-    const hours =
-    Math.floor(
-        (difference %
-        (1000 * 60 * 60 * 24)) /
-        (1000 * 60 * 60)
-    );
 
 
+// Countdown finished
 
+if(difference <= 0){
 
-    const minutes =
-    Math.floor(
-        (difference %
-        (1000 * 60 * 60)) /
-        (1000 * 60)
-    );
 
 
+days.textContent =
+"00";
 
 
-    const seconds =
-    Math.floor(
-        (difference %
-        (1000 * 60)) /
-        1000
-    );
+hours.textContent =
+"00";
 
 
+minutes.textContent =
+"00";
 
 
+seconds.textContent =
+"00";
 
 
-    daysElem.textContent =
-    String(days).padStart(2,"0");
-
-
-
-    hoursElem.textContent =
-    String(hours).padStart(2,"0");
-
-
-
-    minutesElem.textContent =
-    String(minutes).padStart(2,"0");
-
-
-
-    secondsElem.textContent =
-    String(seconds).padStart(2,"0");
+return;
 
 
 }
+
+
+
+
+
+
+
+
+// =======================================
+// TIME CALCULATION
+// =======================================
+
+
+const d =
+Math.floor(
+
+difference /
+(1000 * 60 * 60 * 24)
+
+);
+
+
+
+
+
+const h =
+Math.floor(
+
+(difference %
+(1000 * 60 * 60 * 24))
+/
+(1000 * 60 * 60)
+
+);
+
+
+
+
+
+
+
+const m =
+Math.floor(
+
+(difference %
+(1000 * 60 * 60))
+/
+(1000 * 60)
+
+);
+
+
+
+
+
+
+
+const s =
+Math.floor(
+
+(difference %
+(1000 * 60))
+/
+1000
+
+);
+
+
+
+
+
+
+
+
+
+// =======================================
+// DISPLAY TIME
+// =======================================
+
+
+days.textContent =
+String(d)
+.padStart(2,"0");
+
+
+
+hours.textContent =
+String(h)
+.padStart(2,"0");
+
+
+
+minutes.textContent =
+String(m)
+.padStart(2,"0");
+
+
+
+seconds.textContent =
+String(s)
+.padStart(2,"0");
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =======================================
+// VIEWER AUTO REFRESH
+// =======================================
+//
+// Keeps public viewers updated
+//
+// Admin editing is protected
+// =======================================
+
+
+setInterval(()=>{
+
+
+
+if(!isAdminLoggedIn){
+
+
+
+    fetchScores();
+
+
+
+}
+
+
+
+},10000);
