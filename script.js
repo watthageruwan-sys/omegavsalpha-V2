@@ -1,5 +1,8 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbyEE5g2xVdhi69w6UvSRwz1VloJ6bX-drsUqn4xyMi9SDMllf7ihKHeUPcSrbyIdsWa5g/exec";
 
+// Detect which page we're on
+const isAdminPage = window.location.pathname.includes("admin.html");
+
 let scores = {
     alpha: 0,
     omega: 0
@@ -18,41 +21,76 @@ const ADMIN_PIN = "royal123";
 
 let viewerId = Math.random().toString(36).substring(2);
 
+if(!isAdminPage){
+
 setInterval(() => {
-    fetch(API_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "heartbeat", viewerId: viewerId })
-    }).catch(err => console.error("Heartbeat error:", err));
-}, 15000);
+
+    fetch(API_URL,{
+        method:"POST",
+        mode:"no-cors",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+            type:"heartbeat",
+            viewerId:viewerId
+        })
+
+    });
+
+},15000);
+
+}
 
 window.addEventListener("DOMContentLoaded", () => {
+
     fetchScores();
-    fetch(API_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "heartbeat", viewerId: viewerId })
-    }).catch(err => console.error("Initial heartbeat error:", err));
+
+    // Heartbeat only on public page
+    if(!isAdminPage){
+
+        fetch(API_URL,{
+            method:"POST",
+            mode:"no-cors",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+                type:"heartbeat",
+                viewerId:viewerId
+            })
+        });
+
+    }
+
 });
 
 function fetchScores() {
     fetch(API_URL)
         .then(response => response.json())
         .then(data => {
+
             if (data && data.scores) {
                 scores.alpha = data.scores.alpha || 0;
                 scores.omega = data.scores.omega || 0;
             }
+
             if (data && data.streams) {
                 streamScores = data.streams;
             }
+
+            if (data && data.recapDate) {
+                recapDate = new Date(data.recapDate);
+            }
+
             let viewerElem = document.getElementById("viewerCount");
+
             if (viewerElem && data.viewers !== undefined) {
                 viewerElem.textContent = data.viewers;
             }
+
             updateDisplay();
+
         })
         .catch(err => console.error("Error fetching scores:", err));
 }
@@ -130,27 +168,39 @@ function resetScores() {
 }
 
 function updateDisplay() {
-    let alphaElem = document.getElementById("alphaScore");
-    let omegaElem = document.getElementById("omegaScore");
 
-    alphaElem.textContent = scores.alpha;
-    omegaElem.textContent = scores.omega;
+    // -----------------------------
+    // Score Cards
+    // -----------------------------
+    const alphaElem = document.getElementById("alphaScore");
+    const omegaElem = document.getElementById("omegaScore");
 
-    alphaElem.classList.add("pop");
-    omegaElem.classList.add("pop");
+    if (alphaElem) alphaElem.textContent = scores.alpha;
+    if (omegaElem) omegaElem.textContent = scores.omega;
+
+    if (alphaElem) alphaElem.classList.add("pop");
+    if (omegaElem) omegaElem.classList.add("pop");
+
     setTimeout(() => {
-        alphaElem.classList.remove("pop");
-        omegaElem.classList.remove("pop");
+        if (alphaElem) alphaElem.classList.remove("pop");
+        if (omegaElem) omegaElem.classList.remove("pop");
     }, 300);
 
+    // -----------------------------
+    // Stream Scores
+    // -----------------------------
     for (let stream in streamScores) {
         let streamId = "stream-" + stream.replace(/\s+/g, '-');
         let elem = document.getElementById(streamId);
+
         if (elem) {
             elem.textContent = streamScores[stream];
         }
     }
 
+    // -----------------------------
+    // Progress Bar
+    // -----------------------------
     let total = scores.alpha + scores.omega;
     let alphaPct = 50;
     let omegaPct = 50;
@@ -160,37 +210,75 @@ function updateDisplay() {
         omegaPct = (scores.omega / total) * 100;
     }
 
-    document.getElementById("alphaBar").style.width = alphaPct + "%";
-    document.getElementById("omegaBar").style.width = omegaPct + "%";
+    const alphaBar = document.getElementById("alphaBar");
+    const omegaBar = document.getElementById("omegaBar");
 
-    document.getElementById("alphaPct").textContent = `α-Alpha (${Math.round(alphaPct)}%)`;
-    document.getElementById("omegaPct").textContent = `Ω-Omega (${Math.round(omegaPct)}%)`;
+    if (alphaBar) alphaBar.style.width = alphaPct + "%";
+    if (omegaBar) omegaBar.style.width = omegaPct + "%";
 
-    let statusTitle = document.getElementById("statusTitle");
-    let statusDesc = document.getElementById("statusDesc");
-    let alphaCard = document.getElementById("alphaCard");
-    let omegaCard = document.getElementById("omegaCard");
+    // -----------------------------
+    // Percentage Labels
+    // -----------------------------
+    const alphaPctElem = document.getElementById("alphaPct");
+    const omegaPctElem = document.getElementById("omegaPct");
 
-    alphaCard.className = "team-card alpha-card";
-    omegaCard.className = "team-card omega-card";
+    if (alphaPctElem)
+        alphaPctElem.textContent = `α-Alpha (${Math.round(alphaPct)}%)`;
 
-    if (scores.alpha === 0 && scores.omega === 0) {
-        statusTitle.textContent = "🔥 Battle Just Began!";
-        statusDesc.textContent = "The scoreboard is clean. Step up, lock in, and claim the lead!";
-    } else if (scores.alpha === scores.omega) {
-        statusTitle.textContent = "⚖️ It's a Tie Game!";
-        statusDesc.textContent = "Both teams are locked in neck-and-neck intensity!";
-        alphaCard.classList.add("is-tied");
-        omegaCard.classList.add("is-tied");
-    } else if (scores.alpha > scores.omega) {
-        statusTitle.textContent = "👑 α-Alpha is Leading!";
-        statusDesc.textContent = "Team Alpha is currently dominating the scoreboard.";
-        alphaCard.classList.add("is-winning");
-    } else {
-        statusTitle.textContent = "👑 Ω-Omega is Leading!";
-        statusDesc.textContent = "Team Omega is currently dominating the scoreboard.";
-        omegaCard.classList.add("is-winning");
+    if (omegaPctElem)
+        omegaPctElem.textContent = `Ω-Omega (${Math.round(omegaPct)}%)`;
+
+    // -----------------------------
+    // Battle Status
+    // -----------------------------
+    const statusTitle = document.getElementById("statusTitle");
+    const statusDesc = document.getElementById("statusDesc");
+    const alphaCard = document.getElementById("alphaCard");
+    const omegaCard = document.getElementById("omegaCard");
+
+    if (statusTitle && statusDesc && alphaCard && omegaCard) {
+
+        alphaCard.className = "team-card alpha-card";
+        omegaCard.className = "team-card omega-card";
+
+        if (scores.alpha === 0 && scores.omega === 0) {
+
+            statusTitle.textContent = "🔥 Battle Just Began!";
+            statusDesc.textContent =
+                "The scoreboard is clean. Step up, lock in, and claim the lead!";
+
+        }
+        else if (scores.alpha === scores.omega) {
+
+            statusTitle.textContent = "⚖️ It's a Tie Game!";
+            statusDesc.textContent =
+                "Both teams are locked in neck-and-neck intensity!";
+
+            alphaCard.classList.add("is-tied");
+            omegaCard.classList.add("is-tied");
+
+        }
+        else if (scores.alpha > scores.omega) {
+
+            statusTitle.textContent = "👑 α-Alpha is Leading!";
+            statusDesc.textContent =
+                "Team Alpha is currently dominating the scoreboard.";
+
+            alphaCard.classList.add("is-winning");
+
+        }
+        else {
+
+            statusTitle.textContent = "👑 Ω-Omega is Leading!";
+            statusDesc.textContent =
+                "Team Omega is currently dominating the scoreboard.";
+
+            omegaCard.classList.add("is-winning");
+
+        }
+
     }
+
 }
 
 function logActivity(message) {
@@ -202,4 +290,107 @@ function logActivity(message) {
     item.innerHTML = `<span class="activity-time">[${timeString}]</span> ${message}`;
     
     activityLog.prepend(item);
+}
+
+const notices = [
+
+"🔥 Battle Arena is now LIVE!",
+
+"📚 Stay consistent. Small progress every day wins.",
+
+"🏆 Monthly Recap Paper coming soon!",
+
+"⚡ Alpha and Omega are battling for the championship!",
+
+"💙 Help your teammates whenever possible."
+
+];
+
+let noticeIndex = 0;
+
+setInterval(() => {
+
+noticeIndex++;
+
+if(noticeIndex >= notices.length){
+
+noticeIndex = 0;
+
+}
+
+const notice = document.getElementById("noticeText");
+
+if(notice){
+
+notice.style.opacity = 0;
+
+setTimeout(()=>{
+
+notice.textContent = notices[noticeIndex];
+
+notice.style.opacity = 1;
+
+},250);
+
+}
+
+},7000);
+
+// -------------------------------
+// Countdown Timer
+// -------------------------------
+
+// Change this whenever the next recap paper changes
+let recapDate = new Date();
+
+setInterval(updateCountdown,1000);
+
+updateCountdown();
+
+function updateCountdown() {
+
+    const daysElem = document.getElementById("days");
+    const hoursElem = document.getElementById("hours");
+    const minutesElem = document.getElementById("minutes");
+    const secondsElem = document.getElementById("seconds");
+
+    // If this page doesn't have a countdown, stop here.
+    if (!daysElem || !hoursElem || !minutesElem || !secondsElem) {
+        return;
+    }
+
+    const now = new Date();
+    const difference = recapDate - now;
+
+    if (difference <= 0) {
+
+        daysElem.textContent = "00";
+        hoursElem.textContent = "00";
+        minutesElem.textContent = "00";
+        secondsElem.textContent = "00";
+
+        return;
+    }
+
+    const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+
+    const hours = Math.floor(
+        (difference % (1000 * 60 * 60 * 24)) /
+        (1000 * 60 * 60)
+    );
+
+    const minutes = Math.floor(
+        (difference % (1000 * 60 * 60)) /
+        (1000 * 60)
+    );
+
+    const seconds = Math.floor(
+        (difference % (1000 * 60)) /
+        1000
+    );
+
+    daysElem.textContent = String(days).padStart(2, "0");
+    hoursElem.textContent = String(hours).padStart(2, "0");
+    minutesElem.textContent = String(minutes).padStart(2, "0");
+    secondsElem.textContent = String(seconds).padStart(2, "0");
 }
