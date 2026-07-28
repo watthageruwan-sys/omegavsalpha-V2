@@ -9,204 +9,151 @@
 <body>
 
     <div class="container">
-
         <!-- NAVIGATION -->
-        <div style="display:flex; justify-content:center; gap:12px; margin-bottom:20px; flex-wrap:wrap;">
-            <a href="index.html" style="background:rgba(255,215,0,0.25); border:1px solid #ffd700; color:#ffd700; padding:8px 18px; border-radius:20px; font-weight:600; font-size:0.9rem; text-decoration:none;">
-                ⚔️ Battle Arena
-            </a>
-
-            <a href="about.html" style="background:rgba(0,0,80,0.85); border:1px solid rgba(255,215,0,0.4); color:#ffd700; padding:8px 18px; border-radius:20px; font-weight:600; font-size:0.9rem; text-decoration:none;">
-                📖 About the Initiative
-            </a>
-        </div>
-
+<div style="display:flex; justify-content:center; gap:12px; margin-bottom:20px; flex-wrap:wrap;">
+    <a href="index.html" style="background:rgba(255,215,0,0.25); border:1px solid #ffd700; color:#ffd700; padding:8px 18px; border-radius:20px; font-weight:600; font-size:0.9rem; text-decoration:none;">
+        ⚔️ Battle Arena
+    </a>
+    <a href="about.html" style="background:rgba(0,0,80,0.85); border:1px solid rgba(255,215,0,0.4); color:#ffd700; padding:8px 18px; border-radius:20px; font-weight:600; font-size:0.9rem; text-decoration:none;">
+        📖 About the Initiative
+    </a>
+</div>
         <!-- HEADER -->
         <header>
-
-            <!-- LIVE NOTICE -->
-            <div class="notice-banner">
-                <div class="notice-left">
-                    📢 <strong>Notice</strong>
-                </div>
-
-                <div class="notice-text" id="noticeText">
-                    Welcome to the Alpha vs Omega Battle Arena! Stay tuned for upcoming recap papers and announcements.
-                </div>
-
-                <div class="notice-badge">
-                    LIVE
-                </div>
-            </div>
-
-            <div class="subtitle">
-                Kuruduwatta Royal College - Grade 12 Study Group Initiative
-            </div>
-
-            <h1>
-                α-ALPHA vs Ω-OMEGA
-            </h1>
-
+            <div class="subtitle">Kuruduwatta Royal College - Grade 12 Study Group Initiative</div>
+            <h1>α-ALPHA vs Ω-OMEGA</h1>
             <div class="college-name">
                 <div class="school-flag">
                     <div class="navy-half"></div>
                     <div class="gold-half"></div>
                 </div>
-
                 Battle Arena & Study Tracker
             </div>
-
             <div>
                 <div class="viewer-badge-container">
                     <span class="viewer-dot"></span>
-                    👀 Live Viewers:
-                    <span id="viewerCount">1</span>
+                    👀 Live Viewers: <span id="viewerCount">1</span>
                 </div>
             </div>
-
         </header>
-
-        <!-- COUNTDOWN TIMER -->
-        <div class="countdown-section">
-
-            <h2>⏳ Next Recap Paper</h2>
-
-            <div class="countdown-container">
-
-                <div class="count-box">
-                    <span id="days">00</span>
-                    <small>Days</small>
-                </div>
-
-                <div class="count-box">
-                    <span id="hours">00</span>
-                    <small>Hours</small>
-                </div>
-
-                <div class="count-box">
-                    <span id="minutes">00</span>
-                    <small>Minutes</small>
-                </div>
-
-                <div class="count-box">
-                    <span id="seconds">00</span>
-                    <small>Seconds</small>
-                </div>
-
-            </div>
-
-        </div>
 
         <!-- SCOREBOARD OVERVIEW -->
         <div class="scoreboard-overview">
-
+            <!-- Team Alpha Card -->
             <div class="team-card alpha-card" id="alphaCard">
                 <div class="team-title">α - Team Alpha</div>
                 <div class="score-display" id="alphaScore">0</div>
-                <div class="score-subtitle" style="color:#94a3b8;font-size:0.9rem;">
-                    Total Points
-                </div>
+                <div class="score-subtitle" style="color: #94a3b8; font-size: 0.9rem;">Total Points</div>
             </div>
 
+            <!-- Team Omega Card -->
             <div class="team-card omega-card" id="omegaCard">
                 <div class="team-title">Ω - Team Omega</div>
                 <div class="score-display" id="omegaScore">0</div>
-                <div class="score-subtitle" style="color:#94a3b8;font-size:0.9rem;">
-                    Total Points
-                </div>
+                <div class="score-subtitle" style="color: #94a3b8; font-size: 0.9rem;">Total Points</div>
             </div>
-
         </div>
 
-        <!-- STREAMS -->
+        <!-- STREAMS & ADVANCED BREAKDOWN -->
         <div class="streams-section">
-
             <h2>📚 Stream Score Breakdown (Public)</h2>
-
             <div class="streams-grid">
-
                 <div class="stream-card">
                     <div class="stream-name">Physical Science</div>
                     <div class="stream-score" id="stream-Physical-Science">0</div>
                 </div>
-
                 <div class="stream-card">
                     <div class="stream-name">Bio Science</div>
                     <div class="stream-score" id="stream-Bio-Science">0</div>
                 </div>
-
                 <div class="stream-card">
                     <div class="stream-name">Commerce</div>
                     <div class="stream-score" id="stream-Commerce">0</div>
                 </div>
-
                 <div class="stream-card">
                     <div class="stream-name">Technology</div>
                     <div class="stream-score" id="stream-Technology">0</div>
                 </div>
-
                 <div class="stream-card">
                     <div class="stream-name">Arts</div>
                     <div class="stream-score" id="stream-Arts">0</div>
                 </div>
-
             </div>
-
         </div>
 
-        <!-- BATTLE STATUS -->
+        <!-- BATTLE STATUS BANNER -->
         <div class="battle-status">
-
             <div class="status-content">
-
-                <h3 id="statusTitle">
-                    🔥 Battle Just Began!
-                </h3>
-
-                <p id="statusDesc">
-                    The scoreboard is clean. Step up, lock in, and claim the lead!
-                </p>
-
+                <h3 id="statusTitle">🔥 Battle Just Began!</h3>
+                <p id="statusDesc">The scoreboard is clean. Step up, lock in, and claim the lead!</p>
             </div>
-
             <div class="progress-container">
-
                 <div class="progress-labels">
                     <span id="alphaPct">α-Alpha (50%)</span>
                     <span id="omegaPct">Ω-Omega (50%)</span>
                 </div>
-
                 <div class="progress-bar-container">
                     <div class="progress-alpha" id="alphaBar"></div>
                     <div class="progress-omega" id="omegaBar"></div>
                 </div>
-
             </div>
-
         </div>
 
         <!-- ACTIVITY LOG -->
         <div class="activity-section">
-
             <h2>📜 Live Activity Feed</h2>
-
             <div class="activity-log" id="activityLog">
-                <div class="activity-item">
-                    <span class="activity-time">[System]</span>
-                    Battle arena initialized. Standing by for points...
+                <div class="activity-item"><span class="activity-time">[System]</span> Battle arena initialized. Standing by for points...</div>
+            </div>
+        </div>
+
+        <!-- CONTROLS / ADMIN PANEL -->
+        <div class="controls-section locked" id="controlsSection">
+            <div class="controls-header">
+                <h2>🛠️ Admin Point Controller</h2>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <span class="lock-badge" id="lockBadge">🔒 Locked</span>
+                    <button class="admin-login-btn" id="adminBtn" onclick="toggleAdmin()">🔒 Admin Login</button>
                 </div>
             </div>
+            
+            <div class="controls-body">
+                <div class="control-group">
+                    <label for="streamSelect">Select Academic Stream</label>
+                    <select id="streamSelect">
+                        <option value="Physical Science">Physical Science</option>
+                        <option value="Bio Science">Bio Science</option>
+                        <option value="Commerce">Commerce</option>
+                        <option value="Technology">Technology</option>
+                        <option value="Arts">Arts</option>
+                    </select>
+                </div>
 
+                <div class="control-group">
+                    <label for="achievementSelect">Select Official Point Criteria</label>
+                    <select id="achievementSelect">
+                        <option value="10">Top Average Score (+10 pts)</option>
+                        <option value="5">Most Improved (+5 pts)</option>
+                        <option value="5">Full Attendance (+5 pts)</option>
+                        <option value="3">Shared Resources (+3 pts)</option>
+                    </select>
+                </div>
+
+                <div class="control-row">
+                    <button class="btn-action" onclick="awardCustomStreamScore('alpha')">Award to α-Alpha</button>
+                    <button class="btn-action" onclick="awardCustomStreamScore('omega')">Award to Ω-Omega</button>
+                </div>
+
+                <button class="btn-danger" onclick="resetScores()">⚠️ Reset All Scores</button>
+            </div>
         </div>
-     
+
         <!-- FOOTER -->
         <footer>
             Kuruduwatta Royal College &bull; Grade 12 Study Group Initiative &copy; 2026
         </footer>
-
     </div>
 
     <script src="script.js"></script>
-
 </body>
 </html>
