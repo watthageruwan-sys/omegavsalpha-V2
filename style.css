@@ -83,6 +83,150 @@ header h1 {
     height: 50%;
 }
 
+/* --- LIVE NOTICE BANNER --- */
+
+.notice-banner{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+
+    background:rgba(0,0,60,0.85);
+    backdrop-filter:blur(8px);
+
+    border:1px solid rgba(255,215,0,.3);
+
+    border-radius:14px;
+
+    padding:15px 20px;
+
+    margin-bottom:25px;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.4);
+}
+
+.notice-left{
+    color:#ffd700;
+    font-weight:700;
+    white-space:nowrap;
+}
+
+.notice-text{
+    flex:1;
+    color:#e2e8f0;
+    text-align:center;
+    transition: opacity .4s ease;
+}
+
+.notice-badge{
+
+    background:#10b981;
+
+    color:white;
+
+    padding:5px 12px;
+
+    border-radius:20px;
+
+    font-size:.75rem;
+
+    font-weight:bold;
+
+    animation:pulseNotice 1.5s infinite;
+}
+
+@keyframes pulseNotice{
+
+0%{
+transform:scale(1);
+}
+
+50%{
+transform:scale(1.08);
+}
+
+100%{
+transform:scale(1);
+}
+
+}
+
+/* ---------- COUNTDOWN ---------- */
+
+.countdown-section{
+
+    background:rgba(0,0,60,.85);
+
+    backdrop-filter:blur(8px);
+
+    border:1px solid rgba(255,215,0,.3);
+
+    border-radius:14px;
+
+    padding:20px;
+
+    margin-bottom:25px;
+
+    text-align:center;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.4);
+
+}
+
+.countdown-section h2{
+
+    color:#ffd700;
+
+    margin-bottom:18px;
+
+}
+
+.countdown-container{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:18px;
+
+    flex-wrap:wrap;
+
+}
+
+.count-box{
+
+    background:rgba(0,0,40,.9);
+
+    border:1px solid rgba(255,215,0,.2);
+
+    border-radius:12px;
+
+    width:95px;
+
+    padding:15px;
+
+}
+
+.count-box span{
+
+    display:block;
+
+    font-size:2rem;
+
+    font-weight:700;
+
+    color:#60a5fa;
+
+}
+
+.count-box small{
+
+    color:#cbd5e1;
+
+    font-size:.8rem;
+
+}
+
 /* --- SCOREBOARD OVERVIEW --- */
 .scoreboard-overview {
     display: grid;
