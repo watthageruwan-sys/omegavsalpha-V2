@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbyEE5g2xVdhi69w6UvSRwz1VloJ6bX-drsUqn4xyMi9SDMllf7ihKHeUPcSrbyIdsWa5g/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbxViTsn4hhaMDtT4_iaq8RA71V2cBSzUVV28Z5-YhUWVTC1JwuHReEG9u02Z1MtYJDyTg/exec";
 
 let scores = {
     alpha: 0,
