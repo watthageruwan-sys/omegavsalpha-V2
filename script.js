@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbyVvs4JkSocFIgCOrNzyRIO02IayPswLJkeEzYz04OnFNCg2jpdxy-9HyTJxdR1utvvhA/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbz4Q1Lit-6JmlMAAfKKrXCgBfDLohXN4wbXW_1lW0gAbZNNt6Nj0RZQYK8IpGKe-f-jlg/exec";
 
 let scores = { alpha: 0, omega: 0 };
 let streamScores = {
@@ -14,26 +14,21 @@ let topPerformers = {
     omega: [ { name: "—", note: "" }, { name: "—", note: "" }, { name: "—", note: "" } ]
 };
 
-// ========== DOWNLOAD LINKS – every subject ==========
+// ========== DOWNLOAD LINKS ==========
 const DEFAULT_DOWNLOADS = {
-    // Physical Science
     "ps-combined-maths": { title: "Combined Mathematics", meta: "Physical Science", url: "", icon: "📐" },
     "ps-physics":        { title: "Physics",              meta: "Physical Science", url: "", icon: "⚛️" },
     "ps-chemistry":      { title: "Chemistry",            meta: "Physical Science", url: "", icon: "🧪" },
-    // Bio Science
     "bs-biology":        { title: "Biology",              meta: "Bio Science", url: "", icon: "🧬" },
     "bs-chemistry":      { title: "Chemistry",            meta: "Bio Science", url: "", icon: "🧪" },
     "bs-physics":        { title: "Physics",              meta: "Bio Science", url: "", icon: "⚛️" },
     "bs-agriculture":    { title: "Agriculture",          meta: "Bio Science", url: "", icon: "🌾" },
-    // Commerce
     "cm-accounting":     { title: "Accounting",           meta: "Commerce", url: "", icon: "📒" },
     "cm-business":       { title: "Business Studies",     meta: "Commerce", url: "", icon: "💼" },
     "cm-economics":      { title: "Economics",            meta: "Commerce", url: "", icon: "📈" },
-    // Technology
     "tech-eng":          { title: "Engineering Technology", meta: "Technology", url: "", icon: "⚙️" },
     "tech-sft":          { title: "Science for Technology", meta: "Technology", url: "", icon: "🔬" },
     "tech-ict":          { title: "ICT",                  meta: "Technology", url: "", icon: "💻" },
-    // Arts
     "arts-history":      { title: "History",              meta: "Arts", url: "", icon: "📜" },
     "arts-geography":    { title: "Geography",            meta: "Arts", url: "", icon: "🌍" },
     "arts-polscience":   { title: "Political Science",    meta: "Arts", url: "", icon: "🏛️" },
@@ -57,7 +52,8 @@ let pollVotes = {};
 function hasVotedLocally() { return localStorage.getItem(POLL_VOTED_KEY) === "true"; }
 function markVotedLocally() { localStorage.setItem(POLL_VOTED_KEY, "true"); }
 
-const RECAP_TARGET = new Date("2026-08-05T09:00:00");
+// ========== RECAP TIMER (now from backend) ==========
+let RECAP_TARGET = new Date("2026-08-05T09:00:00");
 
 setInterval(() => {
     fetch(API_URL, {
@@ -97,7 +93,6 @@ function fetchAllData() {
             }
 
             if (data.downloads && Object.keys(data.downloads).length > 0) {
-                // merge so new subjects still appear even if old data exists
                 downloads = { ...DEFAULT_DOWNLOADS, ...data.downloads };
             }
             renderDownloads();
@@ -106,6 +101,26 @@ function fetchAllData() {
             if (data.poll) pollVotes = data.poll;
             else { pollVotes = {}; POLL_OPTIONS.forEach(s => pollVotes[s.replace(/\s+/g,"")] = 0); }
             renderPoll();
+
+            // Load recap date from backend
+            if (data.recapDate) {
+                RECAP_TARGET = new Date(data.recapDate);
+                // Fill admin form if present
+                const dateInput = document.getElementById("recapDateInput");
+                if (dateInput) {
+                    // Convert to local datetime-local format (YYYY-MM-DDTHH:MM)
+                    const d = RECAP_TARGET;
+                    const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+                    dateInput.value = local.toISOString().slice(0, 16);
+                }
+                // Update the note under the countdown
+                const note = document.getElementById("countdownNote");
+                if (note) {
+                    const options = { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+                    note.textContent = "Target: " + RECAP_TARGET.toLocaleString('en-GB', options);
+                }
+            }
+
             updateDisplay();
         })
         .catch(err => console.error(err));
@@ -233,6 +248,35 @@ function updateCountdown() {
     document.getElementById("countdownSecs").textContent = Math.floor((diff % 60000) / 1000).toString().padStart(2,"0");
 }
 
+/* ========== SAVE RECAP DATE ========== */
+function saveRecapDateFromAdmin() {
+    if (!isAdminLoggedIn) { alert("Please login as admin first."); return; }
+    const input = document.getElementById("recapDateInput");
+    if (!input || !input.value) { alert("Please select a date and time."); return; }
+
+    // Convert local datetime-local value to ISO string
+    const localDate = new Date(input.value);
+    const iso = localDate.toISOString();
+
+    RECAP_TARGET = localDate;
+
+    fetch(API_URL, {
+        method: "POST", mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ recapDate: iso })
+    }).catch(() => {});
+
+    // Update the note
+    const note = document.getElementById("countdownNote");
+    if (note) {
+        const options = { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+        note.textContent = "Target: " + RECAP_TARGET.toLocaleString('en-GB', options);
+    }
+
+    logActivity("Recap Paper countdown date updated by admin.");
+    alert("✅ Recap timer updated! Everyone will see the new countdown shortly.");
+}
+
 function renderTopPerformers() {
     const aList = document.getElementById("topAlphaList");
     const oList = document.getElementById("topOmegaList");
@@ -282,12 +326,9 @@ function saveTopPerformersFromAdmin() {
     alert("✅ Top Performers saved!");
 }
 
-/* ========== DOWNLOADS ========== */
 function renderDownloads() {
     const container = document.getElementById("downloadsContainer");
     if (!container) return;
-
-    // Group by stream for nicer display
     const groups = {
         "Physical Science": ["ps-combined-maths","ps-physics","ps-chemistry"],
         "Bio Science": ["bs-biology","bs-chemistry","bs-physics","bs-agriculture"],
@@ -295,7 +336,6 @@ function renderDownloads() {
         "Technology": ["tech-eng","tech-sft","tech-ict"],
         "Arts": ["arts-history","arts-geography","arts-polscience","arts-literature"]
     };
-
     let html = "";
     for (const stream in groups) {
         html += `<div style="grid-column:1/-1; margin-top:8px; margin-bottom:4px; color:#ffd700; font-size:0.85rem; font-weight:600;">${stream}</div>`;
@@ -344,7 +384,6 @@ function saveDownloadsFromAdmin() {
     alert("✅ All download links saved!");
 }
 
-/* ========== POLL ========== */
 function renderPoll() {
     const container = document.getElementById("pollContainer");
     if (!container) return;
