@@ -149,6 +149,23 @@
             </p>
         </div>
 
+        <!-- RECAP TIMER EDITOR -->
+        <div class="section-card">
+            <h2>⏱️ Update Recap Paper Countdown</h2>
+            <p style="color:#94a3b8; font-size:0.85rem; margin-bottom:16px;">
+                Set the exact date and time of the next Recap Paper. The countdown on the Battle Arena will update for everyone.
+                You must login as admin first.
+            </p>
+            <div>
+                <label style="font-size:0.8rem; color:#94a3b8;">New Recap Date & Time</label>
+                <input type="datetime-local" id="recapDateInput"
+                    style="width:100%; margin-top:6px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:10px; border-radius:8px; font-size:1rem;">
+            </div>
+            <button class="btn-action" style="margin-top:16px; width:100%;" onclick="saveRecapDateFromAdmin()">
+                💾 Update Countdown Timer
+            </button>
+        </div>
+
         <!-- PAST PAPER LINKS EDITOR -->
         <div class="section-card">
             <h2>📥 Edit Past Paper Download Links</h2>
