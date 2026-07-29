@@ -27,6 +27,7 @@ const DEFAULT_DOWNLOADS = {
     "cm-business":       { title: "Business Studies",     meta: "Commerce", url: "", icon: "💼" },
     "cm-economics":      { title: "Economics",            meta: "Commerce", url: "", icon: "📈" },
     "tech-eng":          { title: "Engineering Technology", meta: "Technology", url: "", icon: "⚙️" },
+    "tech-bst":          { title: "Bio Systems Technology", meta: "Technology", url: "", icon: "🌱" },
     "tech-sft":          { title: "Science for Technology", meta: "Technology", url: "", icon: "🔬" },
     "tech-ict":          { title: "ICT",                  meta: "Technology", url: "", icon: "💻" },
     "arts-history":      { title: "History",              meta: "Arts", url: "", icon: "📜" },
@@ -42,7 +43,7 @@ const POLL_SUBJECTS = [
     { stream: "Physical Science", subjects: ["Combined Mathematics", "Physics", "Chemistry"] },
     { stream: "Bio Science", subjects: ["Biology", "Chemistry", "Physics", "Agriculture"] },
     { stream: "Commerce", subjects: ["Accounting", "Business Studies", "Economics"] },
-    { stream: "Technology", subjects: ["Engineering Technology", "Science for Technology", "ICT"] },
+    { stream: "Technology", subjects: ["Engineering Technology", "Bio Systems Technology", "Science for Technology", "ICT"] },
     { stream: "Arts", subjects: ["History", "Geography", "Political Science", "Literature"] }
 ];
 const POLL_OPTIONS = POLL_SUBJECTS.flatMap(g => g.subjects);
@@ -333,7 +334,7 @@ function renderDownloads() {
         "Physical Science": ["ps-combined-maths","ps-physics","ps-chemistry"],
         "Bio Science": ["bs-biology","bs-chemistry","bs-physics","bs-agriculture"],
         "Commerce": ["cm-accounting","cm-business","cm-economics"],
-        "Technology": ["tech-eng","tech-sft","tech-ict"],
+        "Technology": ["tech-eng","tech-bst","tech-sft","tech-ict"],
         "Arts": ["arts-history","arts-geography","arts-polscience","arts-literature"]
     };
     let html = "";
