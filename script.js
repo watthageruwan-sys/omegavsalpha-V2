@@ -4,8 +4,6 @@ let scores = { alpha: 0, omega: 0 };
 let streamScores = {
     "Physical Science": 0, "Bio Science": 0, "Commerce": 0, "Technology": 0, "Arts": 0
 };
-let isAdminLoggedIn = false;
-const ADMIN_PIN = "royal123";
 let viewerId = Math.random().toString(36).substring(2);
 
 // ========== SCORE ACTIVITY FEED ==========
@@ -145,30 +143,11 @@ function syncToSheet() {
     }).catch(() => {});
 }
 
-function toggleAdmin() {
-    const controls = document.getElementById("controlsSection");
-    const adminBtn = document.getElementById("adminBtn");
-    const lockBadge = document.getElementById("lockBadge");
-    if (!isAdminLoggedIn) {
-        const pin = prompt("Enter Admin PIN:");
-        if (pin === ADMIN_PIN) {
-            isAdminLoggedIn = true;
-            if (controls) { controls.classList.remove("locked"); controls.classList.add("unlocked"); }
-            if (adminBtn) { adminBtn.classList.add("unlocked"); adminBtn.textContent = "🔓 Admin Logged In"; }
-            if (lockBadge) lockBadge.textContent = "🔓 Unlocked";
-            logActivity("Admin access granted.");
-        } else if (pin !== null) alert("Incorrect PIN!");
-    } else {
-        isAdminLoggedIn = false;
-        if (controls) { controls.classList.remove("unlocked"); controls.classList.add("locked"); }
-        if (adminBtn) { adminBtn.classList.remove("unlocked"); adminBtn.textContent = "🔒 Admin Login"; }
-        if (lockBadge) lockBadge.textContent = "🔒 Locked";
-        logActivity("Admin logged out.");
-    }
-}
-
 function awardCustomStreamScore(team) {
-    if (!isAdminLoggedIn) { alert("Please login as admin first."); return; }
+    if (localStorage.getItem("isAdminLoggedIn") !== "true") {
+        alert("Please login as admin first.");
+        return;
+    }
     const stream = document.getElementById("streamSelect").value;
     const points = parseInt(document.getElementById("achievementSelect").value);
     const text = document.getElementById("achievementSelect").selectedOptions[0].text.split(" (")[0];
@@ -228,7 +207,10 @@ function renderScoreFeed() {
 }
 
 function resetScores() {
-    if (!isAdminLoggedIn) { alert("Please login as admin first."); return; }
+    if (localStorage.getItem("isAdminLoggedIn") !== "true") {
+        alert("Please login as admin first.");
+        return;
+    }
     if (confirm("Reset all scores to zero?")) {
         scores.alpha = 0; scores.omega = 0;
         Object.keys(streamScores).forEach(k => streamScores[k] = 0);
@@ -310,7 +292,10 @@ function updateCountdown() {
 }
 
 function saveRecapDateFromAdmin() {
-    if (!isAdminLoggedIn) { alert("Please login as admin first."); return; }
+    if (localStorage.getItem("isAdminLoggedIn") !== "true") {
+        alert("Please login as admin first.");
+        return;
+    }
     const input = document.getElementById("recapDateInput");
     if (!input || !input.value) { alert("Please select a date and time."); return; }
 
@@ -366,7 +351,10 @@ function fillTopPerformersForm() {
 }
 
 function saveTopPerformersFromAdmin() {
-    if (!isAdminLoggedIn) { alert("Please login as admin first."); return; }
+    if (localStorage.getItem("isAdminLoggedIn") !== "true") {
+        alert("Please login as admin first.");
+        return;
+    }
     for (let i=0;i<3;i++) {
         topPerformers.alpha[i] = {
             name: document.getElementById(`tp-alpha-${i+1}-name`)?.value.trim()||"—",
@@ -423,7 +411,10 @@ function fillDownloadsForm() {
 }
 
 function saveDownloadsFromAdmin() {
-    if (!isAdminLoggedIn) { alert("Please login as admin first."); return; }
+    if (localStorage.getItem("isAdminLoggedIn") !== "true") {
+        alert("Please login as admin first.");
+        return;
+    }
     for (const key in DEFAULT_DOWNLOADS) {
         const el = document.getElementById("dl-" + key);
         if (!downloads[key]) downloads[key] = { ...DEFAULT_DOWNLOADS[key] };
