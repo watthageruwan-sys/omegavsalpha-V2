@@ -2,169 +2,430 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
     <title>α-ALPHA vs Ω-OMEGA - Battle Arena</title>
+
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-    <div class="container">
-        <!-- NAVIGATION -->
-        <div class="nav-bar">
-            <a href="index.html" class="nav-btn active">⚔️ Battle Arena</a>
-            <a href="about.html" class="nav-btn">📖 About the Initiative</a>
-            <a href="admin.html" class="nav-btn">🛠️ Admin Panel</a>
-        </div>
+<div class="container">
 
-        <!-- HEADER -->
-        <header>
-            <div class="subtitle">Kuruduwatta Royal College - Grade 12 Study Group Initiative</div>
-            <h1>α-ALPHA vs Ω-OMEGA</h1>
-            <div class="college-name">
-                <div class="school-flag">
-                    <div class="navy-half"></div>
-                    <div class="gold-half"></div>
-                </div>
-                Battle Arena & Study Tracker
-            </div>
-            <div>
-                <div class="viewer-badge-container">
-                    <span class="viewer-dot"></span>
-                    👀 Live Viewers: <span id="viewerCount">1</span>
-                </div>
-            </div>
-        </header>
+    <!-- ========================= -->
+    <!-- NAVIGATION -->
+    <!-- ========================= -->
 
-        <!-- SCOREBOARD OVERVIEW -->
-        <div class="scoreboard-overview">
-            <div class="team-card alpha-card" id="alphaCard">
-                <div class="team-title">α - Team Alpha</div>
-                <div class="score-display" id="alphaScore">0</div>
-                <div style="color: #94a3b8; font-size: 0.9rem;">Total Points</div>
-            </div>
-            <div class="team-card omega-card" id="omegaCard">
-                <div class="team-title">Ω - Team Omega</div>
-                <div class="score-display" id="omegaScore">0</div>
-                <div style="color: #94a3b8; font-size: 0.9rem;">Total Points</div>
-            </div>
-            
-            <!-- LIVE FEED BANNER CARD -->
-            <div style="grid-column: 1 / -1; background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255, 215, 0, 0.35); border-radius: 12px; padding: 14px 20px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);">
-                <div style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">⚡ Latest Activity</div>
-                <div id="latestActivityText" style="font-size: 1.05rem; font-weight: 600; color: #f8fafc;">Standing by for new points...</div>
-            </div>
-        </div>
+    <div class="nav-bar">
+        <a href="index.html" class="nav-btn active">
+            ⚔️ Battle Arena
+        </a>
 
-        <!-- TOP PERFORMERS -->
-        <div class="section-card">
-            <h2>🌟 Top Performers This Cycle</h2>
-            <div class="top-performers-grid">
-                <div class="top-team alpha">
-                    <h3>α Team Alpha</h3>
-                    <div id="topAlphaList"></div>
-                </div>
-                <div class="top-team omega">
-                    <h3>Ω Team Omega</h3>
-                    <div id="topOmegaList"></div>
-                </div>
-            </div>
-        </div>
+        <a href="about.html" class="nav-btn">
+            📖 About the Initiative
+        </a>
 
-        <!-- STREAMS BREAKDOWN (IDs corrected to match JS hyphenation) -->
-        <div class="streams-section">
-            <h2>📚 Stream Score Breakdown (Public)</h2>
-            <div class="streams-grid">
-                <div class="stream-card">
-                    <div class="stream-name">Physical Science</div>
-                    <div class="stream-score" id="stream-Physical-Science">0</div>
-                </div>
-                <div class="stream-card">
-                    <div class="stream-name">Bio Science</div>
-                    <div class="stream-score" id="stream-Bio-Science">0</div>
-                </div>
-                <div class="stream-card">
-                    <div class="stream-name">Commerce</div>
-                    <div class="stream-score" id="stream-Commerce">0</div>
-                </div>
-                <div class="stream-card">
-                    <div class="stream-name">Technology</div>
-                    <div class="stream-score" id="stream-Technology">0</div>
-                </div>
-                <div class="stream-card">
-                    <div class="stream-name">Arts</div>
-                    <div class="stream-score" id="stream-Arts">0</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- BATTLE STATUS BANNER -->
-        <div class="battle-status">
-            <div class="status-content">
-                <h3 id="statusTitle">🔥 Battle Just Began!</h3>
-                <p id="statusDesc">The scoreboard is clean. Step up, lock in, and claim the lead!</p>
-            </div>
-            <div class="progress-container">
-                <div class="progress-labels">
-                    <span id="alphaPct">α-Alpha (50%)</span>
-                    <span id="omegaPct">Ω-Omega (50%)</span>
-                </div>
-                <div class="progress-bar-container">
-                    <div class="progress-alpha" id="alphaBar"></div>
-                    <div class="progress-omega" id="omegaBar"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- COUNTDOWN TIMER -->
-        <div class="section-card">
-            <h2>⏱️ Next Recap Paper Countdown</h2>
-            <div class="countdown-grid">
-                <div class="countdown-box">
-                    <div class="countdown-value" id="countdownDays">0</div>
-                    <div class="countdown-label">Days</div>
-                </div>
-                <div class="countdown-box">
-                    <div class="countdown-value" id="countdownHours">00</div>
-                    <div class="countdown-label">Hours</div>
-                </div>
-                <div class="countdown-box">
-                    <div class="countdown-value" id="countdownMins">00</div>
-                    <div class="countdown-label">Minutes</div>
-                </div>
-                <div class="countdown-box">
-                    <div class="countdown-value" id="countdownSecs">00</div>
-                    <div class="countdown-label">Seconds</div>
-                </div>
-            </div>
-            <p class="countdown-note" id="countdownNote">Target: 5 August 2026 • 9:00 AM</p>
-        </div>
-
-        <!-- LIVE ACTIVITY FEED -->
-        <div class="activity-section">
-            <h2>📜 Live Activity Feed</h2>
-            <div class="activity-log" id="activityLog">
-                <div class="activity-item"><span class="activity-time">[System]</span> Battle arena initialized. Standing by for points...</div>
-            </div>
-        </div>
-
-        <!-- PAST PAPERS -->
-        <div class="section-card">
-            <h2>📥 Past Papers & Study Resources</h2>
-            <div class="downloads-grid" id="downloadsContainer"></div>
-        </div>
-
-        <!-- POLL -->
-        <div class="section-card">
-            <h2>🗳️ Student Voice – Quick Poll</h2>
-            <div id="pollContainer"></div>
-        </div>
-
-        <!-- FOOTER -->
-        <footer>
-            Kuruduwatta Royal College &bull; Grade 12 Study Group Initiative &copy; 2026
-        </footer>
+        <a href="admin.html" class="nav-btn">
+            🛠️ Admin Panel
+        </a>
     </div>
 
-    <script src="script.js"></script>
+    <!-- ========================= -->
+    <!-- HEADER -->
+    <!-- ========================= -->
+
+    <header>
+
+        <div class="subtitle">
+            Kuruduwatta Royal College
+            Grade 12 Study Group Initiative
+        </div>
+
+        <h1>
+            α-ALPHA vs Ω-OMEGA
+        </h1>
+
+        <div class="college-name">
+
+            <div class="school-flag">
+                <div class="navy-half"></div>
+                <div class="gold-half"></div>
+            </div>
+
+            Battle Arena & Study Tracker
+
+        </div>
+
+        <div class="viewer-badge-container">
+
+            <span class="viewer-dot"></span>
+
+            👀 Live Viewers :
+            <span id="viewerCount">1</span>
+
+        </div>
+
+    </header>
+
+    <!-- ========================= -->
+    <!-- SCOREBOARD -->
+    <!-- ========================= -->
+
+    <div class="scoreboard-overview">
+
+        <div class="team-card alpha-card"
+             id="alphaCard">
+
+            <div class="team-title">
+                α - Team Alpha
+            </div>
+
+            <div class="score-display"
+                 id="alphaScore">
+                0
+            </div>
+
+            <div class="team-small-text">
+                Total Points
+            </div>
+
+        </div>
+
+        <div class="team-card omega-card"
+             id="omegaCard">
+
+            <div class="team-title">
+                Ω - Team Omega
+            </div>
+
+            <div class="score-display"
+                 id="omegaScore">
+                0
+            </div>
+
+            <div class="team-small-text">
+                Total Points
+            </div>
+
+        </div>
+                <!-- ========================= -->
+        <!-- BATTLE STATUS -->
+        <!-- ========================= -->
+
+        <div class="battle-status">
+
+            <div class="status-content">
+
+                <h3 id="statusTitle">
+                    🔥 Battle Just Began!
+                </h3>
+
+                <p id="statusDesc">
+                    The scoreboard is clean.
+                    Step up, lock in, and claim the lead!
+                </p>
+
+            </div>
+
+            <div class="progress-container">
+
+                <div class="progress-labels">
+
+                    <span id="alphaPct">
+                        α-Alpha (50%)
+                    </span>
+
+                    <span id="omegaPct">
+                        Ω-Omega (50%)
+                    </span>
+
+                </div>
+
+                <div class="progress-bar-container">
+
+                    <div class="progress-alpha"
+                         id="alphaBar">
+                    </div>
+
+                    <div class="progress-omega"
+                         id="omegaBar">
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ========================= -->
+        <!-- LATEST ACTIVITY -->
+        <!-- ========================= -->
+
+        <div class="latest-banner">
+
+            <div class="latest-title">
+                ⚡ Latest Activity
+            </div>
+
+            <div id="latestActivityText"
+                 class="latest-text">
+
+                Standing by for new points...
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================= -->
+    <!-- TOP PERFORMERS -->
+    <!-- ========================= -->
+
+    <div class="section-card">
+
+        <h2>
+            🌟 Top Performers This Cycle
+        </h2>
+
+        <div class="top-performers-grid">
+
+            <div class="top-team alpha">
+
+                <h3>
+                    α Team Alpha
+                </h3>
+
+                <div id="topAlphaList"></div>
+
+            </div>
+
+            <div class="top-team omega">
+
+                <h3>
+                    Ω Team Omega
+                </h3>
+
+                <div id="topOmegaList"></div>
+
+            </div>
+
+        </div>
+
+    </div>
+        <!-- ========================= -->
+    <!-- STREAM SCORE BREAKDOWN -->
+    <!-- ========================= -->
+
+    <div class="streams-section">
+
+        <h2>
+            📚 Stream Score Breakdown (Public)
+        </h2>
+
+        <div class="streams-grid">
+
+            <div class="stream-card">
+                <div class="stream-name">
+                    Physical Science
+                </div>
+
+                <div class="stream-score"
+                     id="stream-Physical-Science">
+                    0
+                </div>
+            </div>
+
+            <div class="stream-card">
+                <div class="stream-name">
+                    Bio Science
+                </div>
+
+                <div class="stream-score"
+                     id="stream-Bio-Science">
+                    0
+                </div>
+            </div>
+
+            <div class="stream-card">
+                <div class="stream-name">
+                    Commerce
+                </div>
+
+                <div class="stream-score"
+                     id="stream-Commerce">
+                    0
+                </div>
+            </div>
+
+            <div class="stream-card">
+                <div class="stream-name">
+                    Technology
+                </div>
+
+                <div class="stream-score"
+                     id="stream-Technology">
+                    0
+                </div>
+            </div>
+
+            <div class="stream-card">
+                <div class="stream-name">
+                    Arts
+                </div>
+
+                <div class="stream-score"
+                     id="stream-Arts">
+                    0
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================= -->
+    <!-- COUNTDOWN TIMER -->
+    <!-- ========================= -->
+
+    <div class="section-card">
+
+        <h2>
+            ⏱️ Next Recap Paper Countdown
+        </h2>
+
+        <div class="countdown-grid">
+
+            <div class="countdown-box">
+                <div class="countdown-value"
+                     id="countdownDays">
+                    0
+                </div>
+
+                <div class="countdown-label">
+                    Days
+                </div>
+            </div>
+
+            <div class="countdown-box">
+                <div class="countdown-value"
+                     id="countdownHours">
+                    00
+                </div>
+
+                <div class="countdown-label">
+                    Hours
+                </div>
+            </div>
+
+            <div class="countdown-box">
+                <div class="countdown-value"
+                     id="countdownMins">
+                    00
+                </div>
+
+                <div class="countdown-label">
+                    Minutes
+                </div>
+            </div>
+
+            <div class="countdown-box">
+                <div class="countdown-value"
+                     id="countdownSecs">
+                    00
+                </div>
+
+                <div class="countdown-label">
+                    Seconds
+                </div>
+            </div>
+
+        </div>
+
+        <p class="countdown-note"
+           id="countdownNote">
+            Target: 5 August 2026 • 9:00 AM
+        </p>
+
+    </div>
+        <!-- ========================= -->
+    <!-- LIVE ACTIVITY FEED -->
+    <!-- ========================= -->
+
+    <div class="activity-section">
+
+        <h2>
+            📜 Live Activity Feed
+        </h2>
+
+        <div class="activity-log"
+             id="activityLog">
+
+            <div class="activity-item">
+
+                <span class="activity-time">
+                    [System]
+                </span>
+
+                Battle arena initialized.
+                Standing by for points...
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================= -->
+    <!-- PAST PAPERS -->
+    <!-- ========================= -->
+
+    <div class="section-card">
+
+        <h2>
+            📥 Past Papers & Study Resources
+        </h2>
+
+        <div class="downloads-grid"
+             id="downloadsContainer">
+
+        </div>
+
+    </div>
+
+    <!-- ========================= -->
+    <!-- STUDENT POLL -->
+    <!-- ========================= -->
+
+    <div class="section-card">
+
+        <h2>
+            🗳️ Student Voice – Quick Poll
+        </h2>
+
+        <div id="pollContainer">
+
+        </div>
+
+    </div>
+        <!-- ========================= -->
+    <!-- FOOTER -->
+    <!-- ========================= -->
+
+    <footer>
+
+        Kuruduwatta Royal College
+        &bull;
+        Grade 12 Study Group Initiative
+        &copy; 2026
+
+    </footer>
+
+</div>
+
+<script src="script.js"></script>
+
 </body>
 </html>
