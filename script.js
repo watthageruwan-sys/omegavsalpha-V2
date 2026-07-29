@@ -497,7 +497,7 @@ function saveTopPerformersFromAdmin() {
     }
 
     saveTopPerformersToStorage();
-    renderTopPerformers(); // updates the lists if they exist on this page
+    renderTopPerformers();
     logActivity("Top Performers list has been updated by admin.");
-    alert("✅ Top Performers saved successfully!\n\nRefresh the Battle Arena page (or open it on other devices) to see the new names.");
+    alert("✅ Top Performers saved successfully!\n\nRefresh the Battle Arena page to see the new names.");
 }
