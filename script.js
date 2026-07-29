@@ -18,6 +18,41 @@ const ADMIN_PIN = "royal123";
 
 let viewerId = Math.random().toString(36).substring(2);
 
+// Top performers (sample data - admins can update later via backend)
+let topPerformers = {
+    alpha: [
+        { name: "Kasun Perera", note: "Highest average" },
+        { name: "Nimali Silva", note: "Most improved" },
+        { name: "Sahan Fernando", note: "Perfect attendance" }
+    ],
+    omega: [
+        { name: "Tharindu Jayasuriya", note: "Highest average" },
+        { name: "Dilini Rathnayake", note: "Most improved" },
+        { name: "Amaya Bandara", note: "Shared most resources" }
+    ]
+};
+
+// Countdown target: Next Recap Paper (adjust this date as needed)
+const RECAP_TARGET = new Date("2026-08-05T09:00:00");
+
+// Poll data (localStorage for persistence per browser)
+const POLL_KEY = "krc_poll_votes_v1";
+const POLL_QUESTION = "Which subject needs more group study sessions next?";
+const POLL_OPTIONS = ["Physical Science", "Bio Science", "Commerce", "Technology", "Arts"];
+
+function getPollVotes() {
+    try {
+        const raw = localStorage.getItem(POLL_KEY);
+        if (raw) return JSON.parse(raw);
+    } catch (e) {}
+    return { PhysicalScience: 0, BioScience: 0, Commerce: 0, Technology: 0, Arts: 0, voted: false };
+}
+
+function savePollVotes(votes) {
+    localStorage.setItem(POLL_KEY, JSON.stringify(votes));
+}
+
+// Heartbeat for viewers
 setInterval(() => {
     fetch(API_URL, {
         method: "POST",
@@ -29,12 +64,27 @@ setInterval(() => {
 
 window.addEventListener("DOMContentLoaded", () => {
     fetchScores();
+    // Auto-refresh scores every 12 seconds so battle stays live
+    setInterval(fetchScores, 12000);
+
     fetch(API_URL, {
         method: "POST",
         mode: "no-cors",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ type: "heartbeat", viewerId: viewerId })
     }).catch(err => console.error("Initial heartbeat error:", err));
+
+    // Init new features if elements exist
+    if (document.getElementById("countdownDays")) {
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    }
+    if (document.getElementById("topAlphaList")) {
+        renderTopPerformers();
+    }
+    if (document.getElementById("pollContainer")) {
+        renderPoll();
+    }
 });
 
 function fetchScores() {
@@ -80,27 +130,39 @@ function toggleAdmin() {
         let enteredPin = prompt("Enter Admin PIN:");
         if (enteredPin === ADMIN_PIN) {
             isAdminLoggedIn = true;
-            controls.classList.remove("locked");
-            controls.classList.add("unlocked");
-            adminBtn.classList.add("unlocked");
-            adminBtn.textContent = "🔓 Admin Logged In";
-            lockBadge.textContent = "🔓 Unlocked";
+            if (controls) {
+                controls.classList.remove("locked");
+                controls.classList.add("unlocked");
+            }
+            if (adminBtn) {
+                adminBtn.classList.add("unlocked");
+                adminBtn.textContent = "🔓 Admin Logged In";
+            }
+            if (lockBadge) lockBadge.textContent = "🔓 Unlocked";
             logActivity("Admin access granted.");
         } else if (enteredPin !== null) {
             alert("Incorrect PIN!");
         }
     } else {
         isAdminLoggedIn = false;
-        controls.classList.remove("unlocked");
-        controls.classList.add("locked");
-        adminBtn.classList.remove("unlocked");
-        adminBtn.textContent = "🔒 Admin Login";
-        lockBadge.textContent = "🔒 Locked";
+        if (controls) {
+            controls.classList.remove("unlocked");
+            controls.classList.add("locked");
+        }
+        if (adminBtn) {
+            adminBtn.classList.remove("unlocked");
+            adminBtn.textContent = "🔒 Admin Login";
+        }
+        if (lockBadge) lockBadge.textContent = "🔒 Locked";
         logActivity("Admin logged out.");
     }
 }
 
 function awardCustomStreamScore(team) {
+    if (!isAdminLoggedIn) {
+        alert("Please login as admin first.");
+        return;
+    }
     const streamSelect = document.getElementById("streamSelect");
     const achievementSelect = document.getElementById("achievementSelect");
     
@@ -119,6 +181,10 @@ function awardCustomStreamScore(team) {
 }
 
 function resetScores() {
+    if (!isAdminLoggedIn) {
+        alert("Please login as admin first.");
+        return;
+    }
     if (confirm("Are you sure you want to reset all scores back to zero?")) {
         scores.alpha = 0;
         scores.omega = 0;
@@ -133,15 +199,16 @@ function updateDisplay() {
     let alphaElem = document.getElementById("alphaScore");
     let omegaElem = document.getElementById("omegaScore");
 
-    alphaElem.textContent = scores.alpha;
-    omegaElem.textContent = scores.omega;
-
-    alphaElem.classList.add("pop");
-    omegaElem.classList.add("pop");
-    setTimeout(() => {
-        alphaElem.classList.remove("pop");
-        omegaElem.classList.remove("pop");
-    }, 300);
+    if (alphaElem) {
+        alphaElem.textContent = scores.alpha;
+        alphaElem.classList.add("pop");
+        setTimeout(() => alphaElem.classList.remove("pop"), 300);
+    }
+    if (omegaElem) {
+        omegaElem.textContent = scores.omega;
+        omegaElem.classList.add("pop");
+        setTimeout(() => omegaElem.classList.remove("pop"), 300);
+    }
 
     for (let stream in streamScores) {
         let streamId = "stream-" + stream.replace(/\s+/g, '-');
@@ -160,41 +227,48 @@ function updateDisplay() {
         omegaPct = (scores.omega / total) * 100;
     }
 
-    document.getElementById("alphaBar").style.width = alphaPct + "%";
-    document.getElementById("omegaBar").style.width = omegaPct + "%";
+    let alphaBar = document.getElementById("alphaBar");
+    let omegaBar = document.getElementById("omegaBar");
+    if (alphaBar) alphaBar.style.width = alphaPct + "%";
+    if (omegaBar) omegaBar.style.width = omegaPct + "%";
 
-    document.getElementById("alphaPct").textContent = `α-Alpha (${Math.round(alphaPct)}%)`;
-    document.getElementById("omegaPct").textContent = `Ω-Omega (${Math.round(omegaPct)}%)`;
+    let alphaPctEl = document.getElementById("alphaPct");
+    let omegaPctEl = document.getElementById("omegaPct");
+    if (alphaPctEl) alphaPctEl.textContent = `α-Alpha (${Math.round(alphaPct)}%)`;
+    if (omegaPctEl) omegaPctEl.textContent = `Ω-Omega (${Math.round(omegaPct)}%)`;
 
     let statusTitle = document.getElementById("statusTitle");
     let statusDesc = document.getElementById("statusDesc");
     let alphaCard = document.getElementById("alphaCard");
     let omegaCard = document.getElementById("omegaCard");
 
-    alphaCard.className = "team-card alpha-card";
-    omegaCard.className = "team-card omega-card";
+    if (alphaCard) alphaCard.className = "team-card alpha-card";
+    if (omegaCard) omegaCard.className = "team-card omega-card";
 
-    if (scores.alpha === 0 && scores.omega === 0) {
-        statusTitle.textContent = "🔥 Battle Just Began!";
-        statusDesc.textContent = "The scoreboard is clean. Step up, lock in, and claim the lead!";
-    } else if (scores.alpha === scores.omega) {
-        statusTitle.textContent = "⚖️ It's a Tie Game!";
-        statusDesc.textContent = "Both teams are locked in neck-and-neck intensity!";
-        alphaCard.classList.add("is-tied");
-        omegaCard.classList.add("is-tied");
-    } else if (scores.alpha > scores.omega) {
-        statusTitle.textContent = "👑 α-Alpha is Leading!";
-        statusDesc.textContent = "Team Alpha is currently dominating the scoreboard.";
-        alphaCard.classList.add("is-winning");
-    } else {
-        statusTitle.textContent = "👑 Ω-Omega is Leading!";
-        statusDesc.textContent = "Team Omega is currently dominating the scoreboard.";
-        omegaCard.classList.add("is-winning");
+    if (statusTitle && statusDesc) {
+        if (scores.alpha === 0 && scores.omega === 0) {
+            statusTitle.textContent = "🔥 Battle Just Began!";
+            statusDesc.textContent = "The scoreboard is clean. Step up, lock in, and claim the lead!";
+        } else if (scores.alpha === scores.omega) {
+            statusTitle.textContent = "⚖️ It's a Tie Game!";
+            statusDesc.textContent = "Both teams are locked in neck-and-neck intensity!";
+            if (alphaCard) alphaCard.classList.add("is-tied");
+            if (omegaCard) omegaCard.classList.add("is-tied");
+        } else if (scores.alpha > scores.omega) {
+            statusTitle.textContent = "👑 α-Alpha is Leading!";
+            statusDesc.textContent = "Team Alpha is currently dominating the scoreboard.";
+            if (alphaCard) alphaCard.classList.add("is-winning");
+        } else {
+            statusTitle.textContent = "👑 Ω-Omega is Leading!";
+            statusDesc.textContent = "Team Omega is currently dominating the scoreboard.";
+            if (omegaCard) omegaCard.classList.add("is-winning");
+        }
     }
 }
 
 function logActivity(message) {
     const activityLog = document.getElementById("activityLog");
+    if (!activityLog) return;
     const timeString = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     
     const item = document.createElement("div");
@@ -202,4 +276,128 @@ function logActivity(message) {
     item.innerHTML = `<span class="activity-time">[${timeString}]</span> ${message}`;
     
     activityLog.prepend(item);
+}
+
+/* ========== COUNTDOWN ========== */
+function updateCountdown() {
+    const now = new Date();
+    let diff = RECAP_TARGET - now;
+
+    if (diff < 0) {
+        document.getElementById("countdownDays").textContent = "0";
+        document.getElementById("countdownHours").textContent = "0";
+        document.getElementById("countdownMins").textContent = "0";
+        document.getElementById("countdownSecs").textContent = "0";
+        const note = document.getElementById("countdownNote");
+        if (note) note.textContent = "Recap paper time has arrived! Good luck everyone 💪";
+        return;
+    }
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+    document.getElementById("countdownDays").textContent = days;
+    document.getElementById("countdownHours").textContent = hours.toString().padStart(2, "0");
+    document.getElementById("countdownMins").textContent = mins.toString().padStart(2, "0");
+    document.getElementById("countdownSecs").textContent = secs.toString().padStart(2, "0");
+}
+
+/* ========== TOP PERFORMERS ========== */
+function renderTopPerformers() {
+    const alphaList = document.getElementById("topAlphaList");
+    const omegaList = document.getElementById("topOmegaList");
+    if (!alphaList || !omegaList) return;
+
+    const ranks = ["gold", "silver", "bronze"];
+    alphaList.innerHTML = topPerformers.alpha.map((p, i) => `
+        <div class="performer-item">
+            <div class="rank-badge ${ranks[i] || ''}">${i + 1}</div>
+            <div>
+                <strong style="color:#f8fafc">${p.name}</strong>
+                <div style="font-size:0.75rem;color:#94a3b8">${p.note}</div>
+            </div>
+        </div>
+    `).join("");
+
+    omegaList.innerHTML = topPerformers.omega.map((p, i) => `
+        <div class="performer-item">
+            <div class="rank-badge ${ranks[i] || ''}">${i + 1}</div>
+            <div>
+                <strong style="color:#f8fafc">${p.name}</strong>
+                <div style="font-size:0.75rem;color:#94a3b8">${p.note}</div>
+            </div>
+        </div>
+    `).join("");
+}
+
+/* ========== POLL ========== */
+let selectedPollOption = null;
+
+function renderPoll() {
+    const container = document.getElementById("pollContainer");
+    if (!container) return;
+
+    const votes = getPollVotes();
+    const total = Object.values(votes).reduce((a, b) => (typeof b === "number" ? a + b : a), 0);
+    const hasVoted = votes.voted === true;
+
+    let html = `<div class="poll-question">${POLL_QUESTION}</div><div class="poll-options">`;
+
+    POLL_OPTIONS.forEach(opt => {
+        const key = opt.replace(/\s+/g, "");
+        const count = votes[key] || 0;
+        const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+        const selectedClass = selectedPollOption === opt ? "selected" : "";
+
+        html += `
+            <div class="poll-option ${selectedClass}" onclick="selectPollOption('${opt}')" data-opt="${opt}">
+                <div style="flex:1">
+                    <div class="poll-option-text">${opt}</div>
+                    ${hasVoted || total > 0 ? `
+                    <div class="poll-bar-container">
+                        <div class="poll-bar-bg"><div class="poll-bar-fill" style="width:${pct}%"></div></div>
+                    </div>` : ""}
+                </div>
+                <div class="poll-percent">${hasVoted || total > 0 ? pct + "%" : ""}</div>
+            </div>
+        `;
+    });
+
+    html += `</div>`;
+
+    if (!hasVoted) {
+        html += `<button class="poll-vote-btn" id="pollVoteBtn" onclick="submitPollVote()" ${selectedPollOption ? "" : "disabled"}>Cast Your Vote</button>`;
+    } else {
+        html += `<div class="poll-total">You already voted • Total votes: ${total}</div>`;
+    }
+
+    if (!hasVoted && total > 0) {
+        html += `<div class="poll-total">Current total votes: ${total}</div>`;
+    }
+
+    container.innerHTML = html;
+}
+
+function selectPollOption(opt) {
+    const votes = getPollVotes();
+    if (votes.voted) return;
+    selectedPollOption = opt;
+    renderPoll();
+}
+
+function submitPollVote() {
+    if (!selectedPollOption) return;
+    const votes = getPollVotes();
+    if (votes.voted) {
+        alert("You have already voted on this device.");
+        return;
+    }
+    const key = selectedPollOption.replace(/\s+/g, "");
+    votes[key] = (votes[key] || 0) + 1;
+    votes.voted = true;
+    savePollVotes(votes);
+    renderPoll();
+    logActivity(`Someone voted in the poll for "${selectedPollOption}"`);
 }
