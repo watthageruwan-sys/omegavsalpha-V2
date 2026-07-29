@@ -113,11 +113,11 @@
             <div class="college-name">Authorized Personnel Only</div>
         </header>
 
-        <!-- LOGIN SECTION (Password Wall) -->
+        <!-- LOGIN SECTION -->
         <div id="loginCard" class="login-box">
             <h2 style="margin-top:0; text-align:center;">🔐 Admin Access</h2>
             <p style="color: #94a3b8; font-size: 0.88rem; text-align:center; margin-bottom: 20px;">
-                Enter the passcode to manage stream points and leaderboard entries.
+                Enter the passcode to manage stream points and resources.
             </p>
             <div style="display: flex; flex-direction: column; gap: 12px;">
                 <input type="password" id="adminPassInput" class="input-dark" placeholder="Enter Admin Password..." onkeydown="if(event.key==='Enter') checkAdminPassword()">
@@ -128,39 +128,27 @@
             </p>
         </div>
 
-        <!-- MAIN DASHBOARD (Hidden until password verified) -->
+        <!-- MAIN DASHBOARD -->
         <div id="adminPanel" style="display: none;">
 
             <div class="admin-grid">
 
-                <!-- SECTION 1: POINT CRITERIA & QUICK AWARD -->
+                <!-- SECTION 1: STRICT POINT ENTRY FORM -->
                 <div class="section-card">
                     <h2>📋 Official Point Criteria</h2>
                     <div class="criteria-card">
-                        <strong style="color:#f8fafc;">Standard Scoring Rules</strong>
+                        <strong style="color:#f8fafc;">Rulebook Values</strong>
                         <ul class="criteria-list">
-                            <li>
-                                <span>Top Average Score</span>
-                                <span class="pts-badge">+10 Pts</span>
-                            </li>
-                            <li>
-                                <span>Full Attendance</span>
-                                <span class="pts-badge">+5 Pts</span>
-                            </li>
-                            <li>
-                                <span>Most Improved</span>
-                                <span class="pts-badge">+5 Pts</span>
-                            </li>
-                            <li>
-                                <span>Shared Resources / Notes</span>
-                                <span class="pts-badge">+3 Pts</span>
-                            </li>
+                            <li><span>Top Average Score</span> <span class="pts-badge">+10 Pts</span></li>
+                            <li><span>Full Attendance</span> <span class="pts-badge">+5 Pts</span></li>
+                            <li><span>Most Improved</span> <span class="pts-badge">+5 Pts</span></li>
+                            <li><span>Shared Resources / Notes</span> <span class="pts-badge">+3 Pts</span></li>
                         </ul>
                     </div>
 
                     <hr style="border: 0; border-top: 1px solid #1e293b; margin: 18px 0;">
 
-                    <h2>⚡ Point Entry Form</h2>
+                    <h2>⚡ Award Points</h2>
                     <div class="form-group" style="margin-top:10px;">
                         <label style="color:#cbd5e1; font-size:0.85rem;">Target Team:</label>
                         <select id="teamSelect" class="input-dark" style="margin-top:4px;">
@@ -181,46 +169,85 @@
                     </div>
 
                     <div class="form-group" style="margin-top:12px;">
-                        <label style="color:#cbd5e1; font-size:0.85rem;">Reason / Criteria Category:</label>
-                        <input type="text" id="reasonInput" class="input-dark" placeholder="e.g. Top average in Physical Science test" style="margin-top:4px;">
+                        <label style="color:#cbd5e1; font-size:0.85rem;">Select Rulebook Points:</label>
+                        <select id="pointsSelect" class="input-dark" style="margin-top:4px;" onchange="updateReasonText()">
+                            <option value="10">🏆 +10 Pts — Top Average Score</option>
+                            <option value="5">✅ +5 Pts — Full Attendance</option>
+                            <option value="5">📈 +5 Pts — Most Improved</option>
+                            <option value="3">📚 +3 Pts — Shared Resources / Notes</option>
+                            <option value="-5">⚠️ -5 Pts — Penalty / Deductive</option>
+                        </select>
                     </div>
 
                     <div class="form-group" style="margin-top:12px;">
-                        <label style="color:#cbd5e1; font-size:0.85rem;">Points Amount (+ / -):</label>
-                        <input type="number" id="pointsInput" class="input-dark" value="10" style="margin-top:4px;">
+                        <label style="color:#cbd5e1; font-size:0.85rem;">Note / Description (Optional):</label>
+                        <input type="text" id="reasonInput" class="input-dark" placeholder="Top average in Physics Recap Paper" style="margin-top:4px;">
                     </div>
 
-                    <button onclick="awardPoints()" class="btn-award" style="margin-top: 18px;">
-                        🚀 Submit & Broadcast to Live Feed
+                    <button onclick="awardStrictPoints()" class="btn-award" style="margin-top: 18px;">
+                        🚀 Submit & Broadcast to Feed
                     </button>
                 </div>
 
-                <!-- SECTION 2: TOP PERFORMERS EDIT -->
+                <!-- SECTION 2: SHARE PAST PAPERS & SHORT NOTES -->
+                <div class="section-card">
+                    <h2>📚 Share Past Papers & Notes</h2>
+                    <p style="color:#94a3b8; font-size:0.85rem; margin-bottom:15px;">
+                        Upload PDFs/Images to Google Drive and paste public view links here.
+                    </p>
+
+                    <div class="form-group">
+                        <label style="color:#cbd5e1; font-size:0.85rem;">Subject / Stream:</label>
+                        <select id="resourceStream" class="input-dark" style="margin-top:4px;">
+                            <option value="Physical Science">Physical Science</option>
+                            <option value="Bio Science">Bio Science</option>
+                            <option value="Commerce">Commerce</option>
+                            <option value="Technology">Technology</option>
+                            <option value="Arts">Arts</option>
+                            <option value="General">General / All Streams</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="margin-top:12px;">
+                        <label style="color:#cbd5e1; font-size:0.85rem;">Resource Title:</label>
+                        <input type="text" id="resourceTitle" class="input-dark" placeholder="e.g. Physics - Mechanics Short Notes (PDF)" style="margin-top:4px;">
+                    </div>
+
+                    <div class="form-group" style="margin-top:12px;">
+                        <label style="color:#cbd5e1; font-size:0.85rem;">Google Drive / File Link:</label>
+                        <input type="text" id="resourceUrl" class="input-dark" placeholder="https://drive.google.com/file/d/..." style="margin-top:4px;">
+                    </div>
+
+                    <button onclick="addResourceLink()" class="btn-award" style="background: linear-gradient(135deg, #0284c7, #0369a1); margin-top: 18px;">
+                        ➕ Publish Resource
+                    </button>
+                </div>
+
+                <!-- SECTION 3: TOP PERFORMERS EDIT -->
                 <div class="section-card">
                     <h2>🌟 Top Performers Management</h2>
                     <p style="color:#94a3b8; font-size:0.85rem; margin-bottom:15px;">
-                        Update current cycle leaders displayed on the public landing page.
+                        Update current cycle leaders displayed on the public page.
                     </p>
 
                     <h3 style="color:#38bdf8; font-size:1rem; margin-bottom:8px;">α - Team Alpha</h3>
-                    <input type="text" id="topAlpha1" class="input-dark" placeholder="Rank 1: Student Name (Stream)" style="margin-bottom:8px;">
-                    <input type="text" id="topAlpha2" class="input-dark" placeholder="Rank 2: Student Name (Stream)" style="margin-bottom:8px;">
-                    <input type="text" id="topAlpha3" class="input-dark" placeholder="Rank 3: Student Name (Stream)" style="margin-bottom:16px;">
+                    <input type="text" id="topAlpha1" class="input-dark" placeholder="Rank 1: Student Name" style="margin-bottom:8px;">
+                    <input type="text" id="topAlpha2" class="input-dark" placeholder="Rank 2: Student Name" style="margin-bottom:8px;">
+                    <input type="text" id="topAlpha3" class="input-dark" placeholder="Rank 3: Student Name" style="margin-bottom:16px;">
 
                     <h3 style="color:#a855f7; font-size:1rem; margin-bottom:8px;">Ω - Team Omega</h3>
-                    <input type="text" id="topOmega1" class="input-dark" placeholder="Rank 1: Student Name (Stream)" style="margin-bottom:8px;">
-                    <input type="text" id="topOmega2" class="input-dark" placeholder="Rank 2: Student Name (Stream)" style="margin-bottom:8px;">
-                    <input type="text" id="topOmega3" class="input-dark" placeholder="Rank 3: Student Name (Stream)" style="margin-bottom:16px;">
+                    <input type="text" id="topOmega1" class="input-dark" placeholder="Rank 1: Student Name" style="margin-bottom:8px;">
+                    <input type="text" id="topOmega2" class="input-dark" placeholder="Rank 2: Student Name" style="margin-bottom:8px;">
+                    <input type="text" id="topOmega3" class="input-dark" placeholder="Rank 3: Student Name" style="margin-bottom:16px;">
 
                     <button onclick="saveTopPerformers()" class="btn-award" style="background: linear-gradient(135deg, #059669, #10b981);">
                         💾 Save Performers
                     </button>
                 </div>
 
-                <!-- SECTION 3: RECAP DATE & CONTROL -->
+                <!-- SECTION 4: RECAP DATE & CONTROL -->
                 <div class="section-card">
-                    <h2>⏱️ Event Schedule & System Control</h2>
-                    
+                    <h2>⏱️ System Control</h2>
                     <div style="margin-bottom: 20px;">
                         <label style="color:#cbd5e1; font-size:0.85rem;">Next Recap Paper Target Date:</label>
                         <input type="datetime-local" id="recapDatePicker" class="input-dark" style="margin-top:6px; margin-bottom:12px;">
@@ -232,7 +259,7 @@
                     <hr style="border: 0; border-top: 1px solid #1e293b; margin: 20px 0;">
 
                     <button onclick="logoutAdmin()" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 12px; border-radius: 8px; cursor: pointer; width: 100%; font-weight:600;">
-                        🔒 Lock / Logout Admin Panel
+                        🔒 Lock Admin Panel
                     </button>
                 </div>
 
@@ -250,7 +277,6 @@
     <script>
         const ADMIN_PASS = "royal1232009";
 
-        // Check persistent login state
         if (sessionStorage.getItem("isAdminLoggedIn") === "true") {
             document.getElementById("loginCard").style.display = "none";
             document.getElementById("adminPanel").style.display = "block";
