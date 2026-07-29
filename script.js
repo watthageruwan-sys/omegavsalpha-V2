@@ -18,8 +18,10 @@ const ADMIN_PIN = "royal123";
 
 let viewerId = Math.random().toString(36).substring(2);
 
-// Top performers (sample data - admins can update later via backend)
-let topPerformers = {
+// Top performers - loaded from localStorage if admin has saved them
+const TOP_PERFORMERS_KEY = "krc_top_performers_v1";
+
+const DEFAULT_TOP_PERFORMERS = {
     alpha: [
         { name: "Kasun Perera", note: "Highest average" },
         { name: "Nimali Silva", note: "Most improved" },
@@ -32,20 +34,51 @@ let topPerformers = {
     ]
 };
 
+let topPerformers = loadTopPerformers();
+
+function loadTopPerformers() {
+    try {
+        const raw = localStorage.getItem(TOP_PERFORMERS_KEY);
+        if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed && parsed.alpha && parsed.omega) return parsed;
+        }
+    } catch (e) {}
+    return JSON.parse(JSON.stringify(DEFAULT_TOP_PERFORMERS)); // deep copy
+}
+
+function saveTopPerformersToStorage() {
+    localStorage.setItem(TOP_PERFORMERS_KEY, JSON.stringify(topPerformers));
+}
+
 // Countdown target: Next Recap Paper (adjust this date as needed)
 const RECAP_TARGET = new Date("2026-08-05T09:00:00");
 
 // Poll data (localStorage for persistence per browser)
-const POLL_KEY = "krc_poll_votes_v1";
-const POLL_QUESTION = "Which subject needs more group study sessions next?";
-const POLL_OPTIONS = ["Physical Science", "Bio Science", "Commerce", "Technology", "Arts"];
+const POLL_KEY = "krc_poll_votes_v2";
+const POLL_QUESTION = "Which subject needs more papers / group sessions next?";
+
+// Specific subjects grouped by stream
+const POLL_SUBJECTS = [
+    { stream: "Physical Science", subjects: ["Combined Mathematics", "Physics", "Chemistry"] },
+    { stream: "Bio Science", subjects: ["Biology", "Chemistry", "Physics", "Agriculture"] },
+    { stream: "Commerce", subjects: ["Accounting", "Business Studies", "Economics"] },
+    { stream: "Technology", subjects: ["Engineering Technology", "Science for Technology", "ICT"] },
+    { stream: "Arts", subjects: ["History", "Geography", "Political Science", "Literature"] }
+];
+
+// Flat list for easy key generation
+const POLL_OPTIONS = POLL_SUBJECTS.flatMap(g => g.subjects);
 
 function getPollVotes() {
     try {
         const raw = localStorage.getItem(POLL_KEY);
         if (raw) return JSON.parse(raw);
     } catch (e) {}
-    return { PhysicalScience: 0, BioScience: 0, Commerce: 0, Technology: 0, Arts: 0, voted: false };
+    // Start with zero for every subject
+    const empty = { voted: false };
+    POLL_OPTIONS.forEach(s => { empty[s.replace(/\s+/g, "")] = 0; });
+    return empty;
 }
 
 function savePollVotes(votes) {
@@ -84,6 +117,10 @@ window.addEventListener("DOMContentLoaded", () => {
     }
     if (document.getElementById("pollContainer")) {
         renderPoll();
+    }
+    // Fill the admin Top Performers form if present
+    if (document.getElementById("tp-alpha-1-name")) {
+        fillTopPerformersForm();
     }
 });
 
@@ -333,8 +370,6 @@ function renderTopPerformers() {
 }
 
 /* ========== POLL ========== */
-let selectedPollOption = null;
-
 function renderPoll() {
     const container = document.getElementById("pollContainer");
     if (!container) return;
@@ -343,61 +378,126 @@ function renderPoll() {
     const total = Object.values(votes).reduce((a, b) => (typeof b === "number" ? a + b : a), 0);
     const hasVoted = votes.voted === true;
 
-    let html = `<div class="poll-question">${POLL_QUESTION}</div><div class="poll-options">`;
-
-    POLL_OPTIONS.forEach(opt => {
-        const key = opt.replace(/\s+/g, "");
-        const count = votes[key] || 0;
-        const pct = total > 0 ? Math.round((count / total) * 100) : 0;
-        const selectedClass = selectedPollOption === opt ? "selected" : "";
-
-        html += `
-            <div class="poll-option ${selectedClass}" onclick="selectPollOption('${opt}')" data-opt="${opt}">
-                <div style="flex:1">
-                    <div class="poll-option-text">${opt}</div>
-                    ${hasVoted || total > 0 ? `
-                    <div class="poll-bar-container">
-                        <div class="poll-bar-bg"><div class="poll-bar-fill" style="width:${pct}%"></div></div>
-                    </div>` : ""}
-                </div>
-                <div class="poll-percent">${hasVoted || total > 0 ? pct + "%" : ""}</div>
-            </div>
-        `;
-    });
-
-    html += `</div>`;
+    let html = `<div class="poll-question">${POLL_QUESTION}</div>`;
 
     if (!hasVoted) {
-        html += `<button class="poll-vote-btn" id="pollVoteBtn" onclick="submitPollVote()" ${selectedPollOption ? "" : "disabled"}>Cast Your Vote</button>`;
+        // Dropdown with subjects grouped by stream
+        html += `
+            <select id="pollSelect" style="width:100%; background:rgba(0,0,40,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.4); padding:12px; border-radius:10px; font-size:0.95rem; margin-bottom:12px; outline:none;">
+                <option value="">— Select a subject —</option>
+        `;
+
+        POLL_SUBJECTS.forEach(group => {
+            html += `<optgroup label="${group.stream}">`;
+            group.subjects.forEach(sub => {
+                html += `<option value="${sub}">${sub}</option>`;
+            });
+            html += `</optgroup>`;
+        });
+
+        html += `</select>
+            <button class="poll-vote-btn" id="pollVoteBtn" onclick="submitPollVote()">Cast Your Vote</button>
+        `;
     } else {
-        html += `<div class="poll-total">You already voted • Total votes: ${total}</div>`;
+        html += `<div class="poll-total" style="margin-bottom:14px;">You already voted • Total votes so far: ${total}</div>`;
     }
 
-    if (!hasVoted && total > 0) {
-        html += `<div class="poll-total">Current total votes: ${total}</div>`;
+    // Always show current results (sorted by votes)
+    if (total > 0) {
+        html += `<div style="margin-top:8px;"><div style="font-size:0.85rem; color:#94a3b8; margin-bottom:8px;">Current results:</div>`;
+
+        // Build sorted list
+        const sorted = POLL_OPTIONS
+            .map(opt => {
+                const key = opt.replace(/\s+/g, "");
+                return { name: opt, count: votes[key] || 0 };
+            })
+            .filter(x => x.count > 0)
+            .sort((a, b) => b.count - a.count);
+
+        sorted.forEach(item => {
+            const pct = Math.round((item.count / total) * 100);
+            html += `
+                <div class="poll-option" style="cursor:default; margin-bottom:8px;">
+                    <div style="flex:1">
+                        <div class="poll-option-text">${item.name}</div>
+                        <div class="poll-bar-container">
+                            <div class="poll-bar-bg"><div class="poll-bar-fill" style="width:${pct}%"></div></div>
+                        </div>
+                    </div>
+                    <div class="poll-percent">${pct}%</div>
+                </div>
+            `;
+        });
+
+        html += `</div>`;
     }
 
     container.innerHTML = html;
 }
 
-function selectPollOption(opt) {
-    const votes = getPollVotes();
-    if (votes.voted) return;
-    selectedPollOption = opt;
-    renderPoll();
-}
-
 function submitPollVote() {
-    if (!selectedPollOption) return;
+    const select = document.getElementById("pollSelect");
+    if (!select || !select.value) {
+        alert("Please select a subject first.");
+        return;
+    }
+
+    const selected = select.value;
     const votes = getPollVotes();
+
     if (votes.voted) {
         alert("You have already voted on this device.");
         return;
     }
-    const key = selectedPollOption.replace(/\s+/g, "");
+
+    const key = selected.replace(/\s+/g, "");
     votes[key] = (votes[key] || 0) + 1;
     votes.voted = true;
     savePollVotes(votes);
     renderPoll();
-    logActivity(`Someone voted in the poll for "${selectedPollOption}"`);
+    logActivity(`Someone voted for more ${selected} papers / sessions`);
+}
+
+/* ========== TOP PERFORMERS ADMIN FORM ========== */
+function fillTopPerformersForm() {
+    // Alpha
+    for (let i = 0; i < 3; i++) {
+        const nameEl = document.getElementById(`tp-alpha-${i+1}-name`);
+        const noteEl = document.getElementById(`tp-alpha-${i+1}-note`);
+        if (nameEl) nameEl.value = topPerformers.alpha[i]?.name || "";
+        if (noteEl) noteEl.value = topPerformers.alpha[i]?.note || "";
+    }
+    // Omega
+    for (let i = 0; i < 3; i++) {
+        const nameEl = document.getElementById(`tp-omega-${i+1}-name`);
+        const noteEl = document.getElementById(`tp-omega-${i+1}-note`);
+        if (nameEl) nameEl.value = topPerformers.omega[i]?.name || "";
+        if (noteEl) noteEl.value = topPerformers.omega[i]?.note || "";
+    }
+}
+
+function saveTopPerformersFromAdmin() {
+    if (!isAdminLoggedIn) {
+        alert("Please login as admin first.");
+        return;
+    }
+
+    // Read Alpha
+    for (let i = 0; i < 3; i++) {
+        const name = document.getElementById(`tp-alpha-${i+1}-name`)?.value.trim() || `Student ${i+1}`;
+        const note = document.getElementById(`tp-alpha-${i+1}-note`)?.value.trim() || "";
+        topPerformers.alpha[i] = { name, note };
+    }
+    // Read Omega
+    for (let i = 0; i < 3; i++) {
+        const name = document.getElementById(`tp-omega-${i+1}-name`)?.value.trim() || `Student ${i+1}`;
+        const note = document.getElementById(`tp-omega-${i+1}-note`)?.value.trim() || "";
+        topPerformers.omega[i] = { name, note };
+    }
+
+    saveTopPerformersToStorage();
+    renderTopPerformers(); // updates the lists if they exist on this page
+    logActivity("Top Performers list has been updated by admin.");
+    alert("✅ Top Performers saved successfully!\n\nRefresh the Battle Arena page (or open it on other devices) to see the new names.");
 }
