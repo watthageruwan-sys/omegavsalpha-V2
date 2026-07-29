@@ -1,20 +1,23 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbwWpdBcZIQnNRyjw7Jl_ccs_Ni6AkyGYlAylvsGKs_-yHuEaX1z5Vzv5Bh8ysG9-j6pxA/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzLWZer82o_p74RQMh82QoTk9XW1fxc81G0W3gnIzOD8IBjUpOY3hnn5VDZ2S1a_ejDLw/exec";
 
 let scores = { alpha: 0, omega: 0 };
 let streamScores = {
     "Physical Science": 0, "Bio Science": 0, "Commerce": 0, "Technology": 0, "Arts": 0
 };
-
 let isAdminLoggedIn = false;
-const ADMIN_PIN = "royal1232009"; 
+const ADMIN_PIN = "royal123";
 let viewerId = Math.random().toString(36).substring(2);
+
+// ========== SCORE ACTIVITY FEED ==========
 let scoreFeed = [];
 
+// ========== TOP PERFORMERS ==========
 let topPerformers = {
     alpha: [ { name: "—", note: "" }, { name: "—", note: "" }, { name: "—", note: "" } ],
     omega: [ { name: "—", note: "" }, { name: "—", note: "" }, { name: "—", note: "" } ]
 };
 
+// ========== DOWNLOAD LINKS ==========
 const DEFAULT_DOWNLOADS = {
     "ps-combined-maths": { title: "Combined Mathematics", meta: "Physical Science", url: "", icon: "📐" },
     "ps-physics":        { title: "Physics",              meta: "Physical Science", url: "", icon: "⚛️" },
@@ -37,6 +40,7 @@ const DEFAULT_DOWNLOADS = {
 };
 let downloads = JSON.parse(JSON.stringify(DEFAULT_DOWNLOADS));
 
+// ========== POLL ==========
 const POLL_QUESTION = "Which subject needs more papers / group sessions next?";
 const POLL_SUBJECTS = [
     { stream: "Physical Science", subjects: ["Combined Mathematics", "Physics", "Chemistry"] },
@@ -52,10 +56,12 @@ let pollVotes = {};
 function hasVotedLocally() { return localStorage.getItem(POLL_VOTED_KEY) === "true"; }
 function markVotedLocally() { localStorage.setItem(POLL_VOTED_KEY, "true"); }
 
+// ========== RECAP TIMER ==========
 let RECAP_TARGET = new Date("2026-08-05T09:00:00");
+
 setInterval(() => {
     fetch(API_URL, {
-        method: "POST",
+        method: "POST", mode: "no-cors",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ type: "heartbeat", viewerId })
     }).catch(() => {});
@@ -64,6 +70,11 @@ setInterval(() => {
 window.addEventListener("DOMContentLoaded", () => {
     fetchAllData();
     setInterval(fetchAllData, 12000);
+    fetch(API_URL, {
+        method: "POST", mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "heartbeat", viewerId })
+    }).catch(() => {});
     if (document.getElementById("countdownDays")) {
         updateCountdown();
         setInterval(updateCountdown, 1000);
@@ -76,25 +87,32 @@ function fetchAllData() {
         .then(data => {
             if (data.scores) { scores.alpha = data.scores.alpha || 0; scores.omega = data.scores.omega || 0; }
             if (data.streams) streamScores = data.streams;
-            if (data.scoreFeed && data.scoreFeed.length > 0) {
+            
+            if (data.scoreFeed) {
                 scoreFeed = data.scoreFeed;
                 renderScoreFeed();
             }
+
             const v = document.getElementById("viewerCount");
             if (v && data.viewers !== undefined) v.textContent = data.viewers;
+
             if (data.topPerformers) {
                 topPerformers = data.topPerformers;
                 renderTopPerformers();
                 if (document.getElementById("tp-alpha-1-name")) fillTopPerformersForm();
             }
+
             if (data.downloads && Object.keys(data.downloads).length > 0) {
                 downloads = { ...DEFAULT_DOWNLOADS, ...data.downloads };
             }
             renderDownloads();
             if (document.getElementById("dl-ps-combined-maths")) fillDownloadsForm();
+
             if (data.poll) pollVotes = data.poll;
             else { pollVotes = {}; POLL_OPTIONS.forEach(s => pollVotes[s.replace(/\s+/g,"")] = 0); }
             renderPoll();
+
+            // Load recap date from backend
             if (data.recapDate) {
                 RECAP_TARGET = new Date(data.recapDate);
                 const dateInput = document.getElementById("recapDateInput");
@@ -109,245 +127,369 @@ function fetchAllData() {
                     note.textContent = "Target: " + RECAP_TARGET.toLocaleString('en-GB', options);
                 }
             }
+
             updateDisplay();
         })
-        .catch(err => console.error("Error connecting to backend:", err));
+        .catch(err => console.error(err));
 }
 
 function syncToSheet() {
     fetch(API_URL, {
-        method: "POST",
+        method: "POST", mode: "no-cors",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ scores, streams: streamScores, scoreFeed })
+        body: JSON.stringify({
+            scores,
+            streams: streamScores,
+            scoreFeed
+        })
     }).catch(() => {});
 }
 
-function awardCustomStreamScore(team) {
-    const stream = document.getElementById("streamSelect").value;
-    const points = parseInt(document.getElementById("achievementSelect").value, 10) || 0;
-    const selectEl = document.getElementById("achievementSelect");
-    const optionText = selectEl.options[selectEl.selectedIndex].text;
-    const criterion = optionText.replace(/\s*\(\+\d+\s*pts\)/i, '').toLowerCase();
+function toggleAdmin() {
+    const controls = document.getElementById("controlsSection");
+    const adminBtn = document.getElementById("adminBtn");
+    const lockBadge = document.getElementById("lockBadge");
+    if (!isAdminLoggedIn) {
+        const pin = prompt("Enter Admin PIN:");
+        if (pin === ADMIN_PIN) {
+            isAdminLoggedIn = true;
+            if (controls) { controls.classList.remove("locked"); controls.classList.add("unlocked"); }
+            if (adminBtn) { adminBtn.classList.add("unlocked"); adminBtn.textContent = "🔓 Admin Logged In"; }
+            if (lockBadge) lockBadge.textContent = "🔓 Unlocked";
+            logActivity("Admin access granted.");
+        } else if (pin !== null) alert("Incorrect PIN!");
+    } else {
+        isAdminLoggedIn = false;
+        if (controls) { controls.classList.remove("unlocked"); controls.classList.add("locked"); }
+        if (adminBtn) { adminBtn.classList.remove("unlocked"); adminBtn.textContent = "🔒 Admin Login"; }
+        if (lockBadge) lockBadge.textContent = "🔒 Locked";
+        logActivity("Admin logged out.");
+    }
+}
 
+function awardCustomStreamScore(team) {
+    if (!isAdminLoggedIn) { alert("Please login as admin first."); return; }
+    const stream = document.getElementById("streamSelect").value;
+    const points = parseInt(document.getElementById("achievementSelect").value);
+    const text = document.getElementById("achievementSelect").selectedOptions[0].text.split(" (")[0];
+    
     scores[team] += points;
-    streamScores[stream] = (streamScores[stream] || 0) + points;
+    streamScores[stream] += points;
 
     scoreFeed.unshift({
         team: team,
         teamName: team === "alpha" ? "α-Alpha" : "Ω-Omega",
         points: points,
         stream: stream,
-        reason: criterion,
-        time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+        reason: text,
+        time: new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit"
+        })
     });
     scoreFeed = scoreFeed.slice(0, 20);
 
     updateDisplay();
-    renderScoreFeed();
     syncToSheet();
-}
-
-function resetScores() {
-    if (confirm("Reset all scores to zero?")) {
-        scores.alpha = 0; scores.omega = 0;
-        Object.keys(streamScores).forEach(k => streamScores[k] = 0);
-        scoreFeed = [];
-        updateDisplay(); 
-        renderScoreFeed();
-        syncToSheet();
-    }
-}
-
-function submitVote(subjectKey) {
-    if (hasVotedLocally()) return;
-    markVotedLocally();
-    pollVotes[subjectKey] = (pollVotes[subjectKey] || 0) + 1;
-    renderPoll();
-    fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "vote", subject: subjectKey })
-    }).catch(() => {});
-}
-function updateDisplay() {
-    const a = document.getElementById("alphaScore");
-    const o = document.getElementById("omegaScore");
-    if (a) { a.textContent = scores.alpha; a.classList.add("pop"); setTimeout(() => a.classList.remove("pop"), 300); }
-    if (o) { o.textContent = scores.omega; o.classList.add("pop"); setTimeout(() => o.classList.remove("pop"), 300); }
-
-    for (let s in streamScores) {
-        const el = document.getElementById("stream-" + s.replace(/\s+/g, '-'));
-        if (el) el.textContent = streamScores[s];
-    }
-
-    const total = scores.alpha + scores.omega;
-    let aPct = 50, oPct = 50;
-    if (total > 0) { 
-        aPct = (scores.alpha / total) * 100; 
-        oPct = (scores.omega / total) * 100; 
-    }
-
-    const alphaPctLabel = document.getElementById("alphaPct");
-    const omegaPctLabel = document.getElementById("omegaPct");
-    if (alphaPctLabel) alphaPctLabel.textContent = `α-Alpha (${Math.round(aPct)}%)`;
-    if (omegaPctLabel) omegaPctLabel.textContent = `Ω-Omega (${Math.round(oPct)}%)`;
-
-    const progressAlpha = document.getElementById("alphaBar");
-    const progressOmega = document.getElementById("omegaBar");
-    if (progressAlpha) progressAlpha.style.width = aPct + "%";
-    if (progressOmega) progressOmega.style.width = oPct + "%";
-
-    const statusTitle = document.getElementById("statusTitle");
-    const statusDesc = document.getElementById("statusDesc");
-    const alphaCard = document.getElementById("alphaCard");
-    const omegaCard = document.getElementById("omegaCard");
-
-    if (scores.alpha > scores.omega) {
-        if (statusTitle) statusTitle.textContent = "👑 α-Alpha is Leading!";
-        if (statusDesc) statusDesc.textContent = "Team Alpha is currently dominating the scoreboard.";
-        if (alphaCard) alphaCard.classList.add("winner-glow");
-        if (omegaCard) omegaCard.classList.remove("winner-glow");
-    } else if (scores.omega > scores.alpha) {
-        if (statusTitle) statusTitle.textContent = "👑 Ω-Omega is Leading!";
-        if (statusDesc) statusDesc.textContent = "Team Omega is currently dominating the scoreboard.";
-        if (omegaCard) omegaCard.classList.add("winner-glow");
-        if (alphaCard) alphaCard.classList.remove("winner-glow");
-    } else {
-        if (statusTitle) statusTitle.textContent = "🤝 It's a Tie!";
-        if (statusDesc) statusDesc.textContent = "Both teams are tied.";
-        if (alphaCard) alphaCard.classList.remove("winner-glow");
-        if (omegaCard) omegaCard.classList.remove("winner-glow");
-    }
+    logActivity(`${team === 'alpha' ? 'α-Alpha' : 'Ω-Omega'} earned +${points} pts in [${stream}] for ${text}!`);
 }
 
 function renderScoreFeed() {
     const latest = document.getElementById("latestActivityText");
     const log = document.getElementById("activityLog");
+
     if (!latest || !log) return;
+
     if (scoreFeed.length === 0) {
         latest.textContent = "Standing by for new points...";
         log.innerHTML = "";
         return;
     }
+
     latest.textContent = `${scoreFeed[0].teamName} +${scoreFeed[0].points} • ${scoreFeed[0].reason}`;
+
     log.innerHTML = "";
+
     scoreFeed.forEach(item => {
         const div = document.createElement("div");
         div.className = "activity-item";
+
         div.innerHTML = `
             <span class="activity-time">[${item.time}]</span>
-            <strong>${item.teamName}</strong> earned <strong>+${item.points}</strong> for ${item.reason} (${item.stream})
+            <strong>${item.teamName}</strong>
+            earned
+            <strong>+${item.points}</strong>
+            for ${item.reason}
+            (${item.stream})
         `;
+
         log.appendChild(div);
     });
 }
 
-function renderDownloads() {
-    for (let key in downloads) {
-        const dl = downloads[key];
-        const btn = document.getElementById("dl-" + key);
-        if (btn) {
-            if (dl.url) {
-                btn.href = dl.url;
-                btn.removeAttribute("disabled");
-                btn.classList.remove("disabled-download");
-            } else {
-                btn.removeAttribute("href");
-                btn.setAttribute("disabled", "true");
-                btn.classList.add("disabled-download");
-            }
+function resetScores() {
+    if (!isAdminLoggedIn) { alert("Please login as admin first."); return; }
+    if (confirm("Reset all scores to zero?")) {
+        scores.alpha = 0; scores.omega = 0;
+        Object.keys(streamScores).forEach(k => streamScores[k] = 0);
+        scoreFeed = [];
+        updateDisplay();
+        syncToSheet();
+        logActivity("Scoreboard has been reset to zero.");
+    }
+}
+
+function updateDisplay() {
+    const a = document.getElementById("alphaScore");
+    const o = document.getElementById("omegaScore");
+    if (a) { a.textContent = scores.alpha; a.classList.add("pop"); setTimeout(() => a.classList.remove("pop"), 300); }
+    if (o) { o.textContent = scores.omega; o.classList.add("pop"); setTimeout(() => o.classList.remove("pop"), 300); }
+    for (let s in streamScores) {
+        const el = document.getElementById("stream-" + s.replace(/\s+/g, '-'));
+        if (el) el.textContent = streamScores[s];
+    }
+    const total = scores.alpha + scores.omega;
+    let aPct = 50, oPct = 50;
+    if (total > 0) { aPct = scores.alpha / total * 100; oPct = scores.omega / total * 100; }
+    if (document.getElementById("alphaBar")) document.getElementById("alphaBar").style.width = aPct + "%";
+    if (document.getElementById("omegaBar")) document.getElementById("omegaBar").style.width = oPct + "%";
+    if (document.getElementById("alphaPct")) document.getElementById("alphaPct").textContent = `α-Alpha (${Math.round(aPct)}%)`;
+    if (document.getElementById("omegaPct")) document.getElementById("omegaPct").textContent = `Ω-Omega (${Math.round(oPct)}%)`;
+
+    const title = document.getElementById("statusTitle");
+    const desc = document.getElementById("statusDesc");
+    const aCard = document.getElementById("alphaCard");
+    const oCard = document.getElementById("omegaCard");
+    if (aCard) aCard.className = "team-card alpha-card";
+    if (oCard) oCard.className = "team-card omega-card";
+    if (title && desc) {
+        if (scores.alpha === 0 && scores.omega === 0) {
+            title.textContent = "🔥 Battle Just Began!";
+            desc.textContent = "The scoreboard is clean. Step up, lock in, and claim the lead!";
+        } else if (scores.alpha === scores.omega) {
+            title.textContent = "⚖️ It's a Tie Game!";
+            desc.textContent = "Both teams are locked in neck-and-neck intensity!";
+            if (aCard) aCard.classList.add("is-tied");
+            if (oCard) oCard.classList.add("is-tied");
+        } else if (scores.alpha > scores.omega) {
+            title.textContent = "👑 α-Alpha is Leading!";
+            desc.textContent = "Team Alpha is currently dominating the scoreboard.";
+            if (aCard) aCard.classList.add("is-winning");
+        } else {
+            title.textContent = "👑 Ω-Omega is Leading!";
+            desc.textContent = "Team Omega is currently dominating the scoreboard.";
+            if (oCard) oCard.classList.add("is-winning");
         }
     }
 }
 
-function fillDownloadsForm() {
-    for (let key in downloads) {
-        const input = document.getElementById("input-dl-" + key);
-        if (input) { input.value = downloads[key].url || ""; }
+function logActivity(msg) {
+    const log = document.getElementById("activityLog");
+    if (!log) return;
+    const time = new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+    const item = document.createElement("div");
+    item.className = "activity-item";
+    item.innerHTML = `<span class="activity-time">[${time}]</span> ${msg}`;
+    log.prepend(item);
+}
+
+function updateCountdown() {
+    const diff = RECAP_TARGET - new Date();
+    if (diff < 0) {
+        ["countdownDays","countdownHours","countdownMins","countdownSecs"].forEach(id => {
+            const el = document.getElementById(id); if (el) el.textContent = "0";
+        });
+        const note = document.getElementById("countdownNote");
+        if (note) note.textContent = "Recap paper time has arrived! Good luck everyone 💪";
+        return;
     }
+    document.getElementById("countdownDays").textContent = Math.floor(diff / 86400000);
+    document.getElementById("countdownHours").textContent = Math.floor((diff % 86400000) / 3600000).toString().padStart(2,"0");
+    document.getElementById("countdownMins").textContent = Math.floor((diff % 3600000) / 60000).toString().padStart(2,"0");
+    document.getElementById("countdownSecs").textContent = Math.floor((diff % 60000) / 1000).toString().padStart(2,"0");
+}
+
+function saveRecapDateFromAdmin() {
+    if (!isAdminLoggedIn) { alert("Please login as admin first."); return; }
+    const input = document.getElementById("recapDateInput");
+    if (!input || !input.value) { alert("Please select a date and time."); return; }
+
+    const localDate = new Date(input.value);
+    const iso = localDate.toISOString();
+
+    RECAP_TARGET = localDate;
+
+    fetch(API_URL, {
+        method: "POST", mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ recapDate: iso })
+    }).catch(() => {});
+
+    const note = document.getElementById("countdownNote");
+    if (note) {
+        const options = { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+        note.textContent = "Target: " + RECAP_TARGET.toLocaleString('en-GB', options);
+    }
+
+    logActivity("Recap Paper countdown date updated by admin.");
+    alert("✅ Recap timer updated! Everyone will see the new countdown shortly.");
 }
 
 function renderTopPerformers() {
-    ['alpha', 'omega'].forEach(team => {
-        for (let i = 0; i < 3; i++) {
-            const member = topPerformers[team][i] || { name: "—", note: "" };
-            const nameEl = document.getElementById(`tp-${team}-${i+1}-name`);
-            const noteEl = document.getElementById(`tp-${team}-${i+1}-note`);
-            if (nameEl) nameEl.textContent = member.name;
-            if (noteEl) noteEl.textContent = member.note || "";
-        }
-    });
+    const aList = document.getElementById("topAlphaList");
+    const oList = document.getElementById("topOmegaList");
+    if (!aList || !oList) return;
+    const ranks = ["gold","silver","bronze"];
+    aList.innerHTML = topPerformers.alpha.map((p,i) => `
+        <div class="performer-item"><div class="rank-badge ${ranks[i]||''}">${i+1}</div>
+        <div><strong style="color:#f8fafc">${p.name||"—"}</strong>
+        <div style="font-size:0.75rem;color:#94a3b8">${p.note||""}</div></div></div>`).join("");
+    oList.innerHTML = topPerformers.omega.map((p,i) => `
+        <div class="performer-item"><div class="rank-badge ${ranks[i]||''}">${i+1}</div>
+        <div><strong style="color:#f8fafc">${p.name||"—"}</strong>
+        <div style="font-size:0.75rem;color:#94a3b8">${p.note||""}</div></div></div>`).join("");
 }
 
 function fillTopPerformersForm() {
-    ['alpha', 'omega'].forEach(team => {
-        for (let i = 0; i < 3; i++) {
-            const member = topPerformers[team][i] || { name: "—", note: "" };
-            const nameInput = document.getElementById(`input-tp-${team}-${i+1}-name`);
-            const noteInput = document.getElementById(`input-tp-${team}-${i+1}-note`);
-            if (nameInput) nameInput.value = member.name === "—" ? "" : member.name;
-            if (noteInput) noteInput.value = member.note || "";
-        }
-    });
+    for (let i=0;i<3;i++) {
+        const n=document.getElementById(`tp-alpha-${i+1}-name`);
+        const note=document.getElementById(`tp-alpha-${i+1}-note`);
+        if(n) n.value = topPerformers.alpha[i]?.name||"";
+        if(note) note.value = topPerformers.alpha[i]?.note||"";
+    }
+    for (let i=0;i<3;i++) {
+        const n=document.getElementById(`tp-omega-${i+1}-name`);
+        const note=document.getElementById(`tp-omega-${i+1}-note`);
+        if(n) n.value = topPerformers.omega[i]?.name||"";
+        if(note) note.value = topPerformers.omega[i]?.note||"";
+    }
+}
+
+function saveTopPerformersFromAdmin() {
+    if (!isAdminLoggedIn) { alert("Please login as admin first."); return; }
+    for (let i=0;i<3;i++) {
+        topPerformers.alpha[i] = {
+            name: document.getElementById(`tp-alpha-${i+1}-name`)?.value.trim()||"—",
+            note: document.getElementById(`tp-alpha-${i+1}-note`)?.value.trim()||""
+        };
+        topPerformers.omega[i] = {
+            name: document.getElementById(`tp-omega-${i+1}-name`)?.value.trim()||"—",
+            note: document.getElementById(`tp-omega-${i+1}-note`)?.value.trim()||""
+        };
+    }
+    fetch(API_URL, { method:"POST", mode:"no-cors", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ topPerformers }) }).catch(()=>{});
+    renderTopPerformers();
+    logActivity("Top Performers updated by admin.");
+    alert("✅ Top Performers saved!");
+}
+
+function renderDownloads() {
+    const container = document.getElementById("downloadsContainer");
+    if (!container) return;
+    const groups = {
+        "Physical Science": ["ps-combined-maths","ps-physics","ps-chemistry"],
+        "Bio Science": ["bs-biology","bs-chemistry","bs-physics","bs-agriculture"],
+        "Commerce": ["cm-accounting","cm-business","cm-economics"],
+        "Technology": ["tech-eng","tech-bst","tech-sft","tech-ict"],
+        "Arts": ["arts-history","arts-geography","arts-polscience","arts-literature"]
+    };
+    let html = "";
+    for (const stream in groups) {
+        html += `<div style="grid-column:1/-1; margin-top:8px; margin-bottom:4px; color:#ffd700; font-size:0.85rem; font-weight:600;">${stream}</div>`;
+        groups[stream].forEach(key => {
+            const item = downloads[key] || DEFAULT_DOWNLOADS[key];
+            const hasLink = item.url && item.url.trim().length > 5;
+            html += `
+                <div class="download-card">
+                    <div class="download-icon">${item.icon || "📄"}</div>
+                    <div class="download-title">${item.title}</div>
+                    <div class="download-meta">${item.meta}</div>
+                    ${hasLink
+                        ? `<a href="${item.url}" target="_blank" class="btn-download">Download</a>`
+                        : `<a href="#" class="btn-download" onclick="alert('Link not added yet.'); return false;">Coming Soon</a>`
+                    }
+                </div>`;
+        });
+    }
+    container.innerHTML = html;
+}
+
+function fillDownloadsForm() {
+    for (const key in DEFAULT_DOWNLOADS) {
+        const el = document.getElementById("dl-" + key);
+        if (el) el.value = (downloads[key] && downloads[key].url) || "";
+    }
+}
+
+function saveDownloadsFromAdmin() {
+    if (!isAdminLoggedIn) { alert("Please login as admin first."); return; }
+    for (const key in DEFAULT_DOWNLOADS) {
+        const el = document.getElementById("dl-" + key);
+        if (!downloads[key]) downloads[key] = { ...DEFAULT_DOWNLOADS[key] };
+        downloads[key].url = el ? el.value.trim() : "";
+        downloads[key].title = DEFAULT_DOWNLOADS[key].title;
+        downloads[key].meta = DEFAULT_DOWNLOADS[key].meta;
+        downloads[key].icon = DEFAULT_DOWNLOADS[key].icon;
+    }
+    fetch(API_URL, {
+        method: "POST", mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ downloads })
+    }).catch(() => {});
+    renderDownloads();
+    logActivity("Past paper links updated by admin.");
+    alert("✅ All download links saved!");
 }
 
 function renderPoll() {
     const container = document.getElementById("pollContainer");
     if (!container) return;
-    container.innerHTML = "";
-    const voted = hasVotedLocally();
-    POLL_SUBJECTS.forEach(group => {
-        const header = document.createElement("h4");
-        header.className = "poll-stream-title";
-        header.textContent = group.stream + " Stream";
-        container.appendChild(header);
-        group.subjects.forEach(sub => {
-            const cleanKey = sub.replace(/\s+/g, "");
-            const votes = pollVotes[cleanKey] || 0;
-            const totalVotes = Object.values(pollVotes).reduce((a, b) => a + b, 0);
-            const pct = totalVotes > 0 ? Math.round((votes / totalVotes) * 100) : 0;
-            const row = document.createElement("div");
-            row.className = "poll-option-row";
-            if (voted) {
-                row.innerHTML = `
-                    <div class="poll-result-bar" style="width: ${pct}%"></div>
-                    <span class="poll-option-text">${sub}</span>
-                    <span class="poll-option-pct">${pct}% (${votes})</span>
-                `;
-            } else {
-                const btn = document.createElement("button");
-                btn.className = "poll-vote-btn";
-                btn.textContent = sub;
-                btn.onclick = () => submitVote(cleanKey);
-                row.appendChild(btn);
-            }
-            container.appendChild(row);
+    let total = 0;
+    POLL_OPTIONS.forEach(opt => total += (pollVotes[opt.replace(/\s+/g,"")] || 0));
+    const alreadyVoted = hasVotedLocally();
+    let html = `<div class="poll-question">${POLL_QUESTION}</div>`;
+    if (!alreadyVoted) {
+        html += `<select id="pollSelect" style="width:100%;background:rgba(0,0,40,0.9);color:#f8fafc;border:1px solid rgba(255,215,0,0.4);padding:12px;border-radius:10px;font-size:0.95rem;margin-bottom:12px;outline:none;">
+            <option value="">— Select a subject —</option>`;
+        POLL_SUBJECTS.forEach(g => {
+            html += `<optgroup label="${g.stream}">`;
+            g.subjects.forEach(s => html += `<option value="${s}">${s}</option>`);
+            html += `</optgroup>`;
         });
-    });
-}
-
-function updateCountdown() {
-    const now = new Date();
-    const diff = RECAP_TARGET - now;
-    const dEl = document.getElementById("countdownDays");
-    const hEl = document.getElementById("countdownHours");
-    const mEl = document.getElementById("countdownMinutes");
-    const sEl = document.getElementById("countdownSeconds");
-    if (diff <= 0) {
-        if (dEl) dEl.textContent = "00";
-        if (hEl) hEl.textContent = "00";
-        if (mEl) mEl.textContent = "00";
-        if (sEl) sEl.textContent = "00";
-        return;
+        html += `</select><button class="poll-vote-btn" onclick="submitPollVote()">Cast Your Vote</button>`;
+    } else {
+        html += `<div class="poll-total" style="margin-bottom:14px;">You already voted • Total votes: ${total}</div>`;
     }
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    const secs = Math.floor((diff % (1000 * 60)) / 1000);
-    if (dEl) dEl.textContent = String(days).padStart(2, '0');
-    if (hEl) hEl.textContent = String(hours).padStart(2, '0');
-    if (mEl) mEl.textContent = String(mins).padStart(2, '0');
-    if (sEl) sEl.textContent = String(secs).padStart(2, '0');
+    if (total > 0) {
+        html += `<div style="margin-top:8px;"><div style="font-size:0.85rem;color:#94a3b8;margin-bottom:8px;">Current results (shared):</div>`;
+        POLL_OPTIONS.map(opt => ({ name: opt, count: pollVotes[opt.replace(/\s+/g,"")] || 0 }))
+            .filter(x => x.count > 0).sort((a,b) => b.count - a.count)
+            .forEach(item => {
+                const pct = Math.round(item.count / total * 100);
+                html += `<div class="poll-option" style="cursor:default;margin-bottom:8px;">
+                    <div style="flex:1"><div class="poll-option-text">${item.name}</div>
+                    <div class="poll-bar-container"><div class="poll-bar-bg"><div class="poll-bar-fill" style="width:${pct}%"></div></div></div></div>
+                    <div class="poll-percent">${pct}%</div></div>`;
+            });
+        html += `</div>`;
+    }
+    container.innerHTML = html;
 }
 
-now?
+function submitPollVote() {
+    const select = document.getElementById("pollSelect");
+    if (!select || !select.value) { alert("Please select a subject first."); return; }
+    if (hasVotedLocally()) { alert("You have already voted on this device."); return; }
+    const selected = select.value;
+    const key = selected.replace(/\s+/g, "");
+    pollVotes[key] = (pollVotes[key] || 0) + 1;
+    markVotedLocally();
+    fetch(API_URL, {
+        method: "POST", mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ poll: pollVotes })
+    }).catch(() => {});
+    renderPoll();
+    logActivity(`Someone voted for more ${selected} papers / sessions`);
+}
