@@ -40,31 +40,18 @@
             <div class="team-card alpha-card" id="alphaCard">
                 <div class="team-title">α - Team Alpha</div>
                 <div class="score-display" id="alphaScore">0</div>
-                <div class="score-subtitle" style="color: #94a3b8; font-size: 0.9rem;">Total Points</div>
+                <div style="color: #94a3b8; font-size: 0.9rem;">Total Points</div>
             </div>
             <div class="team-card omega-card" id="omegaCard">
                 <div class="team-title">Ω - Team Omega</div>
                 <div class="score-display" id="omegaScore">0</div>
-                <div class="score-subtitle" style="color: #94a3b8; font-size: 0.9rem;">Total Points</div>
+                <div style="color: #94a3b8; font-size: 0.9rem;">Total Points</div>
             </div>
             
-            <!-- ⚡ SINGLE LIVE FEED CARD (Placed directly below team cards) -->
-            <div class="latest-feed-card" style="
-                grid-column: 1 / -1;
-                background: rgba(15, 23, 42, 0.85); 
-                border: 1px solid rgba(255, 215, 0, 0.35); 
-                border-radius: 12px; 
-                padding: 14px 20px; 
-                margin-top: 16px; 
-                text-align: center; 
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-            ">
-                <div style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">
-                    ⚡ Latest Activity
-                </div>
-                <div id="latestActivityText" style="font-size: 1.05rem; font-weight: 600; color: #f8fafc;">
-                    Standing by for new points...
-                </div>
+            <!-- LIVE FEED BANNER CARD -->
+            <div style="grid-column: 1 / -1; background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255, 215, 0, 0.35); border-radius: 12px; padding: 14px 20px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);">
+                <div style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">⚡ Latest Activity</div>
+                <div id="latestActivityText" style="font-size: 1.05rem; font-weight: 600; color: #f8fafc;">Standing by for new points...</div>
             </div>
         </div>
 
@@ -81,12 +68,9 @@
                     <div id="topOmegaList"></div>
                 </div>
             </div>
-            <p style="margin-top:12px; font-size:0.8rem; color:#94a3b8; text-align:center;">
-                Names update based on latest performance reviews by team captains & teachers
-            </p>
         </div>
 
-        <!-- STREAMS & ADVANCED BREAKDOWN -->
+        <!-- STREAMS BREAKDOWN (IDs corrected to match JS hyphenation) -->
         <div class="streams-section">
             <h2>📚 Stream Score Breakdown (Public)</h2>
             <div class="streams-grid">
@@ -152,35 +136,10 @@
                     <div class="countdown-label">Seconds</div>
                 </div>
             </div>
-            <p class="countdown-note" id="countdownNote">
-                Target: 5 August 2026 • 9:00 AM — First full recap paper of the term
-            </p>
+            <p class="countdown-note" id="countdownNote">Target: 5 August 2026 • 9:00 AM</p>
         </div>
 
-        <!-- QUICK NOTICES -->
-        <div class="section-card">
-            <h2>📢 Quick Notices</h2>
-            <div class="notices-list">
-                <div class="notice-item">
-                    <div class="notice-date">29 Jul</div>
-                    <div class="notice-text">Welcome to the upgraded Battle Arena! New features: countdown, top performers, papers & student poll.</div>
-                </div>
-                <div class="notice-item">
-                    <div class="notice-date">28 Jul</div>
-                    <div class="notice-text">Team captains please collect attendance sheets before Thursday sessions.</div>
-                </div>
-                <div class="notice-item">
-                    <div class="notice-date">27 Jul</div>
-                    <div class="notice-text">Shared notes drive link has been posted in the A/L WhatsApp group. Check “Files”.</div>
-                </div>
-                <div class="notice-item">
-                    <div class="notice-date">Ongoing</div>
-                    <div class="notice-text">Two study sessions per week per stream during the trial period. Stay consistent!</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ACTIVITY LOG -->
+        <!-- LIVE ACTIVITY FEED -->
         <div class="activity-section">
             <h2>📜 Live Activity Feed</h2>
             <div class="activity-log" id="activityLog">
@@ -188,23 +147,16 @@
             </div>
         </div>
 
-        <!-- PAST PAPERS / DOWNLOADS -->
+        <!-- PAST PAPERS -->
         <div class="section-card">
             <h2>📥 Past Papers & Study Resources</h2>
-            <div class="downloads-grid" id="downloadsContainer">
-                <!-- filled by JavaScript -->
-            </div>
-            <p style="margin-top:14px; font-size:0.8rem; color:#94a3b8; text-align:center;">
-                Links are updated by Study Resources Coordinators from the Admin Panel.
-            </p>
+            <div class="downloads-grid" id="downloadsContainer"></div>
         </div>
 
-        <!-- STUDENT POLL -->
+        <!-- POLL -->
         <div class="section-card">
             <h2>🗳️ Student Voice – Quick Poll</h2>
-            <div id="pollContainer">
-                <!-- filled by JS -->
-            </div>
+            <div id="pollContainer"></div>
         </div>
 
         <!-- FOOTER -->
