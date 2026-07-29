@@ -53,7 +53,7 @@ let pollVotes = {};
 function hasVotedLocally() { return localStorage.getItem(POLL_VOTED_KEY) === "true"; }
 function markVotedLocally() { localStorage.setItem(POLL_VOTED_KEY, "true"); }
 
-// ========== RECAP TIMER (now from backend) ==========
+// ========== RECAP TIMER ==========
 let RECAP_TARGET = new Date("2026-08-05T09:00:00");
 
 setInterval(() => {
@@ -106,15 +106,12 @@ function fetchAllData() {
             // Load recap date from backend
             if (data.recapDate) {
                 RECAP_TARGET = new Date(data.recapDate);
-                // Fill admin form if present
                 const dateInput = document.getElementById("recapDateInput");
                 if (dateInput) {
-                    // Convert to local datetime-local format (YYYY-MM-DDTHH:MM)
                     const d = RECAP_TARGET;
                     const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
                     dateInput.value = local.toISOString().slice(0, 16);
                 }
-                // Update the note under the countdown
                 const note = document.getElementById("countdownNote");
                 if (note) {
                     const options = { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' };
@@ -157,16 +154,25 @@ function toggleAdmin() {
     }
 }
 
+// ========== AWARDING POINTS & LOGGING ==========
 function awardCustomStreamScore(team) {
     if (!isAdminLoggedIn) { alert("Please login as admin first."); return; }
     const stream = document.getElementById("streamSelect").value;
-    const points = parseInt(document.getElementById("achievementSelect").value);
-    const text = document.getElementById("achievementSelect").selectedOptions[0].text.split(" (")[0];
+    const points = parseInt(document.getElementById("achievementSelect").value, 10) || 0;
+    const optionText = document.getElementById("achievementSelect").selectedOptions[0].text;
+    
+    // Clean option string, e.g. "Full Attendance (+5 pts)" -> "full attendance"
+    const criterion = optionText.replace(/\s*\(\+\d+\s*pts\)/i, '').toLowerCase();
+    const teamName = team === 'alpha' ? 'Team Alpha' : 'Team Omega';
+
     scores[team] += points;
-    streamScores[stream] += points;
+    streamScores[stream] = (streamScores[stream] || 0) + points;
+
     updateDisplay();
     syncToSheet();
-    logActivity(`${team === 'alpha' ? 'α-Alpha' : 'Ω-Omega'} earned +${points} pts in [${stream}] for ${text}!`);
+
+    // Log formatted string directly into activity feed
+    logActivity(`${teamName} got +${points} marks for ${criterion} (${stream} Stream)`);
 }
 
 function resetScores() {
@@ -174,8 +180,9 @@ function resetScores() {
     if (confirm("Reset all scores to zero?")) {
         scores.alpha = 0; scores.omega = 0;
         Object.keys(streamScores).forEach(k => streamScores[k] = 0);
-        updateDisplay(); syncToSheet();
-        logActivity("Scoreboard has been reset to zero.");
+        updateDisplay(); 
+        syncToSheet();
+        logActivity("⚠️ Scoreboard has been reset to zero by Administrator.");
     }
 }
 
@@ -185,7 +192,7 @@ function updateDisplay() {
     if (a) { a.textContent = scores.alpha; a.classList.add("pop"); setTimeout(() => a.classList.remove("pop"), 300); }
     if (o) { o.textContent = scores.omega; o.classList.add("pop"); setTimeout(() => o.classList.remove("pop"), 300); }
     
-    // Live Feed Update
+    // Live Feed Header Status Updates
     const fa = document.getElementById("feedAlphaScore");
     const fo = document.getElementById("feedOmegaScore");
     const fas = document.getElementById("feedAlphaStatus");
@@ -249,10 +256,10 @@ function updateDisplay() {
 function logActivity(msg) {
     const log = document.getElementById("activityLog");
     if (!log) return;
-    const time = new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+    const time = new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
     const item = document.createElement("div");
     item.className = "activity-item";
-    item.innerHTML = `<span class="activity-time">[${time}]</span> ${msg}`;
+    item.innerHTML = `<span class="activity-time">[${time}]</span> <strong>${msg}</strong>`;
     log.prepend(item);
 }
 
@@ -278,7 +285,6 @@ function saveRecapDateFromAdmin() {
     const input = document.getElementById("recapDateInput");
     if (!input || !input.value) { alert("Please select a date and time."); return; }
 
-    // Convert local datetime-local value to ISO string
     const localDate = new Date(input.value);
     const iso = localDate.toISOString();
 
@@ -290,7 +296,6 @@ function saveRecapDateFromAdmin() {
         body: JSON.stringify({ recapDate: iso })
     }).catch(() => {});
 
-    // Update the note
     const note = document.getElementById("countdownNote");
     if (note) {
         const options = { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' };
