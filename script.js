@@ -1,10 +1,9 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbwWpdBcZIQnNRyjw7Jl_ccs_Ni6AkyGYlAylvsGKs_-yHuEaX1z5Vzv5Bh8ysG9-j6pxA/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbz4Q1Lit-6JmlMAAfKKrXCgBfDLohXN4wbXW_1lW0gAbZNNt6Nj0RZQYK8IpGKe-f-jlg/exec";
 
 let scores = { alpha: 0, omega: 0 };
 let streamScores = {
     "Physical Science": 0, "Bio Science": 0, "Commerce": 0, "Technology": 0, "Arts": 0
 };
-let scoreFeed = []; // Store live feed history
 let isAdminLoggedIn = false;
 const ADMIN_PIN = "royal123";
 let viewerId = Math.random().toString(36).substring(2);
@@ -54,7 +53,7 @@ let pollVotes = {};
 function hasVotedLocally() { return localStorage.getItem(POLL_VOTED_KEY) === "true"; }
 function markVotedLocally() { localStorage.setItem(POLL_VOTED_KEY, "true"); }
 
-// ========== RECAP TIMER ==========
+// ========== RECAP TIMER (now from backend) ==========
 let RECAP_TARGET = new Date("2026-08-05T09:00:00");
 
 setInterval(() => {
@@ -85,8 +84,6 @@ function fetchAllData() {
         .then(data => {
             if (data.scores) { scores.alpha = data.scores.alpha || 0; scores.omega = data.scores.omega || 0; }
             if (data.streams) streamScores = data.streams;
-            if (data.scoreFeed) { scoreFeed = data.scoreFeed; renderLiveFeed(); }
-
             const v = document.getElementById("viewerCount");
             if (v && data.viewers !== undefined) v.textContent = data.viewers;
 
@@ -106,14 +103,18 @@ function fetchAllData() {
             else { pollVotes = {}; POLL_OPTIONS.forEach(s => pollVotes[s.replace(/\s+/g,"")] = 0); }
             renderPoll();
 
+            // Load recap date from backend
             if (data.recapDate) {
                 RECAP_TARGET = new Date(data.recapDate);
+                // Fill admin form if present
                 const dateInput = document.getElementById("recapDateInput");
                 if (dateInput) {
+                    // Convert to local datetime-local format (YYYY-MM-DDTHH:MM)
                     const d = RECAP_TARGET;
                     const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
                     dateInput.value = local.toISOString().slice(0, 16);
                 }
+                // Update the note under the countdown
                 const note = document.getElementById("countdownNote");
                 if (note) {
                     const options = { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' };
@@ -130,7 +131,7 @@ function syncToSheet() {
     fetch(API_URL, {
         method: "POST", mode: "no-cors",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ scores, streams: streamScores, scoreFeed })
+        body: JSON.stringify({ scores, streams: streamScores })
     }).catch(() => {});
 }
 
@@ -161,49 +162,11 @@ function awardCustomStreamScore(team) {
     const stream = document.getElementById("streamSelect").value;
     const points = parseInt(document.getElementById("achievementSelect").value);
     const text = document.getElementById("achievementSelect").selectedOptions[0].text.split(" (")[0];
-
     scores[team] += points;
     streamScores[stream] += points;
-
-    const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    const logEntry = {
-        team: team,
-        teamName: team === 'alpha' ? 'α-Alpha' : 'Ω-Omega',
-        points: points,
-        stream: stream,
-        reason: text,
-        time: time
-    };
-
-    scoreFeed.unshift(logEntry);
-    if (scoreFeed.length > 20) scoreFeed.pop(); // Keep last 20 entries
-
     updateDisplay();
-    renderLiveFeed();
     syncToSheet();
-    logActivity(`${logEntry.teamName} earned +${points} pts in [${stream}] for ${text}!`);
-}
-
-function renderLiveFeed() {
-    const container = document.getElementById("liveScoreFeed");
-    if (!container) return;
-    if (scoreFeed.length === 0) {
-        container.innerHTML = `<div style="text-align:center; color:#94a3b8; padding:12px; font-size:0.85rem;">No scores awarded yet.</div>`;
-        return;
-    }
-    container.innerHTML = scoreFeed.map(item => {
-        const color = item.team === 'alpha' ? '#60a5fa' : '#ffd700';
-        return `
-            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,30,0.6); border-left:4px solid ${color}; padding:8px 12px; border-radius:6px; margin-bottom:8px; font-size:0.85rem;">
-                <div>
-                    <span style="color:${color}; font-weight:bold;">${item.teamName}</span> 
-                    <span style="color:#f8fafc; margin-left:4px;">+${item.points} pts</span>
-                    <span style="color:#94a3b8; margin-left:6px;">(${item.stream})</span>
-                    <div style="font-size:0.75rem; color:#cbd5e1;">${item.reason}</div>
-                </div>
-                <span style="font-size:0.75rem; color:#64748b;">${item.time}</span>
-            </div>`;
-    }).join("");
+    logActivity(`${team === 'alpha' ? 'α-Alpha' : 'Ω-Omega'} earned +${points} pts in [${stream}] for ${text}!`);
 }
 
 function resetScores() {
@@ -211,10 +174,7 @@ function resetScores() {
     if (confirm("Reset all scores to zero?")) {
         scores.alpha = 0; scores.omega = 0;
         Object.keys(streamScores).forEach(k => streamScores[k] = 0);
-        scoreFeed = [];
-        updateDisplay(); 
-        renderLiveFeed();
-        syncToSheet();
+        updateDisplay(); syncToSheet();
         logActivity("Scoreboard has been reset to zero.");
     }
 }
@@ -224,6 +184,29 @@ function updateDisplay() {
     const o = document.getElementById("omegaScore");
     if (a) { a.textContent = scores.alpha; a.classList.add("pop"); setTimeout(() => a.classList.remove("pop"), 300); }
     if (o) { o.textContent = scores.omega; o.classList.add("pop"); setTimeout(() => o.classList.remove("pop"), 300); }
+    
+    // Live Feed Update
+    const fa = document.getElementById("feedAlphaScore");
+    const fo = document.getElementById("feedOmegaScore");
+    const fas = document.getElementById("feedAlphaStatus");
+    const fos = document.getElementById("feedOmegaStatus");
+    
+    if (fa) fa.textContent = scores.alpha + " pts";
+    if (fo) fo.textContent = scores.omega + " pts";
+    
+    if (fas && fos) {
+        if (scores.alpha > scores.omega) {
+            fas.textContent = "🔥 Leading (+ " + (scores.alpha - scores.omega) + " pts)";
+            fos.textContent = "📉 Behind";
+        } else if (scores.omega > scores.alpha) {
+            fas.textContent = "📉 Behind";
+            fos.textContent = "🔥 Leading (+ " + (scores.omega - scores.alpha) + " pts)";
+        } else {
+            fas.textContent = "⚖️ Tied";
+            fos.textContent = "⚖️ Tied";
+        }
+    }
+
     for (let s in streamScores) {
         const el = document.getElementById("stream-" + s.replace(/\s+/g, '-'));
         if (el) el.textContent = streamScores[s];
@@ -289,13 +272,16 @@ function updateCountdown() {
     document.getElementById("countdownSecs").textContent = Math.floor((diff % 60000) / 1000).toString().padStart(2,"0");
 }
 
+/* ========== SAVE RECAP DATE ========== */
 function saveRecapDateFromAdmin() {
     if (!isAdminLoggedIn) { alert("Please login as admin first."); return; }
     const input = document.getElementById("recapDateInput");
     if (!input || !input.value) { alert("Please select a date and time."); return; }
 
+    // Convert local datetime-local value to ISO string
     const localDate = new Date(input.value);
     const iso = localDate.toISOString();
+
     RECAP_TARGET = localDate;
 
     fetch(API_URL, {
@@ -304,6 +290,7 @@ function saveRecapDateFromAdmin() {
         body: JSON.stringify({ recapDate: iso })
     }).catch(() => {});
 
+    // Update the note
     const note = document.getElementById("countdownNote");
     if (note) {
         const options = { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' };
