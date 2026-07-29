@@ -18,47 +18,22 @@ const ADMIN_PIN = "royal123";
 
 let viewerId = Math.random().toString(36).substring(2);
 
-// Top performers - loaded from localStorage if admin has saved them
-const TOP_PERFORMERS_KEY = "krc_top_performers_v1";
-
-const DEFAULT_TOP_PERFORMERS = {
+// ========== TOP PERFORMERS (now shared via backend) ==========
+let topPerformers = {
     alpha: [
-        { name: "Kasun Perera", note: "Highest average" },
-        { name: "Nimali Silva", note: "Most improved" },
-        { name: "Sahan Fernando", note: "Perfect attendance" }
+        { name: "—", note: "" },
+        { name: "—", note: "" },
+        { name: "—", note: "" }
     ],
     omega: [
-        { name: "Tharindu Jayasuriya", note: "Highest average" },
-        { name: "Dilini Rathnayake", note: "Most improved" },
-        { name: "Amaya Bandara", note: "Shared most resources" }
+        { name: "—", note: "" },
+        { name: "—", note: "" },
+        { name: "—", note: "" }
     ]
 };
 
-let topPerformers = loadTopPerformers();
-
-function loadTopPerformers() {
-    try {
-        const raw = localStorage.getItem(TOP_PERFORMERS_KEY);
-        if (raw) {
-            const parsed = JSON.parse(raw);
-            if (parsed && parsed.alpha && parsed.omega) return parsed;
-        }
-    } catch (e) {}
-    return JSON.parse(JSON.stringify(DEFAULT_TOP_PERFORMERS)); // deep copy
-}
-
-function saveTopPerformersToStorage() {
-    localStorage.setItem(TOP_PERFORMERS_KEY, JSON.stringify(topPerformers));
-}
-
-// Countdown target: Next Recap Paper (adjust this date as needed)
-const RECAP_TARGET = new Date("2026-08-05T09:00:00");
-
-// Poll data (localStorage for persistence per browser)
-const POLL_KEY = "krc_poll_votes_v2";
+// ========== POLL (now shared via backend) ==========
 const POLL_QUESTION = "Which subject needs more papers / group sessions next?";
-
-// Specific subjects grouped by stream
 const POLL_SUBJECTS = [
     { stream: "Physical Science", subjects: ["Combined Mathematics", "Physics", "Chemistry"] },
     { stream: "Bio Science", subjects: ["Biology", "Chemistry", "Physics", "Agriculture"] },
@@ -66,26 +41,25 @@ const POLL_SUBJECTS = [
     { stream: "Technology", subjects: ["Engineering Technology", "Science for Technology", "ICT"] },
     { stream: "Arts", subjects: ["History", "Geography", "Political Science", "Literature"] }
 ];
-
-// Flat list for easy key generation
 const POLL_OPTIONS = POLL_SUBJECTS.flatMap(g => g.subjects);
 
-function getPollVotes() {
-    try {
-        const raw = localStorage.getItem(POLL_KEY);
-        if (raw) return JSON.parse(raw);
-    } catch (e) {}
-    // Start with zero for every subject
-    const empty = { voted: false };
-    POLL_OPTIONS.forEach(s => { empty[s.replace(/\s+/g, "")] = 0; });
-    return empty;
+// Local flag so one browser can only vote once
+const POLL_VOTED_KEY = "krc_poll_has_voted_v2";
+
+let pollVotes = {}; // will be filled from the server
+
+function hasVotedLocally() {
+    return localStorage.getItem(POLL_VOTED_KEY) === "true";
 }
 
-function savePollVotes(votes) {
-    localStorage.setItem(POLL_KEY, JSON.stringify(votes));
+function markVotedLocally() {
+    localStorage.setItem(POLL_VOTED_KEY, "true");
 }
 
-// Heartbeat for viewers
+// Countdown target
+const RECAP_TARGET = new Date("2026-08-05T09:00:00");
+
+// ========== HEARTBEAT ==========
 setInterval(() => {
     fetch(API_URL, {
         method: "POST",
@@ -96,68 +70,79 @@ setInterval(() => {
 }, 15000);
 
 window.addEventListener("DOMContentLoaded", () => {
-    fetchScores();
-    // Auto-refresh scores every 12 seconds so battle stays live
-    setInterval(fetchScores, 12000);
+    fetchAllData();
+    setInterval(fetchAllData, 12000); // refresh every 12s
 
+    // Initial heartbeat
     fetch(API_URL, {
         method: "POST",
         mode: "no-cors",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ type: "heartbeat", viewerId: viewerId })
-    }).catch(err => console.error("Initial heartbeat error:", err));
+    }).catch(() => {});
 
-    // Init new features if elements exist
     if (document.getElementById("countdownDays")) {
         updateCountdown();
         setInterval(updateCountdown, 1000);
     }
-    if (document.getElementById("topAlphaList")) {
-        renderTopPerformers();
-    }
-    if (document.getElementById("pollContainer")) {
-        renderPoll();
-    }
-    // Fill the admin Top Performers form if present
-    if (document.getElementById("tp-alpha-1-name")) {
-        fillTopPerformersForm();
-    }
 });
 
-function fetchScores() {
+// ========== FETCH EVERYTHING FROM BACKEND ==========
+function fetchAllData() {
     fetch(API_URL)
         .then(response => response.json())
         .then(data => {
+            // Scores
             if (data && data.scores) {
                 scores.alpha = data.scores.alpha || 0;
                 scores.omega = data.scores.omega || 0;
             }
+            // Streams
             if (data && data.streams) {
                 streamScores = data.streams;
             }
+            // Viewers
             let viewerElem = document.getElementById("viewerCount");
             if (viewerElem && data.viewers !== undefined) {
                 viewerElem.textContent = data.viewers;
             }
+            // Top Performers (shared)
+            if (data && data.topPerformers) {
+                topPerformers = data.topPerformers;
+                renderTopPerformers();
+                if (document.getElementById("tp-alpha-1-name")) {
+                    fillTopPerformersForm();
+                }
+            }
+            // Poll (shared)
+            if (data && data.poll) {
+                pollVotes = data.poll;
+            } else {
+                // initialise empty
+                pollVotes = {};
+                POLL_OPTIONS.forEach(s => { pollVotes[s.replace(/\s+/g, "")] = 0; });
+            }
+            renderPoll();
+
             updateDisplay();
         })
-        .catch(err => console.error("Error fetching scores:", err));
+        .catch(err => console.error("Error fetching data:", err));
 }
 
+// ========== SAVE SCORES / STREAMS ==========
 function syncToSheet() {
     fetch(API_URL, {
         method: "POST",
         mode: "no-cors",
-        headers: {
-            "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             scores: scores,
             streams: streamScores
         })
-    }).catch(err => console.error("Error syncing to sheet:", err));
+    }).catch(err => console.error("Error syncing scores:", err));
 }
 
+// ========== ADMIN LOGIN ==========
 function toggleAdmin() {
     const controls = document.getElementById("controlsSection");
     const adminBtn = document.getElementById("adminBtn");
@@ -202,7 +187,7 @@ function awardCustomStreamScore(team) {
     }
     const streamSelect = document.getElementById("streamSelect");
     const achievementSelect = document.getElementById("achievementSelect");
-    
+
     const selectedStream = streamSelect.value;
     const points = parseInt(achievementSelect.value);
     const achievementText = achievementSelect.options[achievementSelect.selectedIndex].text.split(" (")[0];
@@ -307,11 +292,11 @@ function logActivity(message) {
     const activityLog = document.getElementById("activityLog");
     if (!activityLog) return;
     const timeString = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    
+
     const item = document.createElement("div");
     item.className = "activity-item";
     item.innerHTML = `<span class="activity-time">[${timeString}]</span> ${message}`;
-    
+
     activityLog.prepend(item);
 }
 
@@ -352,8 +337,8 @@ function renderTopPerformers() {
         <div class="performer-item">
             <div class="rank-badge ${ranks[i] || ''}">${i + 1}</div>
             <div>
-                <strong style="color:#f8fafc">${p.name}</strong>
-                <div style="font-size:0.75rem;color:#94a3b8">${p.note}</div>
+                <strong style="color:#f8fafc">${p.name || "—"}</strong>
+                <div style="font-size:0.75rem;color:#94a3b8">${p.note || ""}</div>
             </div>
         </div>
     `).join("");
@@ -362,31 +347,79 @@ function renderTopPerformers() {
         <div class="performer-item">
             <div class="rank-badge ${ranks[i] || ''}">${i + 1}</div>
             <div>
-                <strong style="color:#f8fafc">${p.name}</strong>
-                <div style="font-size:0.75rem;color:#94a3b8">${p.note}</div>
+                <strong style="color:#f8fafc">${p.name || "—"}</strong>
+                <div style="font-size:0.75rem;color:#94a3b8">${p.note || ""}</div>
             </div>
         </div>
     `).join("");
 }
 
-/* ========== POLL ========== */
+function fillTopPerformersForm() {
+    for (let i = 0; i < 3; i++) {
+        const nameEl = document.getElementById(`tp-alpha-${i+1}-name`);
+        const noteEl = document.getElementById(`tp-alpha-${i+1}-note`);
+        if (nameEl) nameEl.value = topPerformers.alpha[i]?.name || "";
+        if (noteEl) noteEl.value = topPerformers.alpha[i]?.note || "";
+    }
+    for (let i = 0; i < 3; i++) {
+        const nameEl = document.getElementById(`tp-omega-${i+1}-name`);
+        const noteEl = document.getElementById(`tp-omega-${i+1}-note`);
+        if (nameEl) nameEl.value = topPerformers.omega[i]?.name || "";
+        if (noteEl) noteEl.value = topPerformers.omega[i]?.note || "";
+    }
+}
+
+function saveTopPerformersFromAdmin() {
+    if (!isAdminLoggedIn) {
+        alert("Please login as admin first.");
+        return;
+    }
+
+    for (let i = 0; i < 3; i++) {
+        const name = document.getElementById(`tp-alpha-${i+1}-name`)?.value.trim() || "—";
+        const note = document.getElementById(`tp-alpha-${i+1}-note`)?.value.trim() || "";
+        topPerformers.alpha[i] = { name, note };
+    }
+    for (let i = 0; i < 3; i++) {
+        const name = document.getElementById(`tp-omega-${i+1}-name`)?.value.trim() || "—";
+        const note = document.getElementById(`tp-omega-${i+1}-note`)?.value.trim() || "";
+        topPerformers.omega[i] = { name, note };
+    }
+
+    // Save to the shared backend
+    fetch(API_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ topPerformers: topPerformers })
+    }).catch(err => console.error("Error saving top performers:", err));
+
+    renderTopPerformers();
+    logActivity("Top Performers list has been updated by admin.");
+    alert("✅ Top Performers saved!\nEveryone will see the new names after a few seconds.");
+}
+
+/* ========== POLL (SHARED) ========== */
 function renderPoll() {
     const container = document.getElementById("pollContainer");
     if (!container) return;
 
-    const votes = getPollVotes();
-    const total = Object.values(votes).reduce((a, b) => (typeof b === "number" ? a + b : a), 0);
-    const hasVoted = votes.voted === true;
+    // Calculate total votes
+    let total = 0;
+    POLL_OPTIONS.forEach(opt => {
+        const key = opt.replace(/\s+/g, "");
+        total += (pollVotes[key] || 0);
+    });
+
+    const alreadyVoted = hasVotedLocally();
 
     let html = `<div class="poll-question">${POLL_QUESTION}</div>`;
 
-    if (!hasVoted) {
-        // Dropdown with subjects grouped by stream
+    if (!alreadyVoted) {
         html += `
             <select id="pollSelect" style="width:100%; background:rgba(0,0,40,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.4); padding:12px; border-radius:10px; font-size:0.95rem; margin-bottom:12px; outline:none;">
                 <option value="">— Select a subject —</option>
         `;
-
         POLL_SUBJECTS.forEach(group => {
             html += `<optgroup label="${group.stream}">`;
             group.subjects.forEach(sub => {
@@ -394,23 +427,21 @@ function renderPoll() {
             });
             html += `</optgroup>`;
         });
-
         html += `</select>
-            <button class="poll-vote-btn" id="pollVoteBtn" onclick="submitPollVote()">Cast Your Vote</button>
+            <button class="poll-vote-btn" onclick="submitPollVote()">Cast Your Vote</button>
         `;
     } else {
-        html += `<div class="poll-total" style="margin-bottom:14px;">You already voted • Total votes so far: ${total}</div>`;
+        html += `<div class="poll-total" style="margin-bottom:14px;">You already voted • Total votes: ${total}</div>`;
     }
 
-    // Always show current results (sorted by votes)
+    // Show results
     if (total > 0) {
-        html += `<div style="margin-top:8px;"><div style="font-size:0.85rem; color:#94a3b8; margin-bottom:8px;">Current results:</div>`;
+        html += `<div style="margin-top:8px;"><div style="font-size:0.85rem; color:#94a3b8; margin-bottom:8px;">Current results (shared for everyone):</div>`;
 
-        // Build sorted list
         const sorted = POLL_OPTIONS
             .map(opt => {
                 const key = opt.replace(/\s+/g, "");
-                return { name: opt, count: votes[key] || 0 };
+                return { name: opt, count: pollVotes[key] || 0 };
             })
             .filter(x => x.count > 0)
             .sort((a, b) => b.count - a.count);
@@ -429,7 +460,6 @@ function renderPoll() {
                 </div>
             `;
         });
-
         html += `</div>`;
     }
 
@@ -443,61 +473,28 @@ function submitPollVote() {
         return;
     }
 
-    const selected = select.value;
-    const votes = getPollVotes();
-
-    if (votes.voted) {
+    if (hasVotedLocally()) {
         alert("You have already voted on this device.");
         return;
     }
 
+    const selected = select.value;
     const key = selected.replace(/\s+/g, "");
-    votes[key] = (votes[key] || 0) + 1;
-    votes.voted = true;
-    savePollVotes(votes);
+
+    // Update local copy
+    pollVotes[key] = (pollVotes[key] || 0) + 1;
+
+    // Mark this browser as voted
+    markVotedLocally();
+
+    // Send the whole poll object to the shared backend
+    fetch(API_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ poll: pollVotes })
+    }).catch(err => console.error("Error saving poll:", err));
+
     renderPoll();
     logActivity(`Someone voted for more ${selected} papers / sessions`);
-}
-
-/* ========== TOP PERFORMERS ADMIN FORM ========== */
-function fillTopPerformersForm() {
-    // Alpha
-    for (let i = 0; i < 3; i++) {
-        const nameEl = document.getElementById(`tp-alpha-${i+1}-name`);
-        const noteEl = document.getElementById(`tp-alpha-${i+1}-note`);
-        if (nameEl) nameEl.value = topPerformers.alpha[i]?.name || "";
-        if (noteEl) noteEl.value = topPerformers.alpha[i]?.note || "";
-    }
-    // Omega
-    for (let i = 0; i < 3; i++) {
-        const nameEl = document.getElementById(`tp-omega-${i+1}-name`);
-        const noteEl = document.getElementById(`tp-omega-${i+1}-note`);
-        if (nameEl) nameEl.value = topPerformers.omega[i]?.name || "";
-        if (noteEl) noteEl.value = topPerformers.omega[i]?.note || "";
-    }
-}
-
-function saveTopPerformersFromAdmin() {
-    if (!isAdminLoggedIn) {
-        alert("Please login as admin first.");
-        return;
-    }
-
-    // Read Alpha
-    for (let i = 0; i < 3; i++) {
-        const name = document.getElementById(`tp-alpha-${i+1}-name`)?.value.trim() || `Student ${i+1}`;
-        const note = document.getElementById(`tp-alpha-${i+1}-note`)?.value.trim() || "";
-        topPerformers.alpha[i] = { name, note };
-    }
-    // Read Omega
-    for (let i = 0; i < 3; i++) {
-        const name = document.getElementById(`tp-omega-${i+1}-name`)?.value.trim() || `Student ${i+1}`;
-        const note = document.getElementById(`tp-omega-${i+1}-note`)?.value.trim() || "";
-        topPerformers.omega[i] = { name, note };
-    }
-
-    saveTopPerformersToStorage();
-    renderTopPerformers();
-    logActivity("Top Performers list has been updated by admin.");
-    alert("✅ Top Performers saved successfully!\n\nRefresh the Battle Arena page to see the new names.");
 }
