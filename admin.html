@@ -153,39 +153,59 @@
         <div class="section-card">
             <h2>📥 Edit Past Paper Download Links</h2>
             <p style="color:#94a3b8; font-size:0.85rem; margin-bottom:16px;">
-                Paste Google Drive / any links below. Students will see real Download buttons once you save.
+                Paste Google Drive / any links for each subject. Students will see real Download buttons once you save.
                 You must login as admin first.
             </p>
 
-            <div style="display:flex; flex-direction:column; gap:12px;">
-                <div>
-                    <label style="font-size:0.8rem; color:#94a3b8;">Recap Paper – Week 1</label>
-                    <input type="url" id="dl-recap" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;">
-                </div>
-                <div>
-                    <label style="font-size:0.8rem; color:#94a3b8;">Physics Past Papers</label>
-                    <input type="url" id="dl-physics" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;">
-                </div>
-                <div>
-                    <label style="font-size:0.8rem; color:#94a3b8;">Biology Summaries</label>
-                    <input type="url" id="dl-biology" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;">
-                </div>
-                <div>
-                    <label style="font-size:0.8rem; color:#94a3b8;">Commerce Papers</label>
-                    <input type="url" id="dl-commerce" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;">
-                </div>
-                <div>
-                    <label style="font-size:0.8rem; color:#94a3b8;">Technology Resources</label>
-                    <input type="url" id="dl-technology" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;">
-                </div>
-                <div>
-                    <label style="font-size:0.8rem; color:#94a3b8;">Arts Stream Pack</label>
-                    <input type="url" id="dl-arts" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;">
-                </div>
+            <div style="display:flex; flex-direction:column; gap:14px;">
+
+                <div style="color:#60a5fa; font-weight:600; font-size:0.9rem; margin-top:4px;">Physical Science</div>
+                <div><label style="font-size:0.8rem; color:#94a3b8;">Combined Mathematics</label>
+                    <input type="url" id="dl-ps-combined-maths" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
+                <div><label style="font-size:0.8rem; color:#94a3b8;">Physics</label>
+                    <input type="url" id="dl-ps-physics" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
+                <div><label style="font-size:0.8rem; color:#94a3b8;">Chemistry</label>
+                    <input type="url" id="dl-ps-chemistry" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
+
+                <div style="color:#60a5fa; font-weight:600; font-size:0.9rem; margin-top:8px;">Bio Science</div>
+                <div><label style="font-size:0.8rem; color:#94a3b8;">Biology</label>
+                    <input type="url" id="dl-bs-biology" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
+                <div><label style="font-size:0.8rem; color:#94a3b8;">Chemistry</label>
+                    <input type="url" id="dl-bs-chemistry" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
+                <div><label style="font-size:0.8rem; color:#94a3b8;">Physics</label>
+                    <input type="url" id="dl-bs-physics" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
+                <div><label style="font-size:0.8rem; color:#94a3b8;">Agriculture</label>
+                    <input type="url" id="dl-bs-agriculture" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
+
+                <div style="color:#60a5fa; font-weight:600; font-size:0.9rem; margin-top:8px;">Commerce</div>
+                <div><label style="font-size:0.8rem; color:#94a3b8;">Accounting</label>
+                    <input type="url" id="dl-cm-accounting" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
+                <div><label style="font-size:0.8rem; color:#94a3b8;">Business Studies</label>
+                    <input type="url" id="dl-cm-business" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
+                <div><label style="font-size:0.8rem; color:#94a3b8;">Economics</label>
+                    <input type="url" id="dl-cm-economics" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
+
+                <div style="color:#60a5fa; font-weight:600; font-size:0.9rem; margin-top:8px;">Technology</div>
+                <div><label style="font-size:0.8rem; color:#94a3b8;">Engineering Technology</label>
+                    <input type="url" id="dl-tech-eng" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
+                <div><label style="font-size:0.8rem; color:#94a3b8;">Science for Technology</label>
+                    <input type="url" id="dl-tech-sft" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
+                <div><label style="font-size:0.8rem; color:#94a3b8;">ICT</label>
+                    <input type="url" id="dl-tech-ict" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
+
+                <div style="color:#60a5fa; font-weight:600; font-size:0.9rem; margin-top:8px;">Arts</div>
+                <div><label style="font-size:0.8rem; color:#94a3b8;">History</label>
+                    <input type="url" id="dl-arts-history" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
+                <div><label style="font-size:0.8rem; color:#94a3b8;">Geography</label>
+                    <input type="url" id="dl-arts-geography" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
+                <div><label style="font-size:0.8rem; color:#94a3b8;">Political Science</label>
+                    <input type="url" id="dl-arts-polscience" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
+                <div><label style="font-size:0.8rem; color:#94a3b8;">Literature</label>
+                    <input type="url" id="dl-arts-literature" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
             </div>
 
             <button class="btn-action" style="margin-top:18px; width:100%;" onclick="saveDownloadsFromAdmin()">
-                💾 Save Download Links
+                💾 Save All Download Links
             </button>
         </div>
 
