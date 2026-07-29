@@ -145,8 +145,48 @@
                 💾 Save Top Performers
             </button>
             <p style="margin-top:10px; font-size:0.8rem; color:#94a3b8; text-align:center;">
-                After saving, open/refresh the Battle Arena page to see the updated names for everyone on this device.
+                After saving, everyone will see the updated names within a few seconds.
             </p>
+        </div>
+
+        <!-- PAST PAPER LINKS EDITOR -->
+        <div class="section-card">
+            <h2>📥 Edit Past Paper Download Links</h2>
+            <p style="color:#94a3b8; font-size:0.85rem; margin-bottom:16px;">
+                Paste Google Drive / any links below. Students will see real Download buttons once you save.
+                You must login as admin first.
+            </p>
+
+            <div style="display:flex; flex-direction:column; gap:12px;">
+                <div>
+                    <label style="font-size:0.8rem; color:#94a3b8;">Recap Paper – Week 1</label>
+                    <input type="url" id="dl-recap" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;">
+                </div>
+                <div>
+                    <label style="font-size:0.8rem; color:#94a3b8;">Physics Past Papers</label>
+                    <input type="url" id="dl-physics" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;">
+                </div>
+                <div>
+                    <label style="font-size:0.8rem; color:#94a3b8;">Biology Summaries</label>
+                    <input type="url" id="dl-biology" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;">
+                </div>
+                <div>
+                    <label style="font-size:0.8rem; color:#94a3b8;">Commerce Papers</label>
+                    <input type="url" id="dl-commerce" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;">
+                </div>
+                <div>
+                    <label style="font-size:0.8rem; color:#94a3b8;">Technology Resources</label>
+                    <input type="url" id="dl-technology" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;">
+                </div>
+                <div>
+                    <label style="font-size:0.8rem; color:#94a3b8;">Arts Stream Pack</label>
+                    <input type="url" id="dl-arts" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;">
+                </div>
+            </div>
+
+            <button class="btn-action" style="margin-top:18px; width:100%;" onclick="saveDownloadsFromAdmin()">
+                💾 Save Download Links
+            </button>
         </div>
 
         <!-- ACTIVITY LOG -->
