@@ -35,31 +35,27 @@
             </div>
         </header>
 
-        <!-- MAIN SCOREBOARD SECTION -->
-        <div class="scoreboard-section">
-            
-            <!-- Main Alpha & Omega Score Cards -->
-            <div class="team-cards">
-                <div class="team-card alpha-card" id="alphaCard">
-                    <h3>α - Team Alpha</h3>
-                    <div class="score" id="alphaScore">0</div>
-                    <div class="score-subtitle" style="color: #94a3b8; font-size: 0.9rem; margin-top: 4px;">Total Points</div>
-                </div>
-                <div class="team-card omega-card" id="omegaCard">
-                    <h3>Ω - Team Omega</h3>
-                    <div class="score" id="omegaScore">0</div>
-                    <div class="score-subtitle" style="color: #94a3b8; font-size: 0.9rem; margin-top: 4px;">Total Points</div>
-                </div>
+        <!-- SCOREBOARD OVERVIEW -->
+        <div class="scoreboard-overview">
+            <div class="team-card alpha-card" id="alphaCard">
+                <div class="team-title">α - Team Alpha</div>
+                <div class="score-display" id="alphaScore">0</div>
+                <div class="score-subtitle" style="color: #94a3b8; font-size: 0.9rem;">Total Points</div>
             </div>
-
-            <!-- ⚡ SINGLE LIVE FEED CARD -->
+            <div class="team-card omega-card" id="omegaCard">
+                <div class="team-title">Ω - Team Omega</div>
+                <div class="score-display" id="omegaScore">0</div>
+                <div class="score-subtitle" style="color: #94a3b8; font-size: 0.9rem;">Total Points</div>
+            </div>
+            
+            <!-- ⚡ SINGLE LIVE FEED CARD (Placed directly below team cards) -->
             <div class="latest-feed-card" style="
+                grid-column: 1 / -1;
                 background: rgba(15, 23, 42, 0.85); 
                 border: 1px solid rgba(255, 215, 0, 0.35); 
                 border-radius: 12px; 
                 padding: 14px 20px; 
-                margin: 20px auto 10px auto; 
-                max-width: 600px; 
+                margin-top: 16px; 
                 text-align: center; 
                 box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
             ">
@@ -70,7 +66,6 @@
                     Standing by for new points...
                 </div>
             </div>
-
         </div>
 
         <!-- TOP PERFORMERS -->
