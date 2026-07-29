@@ -3,206 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>α-ALPHA vs Ω-OMEGA - Battle Arena</title>
+    <title>Battle Arena - α-ALPHA vs Ω-OMEGA</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="container">
-        <!-- NAVIGATION -->
+        <!-- NAVIGATION BAR -->
         <div class="nav-bar">
             <a href="index.html" class="nav-btn active">⚔️ Battle Arena</a>
             <a href="about.html" class="nav-btn">📖 About the Initiative</a>
             <a href="admin.html" class="nav-btn">🛠️ Admin Panel</a>
         </div>
 
-        <!-- HEADER -->
+        <!-- HEADER SECTION -->
         <header>
-            <div class="subtitle">Kuruduwatta Royal College - Grade 12 Study Group Initiative</div>
-            <h1>α-ALPHA vs Ω-OMEGA</h1>
-            <div class="college-name">
-                <div class="school-flag">
-                    <div class="navy-half"></div>
-                    <div class="gold-half"></div>
-                </div>
-                Battle Arena & Study Tracker
-            </div>
-            <div>
-                <div class="viewer-badge-container">
-                    <span class="viewer-dot"></span>
-                    👀 Live Viewers: <span id="viewerCount">1</span>
-                </div>
-            </div>
+            <div class="subtitle">Kuruduwatta Royal College &bull; Grade 12 Study Group Initiative</div>
+            <h1>⚔️ ALPHA vs OMEGA ⚔️</h1>
+            <div class="college-name">Academic Stream Battle Dashboard</div>
         </header>
 
-        <!-- SCOREBOARD OVERVIEW -->
-        <div class="scoreboard-overview">
-            <div class="team-card alpha-card" id="alphaCard">
-                <div class="team-title">α - Team Alpha</div>
-                <div class="score-display" id="alphaScore">0</div>
-                <div class="score-subtitle" style="color: #94a3b8; font-size: 0.9rem;">Total Points</div>
+        <!-- TOP SCOREBOARD CARDS -->
+        <div class="score-board">
+            <div class="team-card alpha">
+                <h2>α - TEAM ALPHA</h2>
+                <div class="score-val" id="alphaScore">0</div>
+                <p style="color: #cbd5e1; font-size: 0.85rem; margin-top: 8px;">Current Total Points</p>
             </div>
-            <div class="team-card omega-card" id="omegaCard">
-                <div class="team-title">Ω - Team Omega</div>
-                <div class="score-display" id="omegaScore">0</div>
-                <div class="score-subtitle" style="color: #94a3b8; font-size: 0.9rem;">Total Points</div>
-            </div>
-        </div>
-
-        <!-- LIVE SCORE FEED SECTION -->
-        <div class="section-card" style="margin-top:20px;">
-            <h2>⚡ Live Score Feed</h2>
-            <p style="color:#94a3b8; font-size:0.85rem; margin-bottom:12px;">Real-time history of points awarded per team and subject stream.</p>
-            <div id="liveScoreFeed" style="max-height: 250px; overflow-y: auto; padding-right: 4px;">
-                <div style="text-align:center; color:#94a3b8; padding:12px; font-size:0.85rem;">Loading activity...</div>
+            
+            <div class="team-card omega">
+                <h2>Ω - TEAM OMEGA</h2>
+                <div class="score-val" id="omegaScore">0</div>
+                <p style="color: #cbd5e1; font-size: 0.85rem; margin-top: 8px;">Current Total Points</p>
             </div>
         </div>
 
-        <!-- TOP PERFORMERS -->
-        <div class="section-card">
-            <h2>🌟 Top Performers This Cycle</h2>
-            <div class="top-performers-grid">
-                <div class="top-team alpha">
-                    <h3>α Team Alpha</h3>
-                    <div id="topAlphaList"></div>
-                </div>
-                <div class="top-team omega">
-                    <h3>Ω Team Omega</h3>
-                    <div id="topOmegaList"></div>
-                </div>
-            </div>
-            <p style="margin-top:12px; font-size:0.8rem; color:#94a3b8; text-align:center;">
-                Names update based on latest performance reviews by team captains & teachers
-            </p>
-        </div>
+        <!-- MAIN LAYOUT GRID -->
+        <div class="main-grid">
+            
+            <!-- LEFT COLUMN: STREAMS & RESOURCES -->
+            <div class="left-col" style="display: flex; flex-direction: column; gap: 20px;">
+                
+                <!-- SUBJECT STREAM BREAKDOWN -->
+                <div class="section-card">
+                    <h2>📊 Stream Leaderboards</h2>
+                    <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 15px;">
+                        Cumulative points distributed across Grade 12 subject streams.
+                    </p>
 
-        <!-- STREAMS & ADVANCED BREAKDOWN -->
-        <div class="streams-section">
-            <h2>📚 Stream Score Breakdown (Public)</h2>
-            <div class="streams-grid">
-                <div class="stream-card">
-                    <div class="stream-name">Physical Science</div>
-                    <div class="stream-score" id="stream-Physical-Science">0</div>
+                    <div id="streamContainer" style="display: flex; flex-direction: column; gap: 14px;">
+                        <!-- Dynamically filled by script.js -->
+                        <p style="color: #64748b; font-size: 0.85rem;">Loading stream points...</p>
+                    </div>
                 </div>
-                <div class="stream-card">
-                    <div class="stream-name">Bio Science</div>
-                    <div class="stream-score" id="stream-Bio-Science">0</div>
-                </div>
-                <div class="stream-card">
-                    <div class="stream-name">Commerce</div>
-                    <div class="stream-score" id="stream-Commerce">0</div>
-                </div>
-                <div class="stream-card">
-                    <div class="stream-name">Technology</div>
-                    <div class="stream-score" id="stream-Technology">0</div>
-                </div>
-                <div class="stream-card">
-                    <div class="stream-name">Arts</div>
-                    <div class="stream-score" id="stream-Arts">0</div>
-                </div>
-            </div>
-        </div>
 
-        <!-- BATTLE STATUS BANNER -->
-        <div class="battle-status">
-            <div class="status-content">
-                <h3 id="statusTitle">🔥 Battle Just Began!</h3>
-                <p id="statusDesc">The scoreboard is clean. Step up, lock in, and claim the lead!</p>
-            </div>
-            <div class="progress-container">
-                <div class="progress-labels">
-                    <span id="alphaPct">α-Alpha (50%)</span>
-                    <span id="omegaPct">Ω-Omega (50%)</span>
-                </div>
-                <div class="progress-bar-container">
-                    <div class="progress-alpha" id="alphaBar"></div>
-                    <div class="progress-omega" id="omegaBar"></div>
-                </div>
-            </div>
-        </div>
+                <!-- PAST PAPERS & SHORT NOTES RESOURCES -->
+                <div class="section-card">
+                    <h2>📚 Stream Resources & Past Papers</h2>
+                    <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 15px;">
+                        Access shared short notes, past papers, and recap study materials published by admins.
+                    </p>
 
-        <!-- COUNTDOWN TIMER -->
-        <div class="section-card">
-            <h2>⏱️ Next Recap Paper Countdown</h2>
-            <div class="countdown-grid">
-                <div class="countdown-box">
-                    <div class="countdown-value" id="countdownDays">0</div>
-                    <div class="countdown-label">Days</div>
+                    <div id="downloadsContainer" style="display: flex; flex-direction: column; gap: 10px;">
+                        <!-- Dynamically filled by script.js -->
+                        <p style="color: #64748b; font-size: 0.85rem;">No resources published yet.</p>
+                    </div>
                 </div>
-                <div class="countdown-box">
-                    <div class="countdown-value" id="countdownHours">00</div>
-                    <div class="countdown-label">Hours</div>
-                </div>
-                <div class="countdown-box">
-                    <div class="countdown-value" id="countdownMins">00</div>
-                    <div class="countdown-label">Minutes</div>
-                </div>
-                <div class="countdown-box">
-                    <div class="countdown-value" id="countdownSecs">00</div>
-                    <div class="countdown-label">Seconds</div>
-                </div>
-            </div>
-            <p class="countdown-note" id="countdownNote">
-                Target: 5 August 2026 • 9:00 AM — First full recap paper of the term
-            </p>
-        </div>
 
-        <!-- QUICK NOTICES -->
-        <div class="section-card">
-            <h2>📢 Quick Notices</h2>
-            <div class="notices-list">
-                <div class="notice-item">
-                    <div class="notice-date">29 Jul</div>
-                    <div class="notice-text">Welcome to the upgraded Battle Arena! New features: countdown, top performers, papers & student poll.</div>
-                </div>
-                <div class="notice-item">
-                    <div class="notice-date">28 Jul</div>
-                    <div class="notice-text">Team captains please collect attendance sheets before Thursday sessions.</div>
-                </div>
-                <div class="notice-item">
-                    <div class="notice-date">27 Jul</div>
-                    <div class="notice-text">Shared notes drive link has been posted in the A/L WhatsApp group. Check “Files”.</div>
-                </div>
-                <div class="notice-item">
-                    <div class="notice-date">Ongoing</div>
-                    <div class="notice-text">Two study sessions per week per stream during the trial period. Stay consistent!</div>
-                </div>
             </div>
-        </div>
 
-        <!-- ACTIVITY LOG -->
-        <div class="activity-section">
-            <h2>📜 Live Activity Feed</h2>
-            <div class="activity-log" id="activityLog">
-                <div class="activity-item"><span class="activity-time">[System]</span> Battle arena initialized. Standing by for points...</div>
-            </div>
-        </div>
+            <!-- RIGHT COLUMN: LIVE FEED, COUNTDOWN & TOP PERFORMERS -->
+            <div class="right-col" style="display: flex; flex-direction: column; gap: 20px;">
 
-        <!-- PAST PAPERS / DOWNLOADS -->
-        <div class="section-card">
-            <h2>📥 Past Papers & Study Resources</h2>
-            <div class="downloads-grid" id="downloadsContainer">
-                <!-- filled by JavaScript -->
-            </div>
-            <p style="margin-top:14px; font-size:0.8rem; color:#94a3b8; text-align:center;">
-                Links are updated by Study Resources Coordinators from the Admin Panel.
-            </p>
-        </div>
+                <!-- RECAP PAPER COUNTDOWN TIMER -->
+                <div class="section-card" style="text-align: center; background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.9));">
+                    <h2>⏱️ Next Recap Paper Target</h2>
+                    <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 12px;">
+                        Countdown to the next evaluation paper:
+                    </p>
+                    <div id="countdownTimer" style="font-size: 1.8rem; font-weight: 800; color: #38bdf8; font-family: monospace; letter-spacing: 2px;">
+                        00d : 00h : 00m : 00s
+                    </div>
+                </div>
 
-        <!-- STUDENT POLL -->
-        <div class="section-card">
-            <h2>🗳️ Student Voice – Quick Poll</h2>
-            <div id="pollContainer">
-                <!-- filled by JS -->
+                <!-- TOP PERFORMERS LIST -->
+                <div class="section-card">
+                    <h2>🌟 Cycle Top Performers</h2>
+                    <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 15px;">
+                        Students leading the rankings in this performance period.
+                    </p>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div>
+                            <h3 style="color: #38bdf8; font-size: 0.95rem; margin-bottom: 8px;">α - Team Alpha</h3>
+                            <ol id="topAlphaList" style="padding-left: 20px; color: #cbd5e1; font-size: 0.88rem; line-height: 1.6;">
+                                <li>Loading...</li>
+                            </ol>
+                        </div>
+                        <div>
+                            <h3 style="color: #a855f7; font-size: 0.95rem; margin-bottom: 8px;">Ω - Team Omega</h3>
+                            <ol id="topOmegaList" style="padding-left: 20px; color: #cbd5e1; font-size: 0.88rem; line-height: 1.6;">
+                                <li>Loading...</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LIVE SCORE BROADCAST FEED -->
+                <div class="section-card">
+                    <h2>⚡ Live Activity Feed</h2>
+                    <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 15px;">
+                        Real-time updates on points awarded across subject streams.
+                    </p>
+
+                    <div id="activityFeed" style="display: flex; flex-direction: column; gap: 10px; max-height: 380px; overflow-y: auto;">
+                        <!-- Dynamically filled by script.js -->
+                        <p style="color: #64748b; font-size: 0.85rem;">Waiting for updates...</p>
+                    </div>
+                </div>
+
             </div>
+
         </div>
 
         <!-- FOOTER -->
-        <footer>
+        <footer style="margin-top: 40px; text-align: center; color: #64748b; font-size: 0.8rem; padding: 20px 0; border-top: 1px solid #1e293b;">
             Kuruduwatta Royal College &bull; Grade 12 Study Group Initiative &copy; 2026
         </footer>
     </div>
 
+    <!-- MAIN SCRIPT -->
     <script src="script.js"></script>
 </body>
 </html>
