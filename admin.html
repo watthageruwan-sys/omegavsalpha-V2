@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Grade 12 Study Group Initiative</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <!-- NAVIGATION -->
+        <div class="nav-bar">
+            <a href="index.html" class="nav-btn">⚔️ Battle Arena</a>
+            <a href="about.html" class="nav-btn">📖 About the Initiative</a>
+            <a href="admin.html" class="nav-btn active">🛠️ Admin Panel</a>
+        </div>
+
+        <!-- HEADER -->
+        <header>
+            <div class="subtitle">Kuruduwatta Royal College - Grade 12 Study Group Initiative</div>
+            <h1>🛠️ Admin Point Controller</h1>
+            <div class="college-name">
+                <div class="school-flag">
+                    <div class="navy-half"></div>
+                    <div class="gold-half"></div>
+                </div>
+                Secure Admin Area
+            </div>
+        </header>
+
+        <div class="admin-info">
+            This page is for team captains, coordinators and teachers only. 
+            Enter the PIN to unlock the controls. Points awarded here update live on the Battle Arena for everyone.
+        </div>
+
+        <!-- LIVE MINI SCOREBOARD -->
+        <div class="scoreboard-overview">
+            <div class="team-card alpha-card" id="alphaCard">
+                <div class="team-title">α - Team Alpha</div>
+                <div class="score-display" id="alphaScore">0</div>
+                <div class="score-subtitle" style="color: #94a3b8; font-size: 0.9rem;">Total Points</div>
+            </div>
+            <div class="team-card omega-card" id="omegaCard">
+                <div class="team-title">Ω - Team Omega</div>
+                <div class="score-display" id="omegaScore">0</div>
+                <div class="score-subtitle" style="color: #94a3b8; font-size: 0.9rem;">Total Points</div>
+            </div>
+        </div>
+
+        <!-- CONTROLS / ADMIN PANEL -->
+        <div class="controls-section locked" id="controlsSection">
+            <div class="controls-header">
+                <h2>🛠️ Award Points</h2>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <span class="lock-badge" id="lockBadge">🔒 Locked</span>
+                    <button class="admin-login-btn" id="adminBtn" onclick="toggleAdmin()">🔒 Admin Login</button>
+                </div>
+            </div>
+            
+            <div class="controls-body">
+                <div class="control-group">
+                    <label for="streamSelect">Select Academic Stream</label>
+                    <select id="streamSelect">
+                        <option value="Physical Science">Physical Science</option>
+                        <option value="Bio Science">Bio Science</option>
+                        <option value="Commerce">Commerce</option>
+                        <option value="Technology">Technology</option>
+                        <option value="Arts">Arts</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="achievementSelect">Select Official Point Criteria</label>
+                    <select id="achievementSelect">
+                        <option value="10">Top Average Score (+10 pts)</option>
+                        <option value="5">Most Improved (+5 pts)</option>
+                        <option value="5">Full Attendance (+5 pts)</option>
+                        <option value="3">Shared Resources (+3 pts)</option>
+                    </select>
+                </div>
+
+                <div class="control-row">
+                    <button class="btn-action" onclick="awardCustomStreamScore('alpha')">Award to α-Alpha</button>
+                    <button class="btn-action" onclick="awardCustomStreamScore('omega')">Award to Ω-Omega</button>
+                </div>
+
+                <button class="btn-danger" onclick="resetScores()">⚠️ Reset All Scores</button>
+            </div>
+        </div>
+
+        <!-- ACTIVITY LOG -->
+        <div class="activity-section">
+            <h2>📜 Admin Activity Log</h2>
+            <div class="activity-log" id="activityLog">
+                <div class="activity-item"><span class="activity-time">[System]</span> Admin panel ready. Login to award points.</div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <footer>
+            Kuruduwatta Royal College &bull; Grade 12 Study Group Initiative &copy; 2026<br>
+            <span style="font-size:0.75rem; opacity:0.8;">PIN is known only to authorized captains & teachers</span>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
