@@ -1,270 +1,355 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard</title>
-  <style>
-    /* --- OG Admin Panel Styling --- */
-    :root {
-      --bg-color: #0f172a;
-      --card-bg: #1e293b;
-      --accent: #3b82f6;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --border: #334155;
-      --danger: #ef4444;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Grade 12 Study Group Initiative</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Auth Screen overlay styling matching existing dark theme */
+        #auth-screen {
+            background: rgba(0, 0, 40, 0.95);
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            border-radius: 12px;
+            padding: 2.5rem;
+            max-width: 420px;
+            margin: 2rem auto;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
+        #auth-screen h2 {
+            margin-bottom: 0.5rem;
+            font-size: 1.4rem;
+            color: #f8fafc;
+        }
 
-    body {
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+        #auth-screen p {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
 
-    header {
-      background-color: var(--card-bg);
-      padding: 1rem 2rem;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+        .auth-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
 
-    h1 {
-      font-size: 1.25rem;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-    }
+        .auth-input-group input[type="password"] {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(0, 0, 30, 0.9);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 6px;
+            color: #f8fafc;
+            font-size: 1rem;
+            outline: none;
+        }
 
-    .container {
-      max-width: 1100px;
-      width: 100%;
-      margin: 2rem auto;
-      padding: 0 1rem;
-    }
+        .auth-input-group input[type="password"]:focus {
+            border-color: #3b82f6;
+        }
 
-    /* --- Auth Gateway Overlay / Card --- */
-    #auth-screen {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 2.5rem;
-      max-width: 420px;
-      margin: 4rem auto;
-      text-align: center;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-    }
+        .error-msg {
+            color: #ef4444;
+            font-size: 0.85rem;
+            margin-top: 0.75rem;
+            display: none;
+        }
 
-    #auth-screen h2 {
-      margin-bottom: 0.5rem;
-      font-size: 1.4rem;
-    }
-
-    #auth-screen p {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .input-group {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    input[type="password"] {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      background: #0f172a;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      color: var(--text-main);
-      font-size: 1rem;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    input[type="password"]:focus {
-      border-color: var(--accent);
-    }
-
-    .btn {
-      padding: 0.75rem 1.25rem;
-      background: var(--accent);
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: opacity 0.2s;
-    }
-
-    .btn:hover {
-      opacity: 0.9;
-    }
-
-    .error-msg {
-      color: var(--danger);
-      font-size: 0.85rem;
-      margin-top: 0.75rem;
-      display: none;
-    }
-
-    /* --- Admin Content (Hidden by default) --- */
-    #admin-content {
-      display: none; /* Everything hidden until unlocked */
-    }
-
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-      margin-top: 1.5rem;
-    }
-
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1.5rem;
-    }
-
-    .card h3 {
-      font-size: 1rem;
-      color: var(--text-muted);
-      margin-bottom: 0.5rem;
-    }
-
-    .card .stat {
-      font-size: 1.8rem;
-      font-weight: bold;
-    }
-
-    .actions-panel {
-      margin-top: 2rem;
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1.5rem;
-    }
-
-    .actions-grid {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      margin-top: 1rem;
-    }
-
-    .btn-secondary {
-      background: #334155;
-    }
-  </style>
+        /* Hide all admin controls by default */
+        #protected-admin-wrapper {
+            display: none;
+        }
+    </style>
 </head>
 <body>
 
-  <header>
-    <h1>Admin Control Panel</h1>
-    <button id="logout-btn" class="btn btn-secondary" style="display: none;" onclick="lockPanel()">Lock Panel</button>
-  </header>
+    <div class="container">
+        <!-- NAVIGATION -->
+        <div class="nav-bar">
+            <a href="index.html" class="nav-btn">⚔️ Battle Arena</a>
+            <a href="about.html" class="nav-btn">📖 About the Initiative</a>
+            <a href="admin.html" class="nav-btn active">🛠️ Admin Panel</a>
+        </div>
 
-  <div class="container">
-    
-    <!-- Password Prompt Gate -->
-    <div id="auth-screen">
-      <h2>Restricted Access</h2>
-      <p>Enter the administrator password to unlock options.</p>
-      <div class="input-group">
-        <input type="password" id="admin-pass" placeholder="Enter Password..." onkeydown="checkEnter(event)">
-        <button class="btn" onclick="unlockPanel()">Unlock</button>
-      </div>
-      <div id="error-msg" class="error-msg">Incorrect password. Access denied.</div>
+        <!-- HEADER -->
+        <header>
+            <div class="subtitle">Kuruduwatta Royal College - Grade 12 Study Group Initiative</div>
+            <h1>🛠️ Admin Point Controller</h1>
+            <div class="college-name">
+                <div class="school-flag">
+                    <div class="navy-half"></div>
+                    <div class="gold-half"></div>
+                </div>
+                Secure Admin Area
+            </div>
+        </header>
+
+        <div class="admin-info">
+            This page is for team captains, coordinators and teachers only. 
+            Enter the password to unlock controls. Points awarded here update live on the Battle Arena for everyone.
+        </div>
+
+        <!-- LIVE MINI SCOREBOARD (Visible for quick reference) -->
+        <div class="scoreboard-overview">
+            <div class="team-card alpha-card" id="alphaCard">
+                <div class="team-title">α - Team Alpha</div>
+                <div class="score-display" id="alphaScore">0</div>
+                <div class="score-subtitle" style="color: #94a3b8; font-size: 0.9rem;">Total Points</div>
+            </div>
+            <div class="team-card omega-card" id="omegaCard">
+                <div class="team-title">Ω - Team Omega</div>
+                <div class="score-display" id="omegaScore">0</div>
+                <div class="score-subtitle" style="color: #94a3b8; font-size: 0.9rem;">Total Points</div>
+            </div>
+        </div>
+
+        <!-- PASSWORD GATEWAY -->
+        <div id="auth-screen">
+            <h2>Restricted Admin Area</h2>
+            <p>Enter the administrator password to unlock all controls.</p>
+            <div class="auth-input-group">
+                <input type="password" id="admin-pass" placeholder="Enter Password..." onkeydown="checkEnter(event)">
+                <button class="btn-action" onclick="unlockPanel()">Unlock Panel</button>
+            </div>
+            <div id="error-msg" class="error-msg">Incorrect password. Access denied.</div>
+        </div>
+
+        <!-- HIDDEN UNTIL AUTHENTICATED -->
+        <div id="protected-admin-wrapper">
+            
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 15px;">
+                <button class="btn-danger" style="width: auto; padding: 8px 16px;" onclick="lockPanel()">🔒 Lock Panel</button>
+            </div>
+
+            <!-- CONTROLS / ADMIN PANEL -->
+            <div class="controls-section" id="controlsSection">
+                <div class="controls-header">
+                    <h2>🛠️ Award Points</h2>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <span class="lock-badge" id="lockBadge" style="background: rgba(16,185,129,0.2); color: #10b981; border: 1px solid #10b981;">🔓 Unlocked</span>
+                    </div>
+                </div>
+                
+                <div class="controls-body">
+                    <div class="control-group">
+                        <label for="streamSelect">Select Academic Stream</label>
+                        <select id="streamSelect">
+                            <option value="Physical Science">Physical Science</option>
+                            <option value="Bio Science">Bio Science</option>
+                            <option value="Commerce">Commerce</option>
+                            <option value="Technology">Technology</option>
+                            <option value="Arts">Arts</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="achievementSelect">Select Official Point Criteria</label>
+                        <select id="achievementSelect">
+                            <option value="10">Top Average Score (+10 pts)</option>
+                            <option value="5">Most Improved (+5 pts)</option>
+                            <option value="5">Full Attendance (+5 pts)</option>
+                            <option value="3">Shared Resources (+3 pts)</option>
+                        </select>
+                    </div>
+
+                    <div class="control-row">
+                        <button class="btn-action" onclick="awardCustomStreamScore('alpha')">Award to α-Alpha</button>
+                        <button class="btn-action" onclick="awardCustomStreamScore('omega')">Award to Ω-Omega</button>
+                    </div>
+
+                    <button class="btn-danger" onclick="resetScores()">⚠️ Reset All Scores</button>
+                </div>
+            </div>
+
+            <!-- TOP PERFORMERS EDITOR -->
+            <div class="section-card" id="topPerformersEditor">
+                <h2>🌟 Edit Top Performers</h2>
+                <p style="color:#94a3b8; font-size:0.85rem; margin-bottom:16px;">
+                    Enter the current top 3 students for each team. These names appear on the public Battle Arena.
+                </p>
+
+                <div class="top-edit-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:18px;">
+                    <!-- Alpha -->
+                    <div style="background:rgba(0,0,40,0.9); border:1px solid rgba(59,130,246,0.4); border-radius:12px; padding:16px;">
+                        <h3 style="color:#60a5fa; margin-bottom:12px; font-size:1rem;">α Team Alpha</h3>
+                        
+                        <div style="margin-bottom:12px;">
+                            <label style="font-size:0.8rem; color:#94a3b8;">1st Place – Name</label>
+                            <input type="text" id="tp-alpha-1-name" placeholder="Student name" style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;">
+                            <input type="text" id="tp-alpha-1-note" placeholder="Note (e.g. Highest average)" style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px; font-size:0.85rem;">
+                        </div>
+                        <div style="margin-bottom:12px;">
+                            <label style="font-size:0.8rem; color:#94a3b8;">2nd Place – Name</label>
+                            <input type="text" id="tp-alpha-2-name" placeholder="Student name" style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;">
+                            <input type="text" id="tp-alpha-2-note" placeholder="Note (e.g. Most improved)" style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px; font-size:0.85rem;">
+                        </div>
+                        <div>
+                            <label style="font-size:0.8rem; color:#94a3b8;">3rd Place – Name</label>
+                            <input type="text" id="tp-alpha-3-name" placeholder="Student name" style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;">
+                            <input type="text" id="tp-alpha-3-note" placeholder="Note (e.g. Perfect attendance)" style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px; font-size:0.85rem;">
+                        </div>
+                    </div>
+
+                    <!-- Omega -->
+                    <div style="background:rgba(0,0,40,0.9); border:1px solid rgba(255,215,0,0.4); border-radius:12px; padding:16px;">
+                        <h3 style="color:#ffd700; margin-bottom:12px; font-size:1rem;">Ω Team Omega</h3>
+                        
+                        <div style="margin-bottom:12px;">
+                            <label style="font-size:0.8rem; color:#94a3b8;">1st Place – Name</label>
+                            <input type="text" id="tp-omega-1-name" placeholder="Student name" style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;">
+                            <input type="text" id="tp-omega-1-note" placeholder="Note (e.g. Highest average)" style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px; font-size:0.85rem;">
+                        </div>
+                        <div style="margin-bottom:12px;">
+                            <label style="font-size:0.8rem; color:#94a3b8;">2nd Place – Name</label>
+                            <input type="text" id="tp-omega-2-name" placeholder="Student name" style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;">
+                            <input type="text" id="tp-omega-2-note" placeholder="Note (e.g. Most improved)" style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px; font-size:0.85rem;">
+                        </div>
+                        <div>
+                            <label style="font-size:0.8rem; color:#94a3b8;">3rd Place – Name</label>
+                            <input type="text" id="tp-omega-3-name" placeholder="Student name" style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;">
+                            <input type="text" id="tp-omega-3-note" placeholder="Note (e.g. Shared most resources)" style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px; font-size:0.85rem;">
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-action" style="margin-top:18px; width:100%;" onclick="saveTopPerformersFromAdmin()">
+                    💾 Save Top Performers
+                </button>
+                <p style="margin-top:10px; font-size:0.8rem; color:#94a3b8; text-align:center;">
+                    After saving, everyone will see the updated names within a few seconds.
+                </p>
+            </div>
+
+            <!-- RECAP TIMER EDITOR -->
+            <div class="section-card">
+                <h2>⏱️ Update Recap Paper Countdown</h2>
+                <p style="color:#94a3b8; font-size:0.85rem; margin-bottom:16px;">
+                    Set the exact date and time of the next Recap Paper. The countdown on the Battle Arena will update for everyone.
+                </p>
+                <div>
+                    <label style="font-size:0.8rem; color:#94a3b8;">New Recap Date & Time</label>
+                    <input type="datetime-local" id="recapDateInput"
+                        style="width:100%; margin-top:6px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:10px; border-radius:8px; font-size:1rem;">
+                </div>
+                <button class="btn-action" style="margin-top:16px; width:100%;" onclick="saveRecapDateFromAdmin()">
+                    💾 Update Countdown Timer
+                </button>
+            </div>
+
+            <!-- PAST PAPER LINKS EDITOR -->
+            <div class="section-card">
+                <h2>📥 Edit Past Paper Download Links</h2>
+                <p style="color:#94a3b8; font-size:0.85rem; margin-bottom:16px;">
+                    Paste Google Drive / any links for each subject. Students will see real Download buttons once you save.
+                </p>
+
+                <div style="display:flex; flex-direction:column; gap:14px;">
+
+                    <div style="color:#60a5fa; font-weight:600; font-size:0.9rem; margin-top:4px;">Physical Science</div>
+                    <div><label style="font-size:0.8rem; color:#94a3b8;">Combined Mathematics</label>
+                        <input type="url" id="dl-ps-combined-maths" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
+                    <div><label style="font-size:0.8rem; color:#94a3b8;">Physics</label>
+                        <input type="url" id="dl-ps-physics" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
+                    <div><label style="font-size:0.8rem; color:#94a3b8;">Chemistry</label>
+                        <input type="url" id="dl-ps-chemistry" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
+
+                    <div style="color:#60a5fa; font-weight:600; font-size:0.9rem; margin-top:8px;">Bio Science</div>
+                    <div><label style="font-size:0.8rem; color:#94a3b8;">Biology</label>
+                        <input type="url" id="dl-bs-biology" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
+                    <div><label style="font-size:0.8rem; color:#94a3b8;">Chemistry</label>
+                        <input type="url" id="dl-bs-chemistry" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
+                    <div><label style="font-size:0.8rem; color:#94a3b8;">Physics</label>
+                        <input type="url" id="dl-bs-physics" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
+                    <div><label style="font-size:0.8rem; color:#94a3b8;">Agriculture</label>
+                        <input type="url" id="dl-bs-agriculture" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
+
+                    <div style="color:#60a5fa; font-weight:600; font-size:0.9rem; margin-top:8px;">Commerce</div>
+                    <div><label style="font-size:0.8rem; color:#94a3b8;">Accounting</label>
+                        <input type="url" id="dl-cm-accounting" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
+                    <div><label style="font-size:0.8rem; color:#94a3b8;">Business Studies</label>
+                        <input type="url" id="dl-cm-business" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
+                    <div><label style="font-size:0.8rem; color:#94a3b8;">Economics</label>
+                        <input type="url" id="dl-cm-economics" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
+
+                    <div style="color:#60a5fa; font-weight:600; font-size:0.9rem; margin-top:8px;">Technology</div>
+                    <div><label style="font-size:0.8rem; color:#94a3b8;">Engineering Technology</label>
+                        <input type="url" id="dl-tech-eng" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
+                    <div><label style="font-size:0.8rem; color:#94a3b8;">Bio Systems Technology</label>
+                        <input type="url" id="dl-tech-bst" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
+                    <div><label style="font-size:0.8rem; color:#94a3b8;">Science for Technology</label>
+                        <input type="url" id="dl-tech-sft" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
+                    <div><label style="font-size:0.8rem; color:#94a3b8;">ICT</label>
+                        <input type="url" id="dl-tech-ict" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
+
+                    <div style="color:#60a5fa; font-weight:600; font-size:0.9rem; margin-top:8px;">Arts</div>
+                    <div><label style="font-size:0.8rem; color:#94a3b8;">History</label>
+                        <input type="url" id="dl-arts-history" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
+                    <div><label style="font-size:0.8rem; color:#94a3b8;">Geography</label>
+                        <input type="url" id="dl-arts-geography" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
+                    <div><label style="font-size:0.8rem; color:#94a3b8;">Political Science</label>
+                        <input type="url" id="dl-arts-polscience" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
+                    <div><label style="font-size:0.8rem; color:#94a3b8;">Literature</label>
+                        <input type="url" id="dl-arts-literature" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
+                </div>
+
+                <button class="btn-action" style="margin-top:18px; width:100%;" onclick="saveDownloadsFromAdmin()">
+                    💾 Save All Download Links
+                </button>
+            </div>
+
+            <!-- ACTIVITY LOG -->
+            <div class="activity-section">
+                <h2>📜 Admin Activity Log</h2>
+                <div class="activity-log" id="activityLog">
+                    <div class="activity-item"><span class="activity-time">[System]</span> Admin panel ready.</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- FOOTER -->
+        <footer>
+            Kuruduwatta Royal College &bull; Grade 12 Study Group Initiative &copy; 2026<br>
+            <span style="font-size:0.75rem; opacity:0.8;">Password is known only to authorized captains & teachers</span>
+        </footer>
     </div>
 
-    <!-- Hidden Admin Panel Options & Content -->
-    <div id="admin-content">
-      
-      <h2>Dashboard Overview</h2>
-      
-      <div class="dashboard-grid">
-        <div class="card">
-          <h3>System Status</h3>
-          <div class="stat" style="color: #10b981;">Online</div>
-        </div>
-        <div class="card">
-          <h3>Active Connections</h3>
-          <div class="stat">24</div>
-        </div>
-        <div class="card">
-          <h3>CPU Usage</h3>
-          <div class="stat">12%</div>
-        </div>
-      </div>
+    <script src="script.js"></script>
+    <script>
+        // --- Password Gate Handler ---
+        const ADMIN_PASSWORD = "admin"; // Set your desired password here
 
-      <div class="actions-panel">
-        <h3>Administrative Controls</h3>
-        <p style="color: var(--text-muted); font-size: 0.9rem;">Manage features and system functions below.</p>
-        
-        <div class="actions-grid">
-          <button class="btn" onclick="alert('Action triggered: Restart Service')">Restart Services</button>
-          <button class="btn" onclick="alert('Action triggered: Clear Cache')">Clear Cache</button>
-          <button class="btn btn-secondary" onclick="alert('Action triggered: Export Logs')">Export Logs</button>
-        </div>
-      </div>
+        function unlockPanel() {
+            const input = document.getElementById("admin-pass");
+            const error = document.getElementById("error-msg");
+            const authScreen = document.getElementById("auth-screen");
+            const adminContent = document.getElementById("protected-admin-wrapper");
 
-    </div>
+            if (input.value === ADMIN_PASSWORD) {
+                authScreen.style.display = "none";
+                adminContent.style.display = "block";
+                input.value = "";
+                error.style.display = "none";
+            } else {
+                error.style.display = "block";
+                input.value = "";
+                input.focus();
+            }
+        }
 
-  </div>
+        function lockPanel() {
+            document.getElementById("auth-screen").style.display = "block";
+            document.getElementById("protected-admin-wrapper").style.display = "none";
+        }
 
-  <script>
-    // --- Configurable Password ---
-    const ADMIN_PASSWORD = "admin"; // Set your password here
-
-    function unlockPanel() {
-      const input = document.getElementById("admin-pass");
-      const error = document.getElementById("error-msg");
-      const authScreen = document.getElementById("auth-screen");
-      const adminContent = document.getElementById("admin-content");
-      const logoutBtn = document.getElementById("logout-btn");
-
-      if (input.value === ADMIN_PASSWORD) {
-        // Hide password prompt
-        authScreen.style.display = "none";
-        
-        // Unhide all admin panel options & controls
-        adminContent.style.display = "block";
-        logoutBtn.style.display = "inline-block";
-        
-        // Reset inputs & error states
-        input.value = "";
-        error.style.display = "none";
-      } else {
-        error.style.display = "block";
-        input.value = "";
-        input.focus();
-      }
-    }
-
-    function lockPanel() {
-      document.getElementById("auth-screen").style.display = "block";
-      document.getElementById("admin-content").style.display = "none";
-      document.getElementById("logout-btn").style.display = "none";
-    }
-
-    function checkEnter(event) {
-      if (event.key === "Enter") {
-        unlockPanel();
-      }
-    }
-  </script>
+        function checkEnter(event) {
+            if (event.key === "Enter") {
+                unlockPanel();
+            }
+        }
+    </script>
 </body>
 </html>
