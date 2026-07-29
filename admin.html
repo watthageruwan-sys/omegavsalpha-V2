@@ -89,6 +89,66 @@
             </div>
         </div>
 
+        <!-- TOP PERFORMERS EDITOR -->
+        <div class="section-card" id="topPerformersEditor">
+            <h2>🌟 Edit Top Performers</h2>
+            <p style="color:#94a3b8; font-size:0.85rem; margin-bottom:16px;">
+                Enter the current top 3 students for each team. These names appear on the public Battle Arena.
+                You must be logged in as admin to save.
+            </p>
+
+            <div class="top-edit-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:18px;">
+                <!-- Alpha -->
+                <div style="background:rgba(0,0,40,0.9); border:1px solid rgba(59,130,246,0.4); border-radius:12px; padding:16px;">
+                    <h3 style="color:#60a5fa; margin-bottom:12px; font-size:1rem;">α Team Alpha</h3>
+                    
+                    <div style="margin-bottom:12px;">
+                        <label style="font-size:0.8rem; color:#94a3b8;">1st Place – Name</label>
+                        <input type="text" id="tp-alpha-1-name" placeholder="Student name" style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;">
+                        <input type="text" id="tp-alpha-1-note" placeholder="Note (e.g. Highest average)" style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px; font-size:0.85rem;">
+                    </div>
+                    <div style="margin-bottom:12px;">
+                        <label style="font-size:0.8rem; color:#94a3b8;">2nd Place – Name</label>
+                        <input type="text" id="tp-alpha-2-name" placeholder="Student name" style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;">
+                        <input type="text" id="tp-alpha-2-note" placeholder="Note (e.g. Most improved)" style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px; font-size:0.85rem;">
+                    </div>
+                    <div>
+                        <label style="font-size:0.8rem; color:#94a3b8;">3rd Place – Name</label>
+                        <input type="text" id="tp-alpha-3-name" placeholder="Student name" style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;">
+                        <input type="text" id="tp-alpha-3-note" placeholder="Note (e.g. Perfect attendance)" style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px; font-size:0.85rem;">
+                    </div>
+                </div>
+
+                <!-- Omega -->
+                <div style="background:rgba(0,0,40,0.9); border:1px solid rgba(255,215,0,0.4); border-radius:12px; padding:16px;">
+                    <h3 style="color:#ffd700; margin-bottom:12px; font-size:1rem;">Ω Team Omega</h3>
+                    
+                    <div style="margin-bottom:12px;">
+                        <label style="font-size:0.8rem; color:#94a3b8;">1st Place – Name</label>
+                        <input type="text" id="tp-omega-1-name" placeholder="Student name" style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;">
+                        <input type="text" id="tp-omega-1-note" placeholder="Note (e.g. Highest average)" style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px; font-size:0.85rem;">
+                    </div>
+                    <div style="margin-bottom:12px;">
+                        <label style="font-size:0.8rem; color:#94a3b8;">2nd Place – Name</label>
+                        <input type="text" id="tp-omega-2-name" placeholder="Student name" style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;">
+                        <input type="text" id="tp-omega-2-note" placeholder="Note (e.g. Most improved)" style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px; font-size:0.85rem;">
+                    </div>
+                    <div>
+                        <label style="font-size:0.8rem; color:#94a3b8;">3rd Place – Name</label>
+                        <input type="text" id="tp-omega-3-name" placeholder="Student name" style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;">
+                        <input type="text" id="tp-omega-3-note" placeholder="Note (e.g. Shared most resources)" style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px; font-size:0.85rem;">
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-action" style="margin-top:18px; width:100%;" onclick="saveTopPerformersFromAdmin()">
+                💾 Save Top Performers
+            </button>
+            <p style="margin-top:10px; font-size:0.8rem; color:#94a3b8; text-align:center;">
+                After saving, open/refresh the Battle Arena page to see the updated names for everyone on this device.
+            </p>
+        </div>
+
         <!-- ACTIVITY LOG -->
         <div class="activity-section">
             <h2>📜 Admin Activity Log</h2>
