@@ -322,6 +322,14 @@
         // --- Password Gate Handler ---
         const ADMIN_PASSWORD = "royal1232009"; // Set your desired password here
 
+        // Check on page load if admin was already unlocked in this session
+        window.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('isAdminLoggedIn') === 'true') {
+                document.getElementById("auth-screen").style.display = "none";
+                document.getElementById("protected-admin-wrapper").style.display = "block";
+            }
+        });
+
         function unlockPanel() {
             const input = document.getElementById("admin-pass");
             const error = document.getElementById("error-msg");
@@ -329,6 +337,9 @@
             const adminContent = document.getElementById("protected-admin-wrapper");
 
             if (input.value === ADMIN_PASSWORD) {
+                // Save auth flag so script.js functions accept point submissions
+                localStorage.setItem("isAdminLoggedIn", "true");
+
                 authScreen.style.display = "none";
                 adminContent.style.display = "block";
                 input.value = "";
@@ -341,6 +352,9 @@
         }
 
         function lockPanel() {
+            // Remove auth flag when manually clicking "Lock Panel"
+            localStorage.removeItem("isAdminLoggedIn");
+
             document.getElementById("auth-screen").style.display = "block";
             document.getElementById("protected-admin-wrapper").style.display = "none";
         }
