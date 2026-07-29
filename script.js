@@ -6,17 +6,15 @@ let streamScores = {
 };
 
 let isAdminLoggedIn = false;
-const ADMIN_PIN = "royal1232009"; // Synchronized Admin PIN
+const ADMIN_PIN = "royal1232009"; 
 let viewerId = Math.random().toString(36).substring(2);
 let scoreFeed = [];
 
-// Top Performers Data
 let topPerformers = {
     alpha: [ { name: "—", note: "" }, { name: "—", note: "" }, { name: "—", note: "" } ],
     omega: [ { name: "—", note: "" }, { name: "—", note: "" }, { name: "—", note: "" } ]
 };
 
-// Default Downloads Structure
 const DEFAULT_DOWNLOADS = {
     "ps-combined-maths": { title: "Combined Mathematics", meta: "Physical Science", url: "", icon: "📐" },
     "ps-physics":        { title: "Physics",              meta: "Physical Science", url: "", icon: "⚛️" },
@@ -39,7 +37,6 @@ const DEFAULT_DOWNLOADS = {
 };
 let downloads = JSON.parse(JSON.stringify(DEFAULT_DOWNLOADS));
 
-// Poll Data Structure
 const POLL_QUESTION = "Which subject needs more papers / group sessions next?";
 const POLL_SUBJECTS = [
     { stream: "Physical Science", subjects: ["Combined Mathematics", "Physics", "Chemistry"] },
@@ -55,10 +52,7 @@ let pollVotes = {};
 function hasVotedLocally() { return localStorage.getItem(POLL_VOTED_KEY) === "true"; }
 function markVotedLocally() { localStorage.setItem(POLL_VOTED_KEY, "true"); }
 
-// Target Date
 let RECAP_TARGET = new Date("2026-08-05T09:00:00");
-
-// Heartbeat
 setInterval(() => {
     fetch(API_URL, {
         method: "POST",
@@ -70,7 +64,6 @@ setInterval(() => {
 window.addEventListener("DOMContentLoaded", () => {
     fetchAllData();
     setInterval(fetchAllData, 12000);
-
     if (document.getElementById("countdownDays")) {
         updateCountdown();
         setInterval(updateCountdown, 1000);
@@ -83,32 +76,25 @@ function fetchAllData() {
         .then(data => {
             if (data.scores) { scores.alpha = data.scores.alpha || 0; scores.omega = data.scores.omega || 0; }
             if (data.streams) streamScores = data.streams;
-            if (data.scoreFeed) {
+            if (data.scoreFeed && data.scoreFeed.length > 0) {
                 scoreFeed = data.scoreFeed;
-                if (scoreFeed.length > 0) {
-                    renderScoreFeed();
-                }
+                renderScoreFeed();
             }
-            
             const v = document.getElementById("viewerCount");
             if (v && data.viewers !== undefined) v.textContent = data.viewers;
-
             if (data.topPerformers) {
                 topPerformers = data.topPerformers;
                 renderTopPerformers();
                 if (document.getElementById("tp-alpha-1-name")) fillTopPerformersForm();
             }
-
             if (data.downloads && Object.keys(data.downloads).length > 0) {
                 downloads = { ...DEFAULT_DOWNLOADS, ...data.downloads };
             }
             renderDownloads();
             if (document.getElementById("dl-ps-combined-maths")) fillDownloadsForm();
-
             if (data.poll) pollVotes = data.poll;
             else { pollVotes = {}; POLL_OPTIONS.forEach(s => pollVotes[s.replace(/\s+/g,"")] = 0); }
             renderPoll();
-
             if (data.recapDate) {
                 RECAP_TARGET = new Date(data.recapDate);
                 const dateInput = document.getElementById("recapDateInput");
@@ -123,28 +109,22 @@ function fetchAllData() {
                     note.textContent = "Target: " + RECAP_TARGET.toLocaleString('en-GB', options);
                 }
             }
-
             updateDisplay();
         })
-        .catch(err => console.error("Error connecting to sheet backend:", err));
+        .catch(err => console.error("Error connecting to backend:", err));
 }
 
 function syncToSheet() {
     fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            scores,
-            streams: streamScores,
-            scoreFeed
-        })
+        body: JSON.stringify({ scores, streams: streamScores, scoreFeed })
     }).catch(() => {});
 }
 
 function awardCustomStreamScore(team) {
     const stream = document.getElementById("streamSelect").value;
     const points = parseInt(document.getElementById("achievementSelect").value, 10) || 0;
-    
     const selectEl = document.getElementById("achievementSelect");
     const optionText = selectEl.options[selectEl.selectedIndex].text;
     const criterion = optionText.replace(/\s*\(\+\d+\s*pts\)/i, '').toLowerCase();
@@ -158,12 +138,8 @@ function awardCustomStreamScore(team) {
         points: points,
         stream: stream,
         reason: criterion,
-        time: new Date().toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit"
-        })
+        time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
     });
-
     scoreFeed = scoreFeed.slice(0, 20);
 
     updateDisplay();
@@ -182,20 +158,28 @@ function resetScores() {
     }
 }
 
+function submitVote(subjectKey) {
+    if (hasVotedLocally()) return;
+    markVotedLocally();
+    pollVotes[subjectKey] = (pollVotes[subjectKey] || 0) + 1;
+    renderPoll();
+    fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "vote", subject: subjectKey })
+    }).catch(() => {});
+}
 function updateDisplay() {
-    // 1. Text Scores Updates
     const a = document.getElementById("alphaScore");
     const o = document.getElementById("omegaScore");
     if (a) { a.textContent = scores.alpha; a.classList.add("pop"); setTimeout(() => a.classList.remove("pop"), 300); }
     if (o) { o.textContent = scores.omega; o.classList.add("pop"); setTimeout(() => o.classList.remove("pop"), 300); }
 
-    // 2. Stream Scores Panel Update
     for (let s in streamScores) {
         const el = document.getElementById("stream-" + s.replace(/\s+/g, '-'));
         if (el) el.textContent = streamScores[s];
     }
 
-    // 3. Proportions & Percentage Label Calculations
     const total = scores.alpha + scores.omega;
     let aPct = 50, oPct = 50;
     if (total > 0) { 
@@ -208,13 +192,11 @@ function updateDisplay() {
     if (alphaPctLabel) alphaPctLabel.textContent = `α-Alpha (${Math.round(aPct)}%)`;
     if (omegaPctLabel) omegaPctLabel.textContent = `Ω-Omega (${Math.round(oPct)}%)`;
 
-    // 4. Graphical Progress Bars Update
     const progressAlpha = document.getElementById("alphaBar");
     const progressOmega = document.getElementById("omegaBar");
     if (progressAlpha) progressAlpha.style.width = aPct + "%";
     if (progressOmega) progressOmega.style.width = oPct + "%";
 
-    // 5. Battle Status Elements & Winner Glow Calculations
     const statusTitle = document.getElementById("statusTitle");
     const statusDesc = document.getElementById("statusDesc");
     const alphaCard = document.getElementById("alphaCard");
@@ -226,3 +208,146 @@ function updateDisplay() {
         if (alphaCard) alphaCard.classList.add("winner-glow");
         if (omegaCard) omegaCard.classList.remove("winner-glow");
     } else if (scores.omega > scores.alpha) {
+        if (statusTitle) statusTitle.textContent = "👑 Ω-Omega is Leading!";
+        if (statusDesc) statusDesc.textContent = "Team Omega is currently dominating the scoreboard.";
+        if (omegaCard) omegaCard.classList.add("winner-glow");
+        if (alphaCard) alphaCard.classList.remove("winner-glow");
+    } else {
+        if (statusTitle) statusTitle.textContent = "🤝 It's a Tie!";
+        if (statusDesc) statusDesc.textContent = "Both teams are tied.";
+        if (alphaCard) alphaCard.classList.remove("winner-glow");
+        if (omegaCard) omegaCard.classList.remove("winner-glow");
+    }
+}
+
+function renderScoreFeed() {
+    const latest = document.getElementById("latestActivityText");
+    const log = document.getElementById("activityLog");
+    if (!latest || !log) return;
+    if (scoreFeed.length === 0) {
+        latest.textContent = "Standing by for new points...";
+        log.innerHTML = "";
+        return;
+    }
+    latest.textContent = `${scoreFeed[0].teamName} +${scoreFeed[0].points} • ${scoreFeed[0].reason}`;
+    log.innerHTML = "";
+    scoreFeed.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "activity-item";
+        div.innerHTML = `
+            <span class="activity-time">[${item.time}]</span>
+            <strong>${item.teamName}</strong> earned <strong>+${item.points}</strong> for ${item.reason} (${item.stream})
+        `;
+        log.appendChild(div);
+    });
+}
+
+function renderDownloads() {
+    for (let key in downloads) {
+        const dl = downloads[key];
+        const btn = document.getElementById("dl-" + key);
+        if (btn) {
+            if (dl.url) {
+                btn.href = dl.url;
+                btn.removeAttribute("disabled");
+                btn.classList.remove("disabled-download");
+            } else {
+                btn.removeAttribute("href");
+                btn.setAttribute("disabled", "true");
+                btn.classList.add("disabled-download");
+            }
+        }
+    }
+}
+
+function fillDownloadsForm() {
+    for (let key in downloads) {
+        const input = document.getElementById("input-dl-" + key);
+        if (input) { input.value = downloads[key].url || ""; }
+    }
+}
+
+function renderTopPerformers() {
+    ['alpha', 'omega'].forEach(team => {
+        for (let i = 0; i < 3; i++) {
+            const member = topPerformers[team][i] || { name: "—", note: "" };
+            const nameEl = document.getElementById(`tp-${team}-${i+1}-name`);
+            const noteEl = document.getElementById(`tp-${team}-${i+1}-note`);
+            if (nameEl) nameEl.textContent = member.name;
+            if (noteEl) noteEl.textContent = member.note || "";
+        }
+    });
+}
+
+function fillTopPerformersForm() {
+    ['alpha', 'omega'].forEach(team => {
+        for (let i = 0; i < 3; i++) {
+            const member = topPerformers[team][i] || { name: "—", note: "" };
+            const nameInput = document.getElementById(`input-tp-${team}-${i+1}-name`);
+            const noteInput = document.getElementById(`input-tp-${team}-${i+1}-note`);
+            if (nameInput) nameInput.value = member.name === "—" ? "" : member.name;
+            if (noteInput) noteInput.value = member.note || "";
+        }
+    });
+}
+
+function renderPoll() {
+    const container = document.getElementById("pollContainer");
+    if (!container) return;
+    container.innerHTML = "";
+    const voted = hasVotedLocally();
+    POLL_SUBJECTS.forEach(group => {
+        const header = document.createElement("h4");
+        header.className = "poll-stream-title";
+        header.textContent = group.stream + " Stream";
+        container.appendChild(header);
+        group.subjects.forEach(sub => {
+            const cleanKey = sub.replace(/\s+/g, "");
+            const votes = pollVotes[cleanKey] || 0;
+            const totalVotes = Object.values(pollVotes).reduce((a, b) => a + b, 0);
+            const pct = totalVotes > 0 ? Math.round((votes / totalVotes) * 100) : 0;
+            const row = document.createElement("div");
+            row.className = "poll-option-row";
+            if (voted) {
+                row.innerHTML = `
+                    <div class="poll-result-bar" style="width: ${pct}%"></div>
+                    <span class="poll-option-text">${sub}</span>
+                    <span class="poll-option-pct">${pct}% (${votes})</span>
+                `;
+            } else {
+                const btn = document.createElement("button");
+                btn.className = "poll-vote-btn";
+                btn.textContent = sub;
+                btn.onclick = () => submitVote(cleanKey);
+                row.appendChild(btn);
+            }
+            container.appendChild(row);
+        });
+    });
+}
+
+function updateCountdown() {
+    const now = new Date();
+    const diff = RECAP_TARGET - now;
+    const dEl = document.getElementById("countdownDays");
+    const hEl = document.getElementById("countdownHours");
+    const mEl = document.getElementById("countdownMinutes");
+    const sEl = document.getElementById("countdownSeconds");
+    if (diff <= 0) {
+        if (dEl) dEl.textContent = "00";
+        if (hEl) hEl.textContent = "00";
+        if (mEl) mEl.textContent = "00";
+        if (sEl) sEl.textContent = "00";
+        return;
+    }
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const secs = Math.floor((diff % (1000 * 60)) / 1000);
+    if (dEl) dEl.textContent = String(days).padStart(2, '0');
+    if (hEl) hEl.textContent = String(hours).padStart(2, '0');
+    if (mEl) mEl.textContent = String(mins).padStart(2, '0');
+    if (sEl) sEl.textContent = String(secs).padStart(2, '0');
+}
+
+now?
