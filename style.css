@@ -112,6 +112,50 @@ header h1 {
     border-color: rgba(255, 215, 0, 0.6);
 }
 
+/* --- LIVE TEAM SCORE FEED STYLES --- */
+.team-feed-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.team-feed-box {
+    background: rgba(0, 0, 40, 0.9);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    border: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.team-feed-box.alpha {
+    border-color: rgba(59, 130, 246, 0.5);
+}
+
+.team-feed-box.omega {
+    border-color: rgba(255, 215, 0, 0.5);
+}
+
+.team-feed-box h3 {
+    font-size: 1rem;
+    margin-bottom: 8px;
+}
+
+.team-feed-box.alpha h3 { color: #60a5fa; }
+.team-feed-box.omega h3 { color: #ffd700; }
+
+.team-feed-score {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #f8fafc;
+    margin-bottom: 4px;
+}
+
+.team-feed-status {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    font-weight: 600;
+}
+
 /* --- LEADING TEAM GLOW & CELEBRATION ANIMATIONS --- */
 @keyframes leaderGlow {
     0% {
@@ -504,7 +548,7 @@ footer {
 
 /* --- RESPONSIVE ADJUSTMENTS --- */
 @media (max-width: 600px) {
-    .scoreboard-overview {
+    .scoreboard-overview, .team-feed-grid {
         grid-template-columns: 1fr;
     }
     .control-row {
