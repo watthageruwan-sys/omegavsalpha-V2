@@ -10,14 +10,12 @@
 
     <div class="container">
         <!-- NAVIGATION -->
-<div style="display:flex; justify-content:center; gap:12px; margin-bottom:20px; flex-wrap:wrap;">
-    <a href="index.html" style="background:rgba(255,215,0,0.25); border:1px solid #ffd700; color:#ffd700; padding:8px 18px; border-radius:20px; font-weight:600; font-size:0.9rem; text-decoration:none;">
-        ⚔️ Battle Arena
-    </a>
-    <a href="about.html" style="background:rgba(0,0,80,0.85); border:1px solid rgba(255,215,0,0.4); color:#ffd700; padding:8px 18px; border-radius:20px; font-weight:600; font-size:0.9rem; text-decoration:none;">
-        📖 About the Initiative
-    </a>
-</div>
+        <div class="nav-bar">
+            <a href="index.html" class="nav-btn active">⚔️ Battle Arena</a>
+            <a href="about.html" class="nav-btn">📖 About the Initiative</a>
+            <a href="admin.html" class="nav-btn">🛠️ Admin Panel</a>
+        </div>
+
         <!-- HEADER -->
         <header>
             <div class="subtitle">Kuruduwatta Royal College - Grade 12 Study Group Initiative</div>
@@ -39,19 +37,34 @@
 
         <!-- SCOREBOARD OVERVIEW -->
         <div class="scoreboard-overview">
-            <!-- Team Alpha Card -->
             <div class="team-card alpha-card" id="alphaCard">
                 <div class="team-title">α - Team Alpha</div>
                 <div class="score-display" id="alphaScore">0</div>
                 <div class="score-subtitle" style="color: #94a3b8; font-size: 0.9rem;">Total Points</div>
             </div>
-
-            <!-- Team Omega Card -->
             <div class="team-card omega-card" id="omegaCard">
                 <div class="team-title">Ω - Team Omega</div>
                 <div class="score-display" id="omegaScore">0</div>
                 <div class="score-subtitle" style="color: #94a3b8; font-size: 0.9rem;">Total Points</div>
             </div>
+        </div>
+
+        <!-- TOP PERFORMERS -->
+        <div class="section-card">
+            <h2>🌟 Top Performers This Cycle</h2>
+            <div class="top-performers-grid">
+                <div class="top-team alpha">
+                    <h3>α Team Alpha</h3>
+                    <div id="topAlphaList"></div>
+                </div>
+                <div class="top-team omega">
+                    <h3>Ω Team Omega</h3>
+                    <div id="topOmegaList"></div>
+                </div>
+            </div>
+            <p style="margin-top:12px; font-size:0.8rem; color:#94a3b8; text-align:center;">
+                Names update based on latest performance reviews by team captains & teachers
+            </p>
         </div>
 
         <!-- STREAMS & ADVANCED BREAKDOWN -->
@@ -99,6 +112,55 @@
             </div>
         </div>
 
+        <!-- COUNTDOWN TIMER -->
+        <div class="section-card">
+            <h2>⏱️ Next Recap Paper Countdown</h2>
+            <div class="countdown-grid">
+                <div class="countdown-box">
+                    <div class="countdown-value" id="countdownDays">0</div>
+                    <div class="countdown-label">Days</div>
+                </div>
+                <div class="countdown-box">
+                    <div class="countdown-value" id="countdownHours">00</div>
+                    <div class="countdown-label">Hours</div>
+                </div>
+                <div class="countdown-box">
+                    <div class="countdown-value" id="countdownMins">00</div>
+                    <div class="countdown-label">Minutes</div>
+                </div>
+                <div class="countdown-box">
+                    <div class="countdown-value" id="countdownSecs">00</div>
+                    <div class="countdown-label">Seconds</div>
+                </div>
+            </div>
+            <p class="countdown-note" id="countdownNote">
+                Target: 5 August 2026 • 9:00 AM — First full recap paper of the term
+            </p>
+        </div>
+
+        <!-- QUICK NOTICES -->
+        <div class="section-card">
+            <h2>📢 Quick Notices</h2>
+            <div class="notices-list">
+                <div class="notice-item">
+                    <div class="notice-date">29 Jul</div>
+                    <div class="notice-text">Welcome to the upgraded Battle Arena! New features: countdown, top performers, papers & student poll.</div>
+                </div>
+                <div class="notice-item">
+                    <div class="notice-date">28 Jul</div>
+                    <div class="notice-text">Team captains please collect attendance sheets before Thursday sessions.</div>
+                </div>
+                <div class="notice-item">
+                    <div class="notice-date">27 Jul</div>
+                    <div class="notice-text">Shared notes drive link has been posted in the A/L WhatsApp group. Check “Files”.</div>
+                </div>
+                <div class="notice-item">
+                    <div class="notice-date">Ongoing</div>
+                    <div class="notice-text">Two study sessions per week per stream during the trial period. Stay consistent!</div>
+                </div>
+            </div>
+        </div>
+
         <!-- ACTIVITY LOG -->
         <div class="activity-section">
             <h2>📜 Live Activity Feed</h2>
@@ -107,44 +169,57 @@
             </div>
         </div>
 
-        <!-- CONTROLS / ADMIN PANEL -->
-        <div class="controls-section locked" id="controlsSection">
-            <div class="controls-header">
-                <h2>🛠️ Admin Point Controller</h2>
-                <div style="display: flex; gap: 10px; align-items: center;">
-                    <span class="lock-badge" id="lockBadge">🔒 Locked</span>
-                    <button class="admin-login-btn" id="adminBtn" onclick="toggleAdmin()">🔒 Admin Login</button>
+        <!-- PAST PAPERS / DOWNLOADS -->
+        <div class="section-card">
+            <h2>📥 Past Papers & Study Resources</h2>
+            <div class="downloads-grid">
+                <div class="download-card">
+                    <div class="download-icon">📄</div>
+                    <div class="download-title">Recap Paper – Week 1</div>
+                    <div class="download-meta">All streams • Practice set</div>
+                    <a href="#" class="btn-download" onclick="alert('Ask your Subject Leader or check the WhatsApp group for the latest file.'); return false;">Get Link</a>
+                </div>
+                <div class="download-card">
+                    <div class="download-icon">📘</div>
+                    <div class="download-title">Physics Past Papers</div>
+                    <div class="download-meta">Selected recent papers</div>
+                    <a href="#" class="btn-download" onclick="alert('Ask your Subject Leader or check the WhatsApp group for the latest file.'); return false;">Get Link</a>
+                </div>
+                <div class="download-card">
+                    <div class="download-icon">📗</div>
+                    <div class="download-title">Biology Summaries</div>
+                    <div class="download-meta">Key notes collection</div>
+                    <a href="#" class="btn-download" onclick="alert('Ask your Subject Leader or check the WhatsApp group for the latest file.'); return false;">Get Link</a>
+                </div>
+                <div class="download-card">
+                    <div class="download-icon">📙</div>
+                    <div class="download-title">Commerce Papers</div>
+                    <div class="download-meta">Accounting & Business</div>
+                    <a href="#" class="btn-download" onclick="alert('Ask your Subject Leader or check the WhatsApp group for the latest file.'); return false;">Get Link</a>
+                </div>
+                <div class="download-card">
+                    <div class="download-icon">📕</div>
+                    <div class="download-title">Technology Resources</div>
+                    <div class="download-meta">ICT & Engineering</div>
+                    <a href="#" class="btn-download" onclick="alert('Ask your Subject Leader or check the WhatsApp group for the latest file.'); return false;">Get Link</a>
+                </div>
+                <div class="download-card">
+                    <div class="download-icon">📓</div>
+                    <div class="download-title">Arts Stream Pack</div>
+                    <div class="download-meta">Notes & past questions</div>
+                    <a href="#" class="btn-download" onclick="alert('Ask your Subject Leader or check the WhatsApp group for the latest file.'); return false;">Get Link</a>
                 </div>
             </div>
-            
-            <div class="controls-body">
-                <div class="control-group">
-                    <label for="streamSelect">Select Academic Stream</label>
-                    <select id="streamSelect">
-                        <option value="Physical Science">Physical Science</option>
-                        <option value="Bio Science">Bio Science</option>
-                        <option value="Commerce">Commerce</option>
-                        <option value="Technology">Technology</option>
-                        <option value="Arts">Arts</option>
-                    </select>
-                </div>
+            <p style="margin-top:14px; font-size:0.8rem; color:#94a3b8; text-align:center;">
+                Real download links will be added by Study Resources Coordinators. Until then, use the group chat.
+            </p>
+        </div>
 
-                <div class="control-group">
-                    <label for="achievementSelect">Select Official Point Criteria</label>
-                    <select id="achievementSelect">
-                        <option value="10">Top Average Score (+10 pts)</option>
-                        <option value="5">Most Improved (+5 pts)</option>
-                        <option value="5">Full Attendance (+5 pts)</option>
-                        <option value="3">Shared Resources (+3 pts)</option>
-                    </select>
-                </div>
-
-                <div class="control-row">
-                    <button class="btn-action" onclick="awardCustomStreamScore('alpha')">Award to α-Alpha</button>
-                    <button class="btn-action" onclick="awardCustomStreamScore('omega')">Award to Ω-Omega</button>
-                </div>
-
-                <button class="btn-danger" onclick="resetScores()">⚠️ Reset All Scores</button>
+        <!-- STUDENT POLL -->
+        <div class="section-card">
+            <h2>🗳️ Student Voice – Quick Poll</h2>
+            <div id="pollContainer">
+                <!-- filled by JS -->
             </div>
         </div>
 
