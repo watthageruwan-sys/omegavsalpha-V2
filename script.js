@@ -4,17 +4,18 @@ let scores = { alpha: 0, omega: 0 };
 let streamScores = {
     "Physical Science": 0, "Bio Science": 0, "Commerce": 0, "Technology": 0, "Arts": 0
 };
+
 let isAdminLoggedIn = false;
-const ADMIN_PIN = "royal123";
+const ADMIN_PIN = "royal1232009"; // Synchronized Admin PIN
 let viewerId = Math.random().toString(36).substring(2);
 
-// ========== TOP PERFORMERS ==========
+// Top Performers Data
 let topPerformers = {
     alpha: [ { name: "—", note: "" }, { name: "—", note: "" }, { name: "—", note: "" } ],
     omega: [ { name: "—", note: "" }, { name: "—", note: "" }, { name: "—", note: "" } ]
 };
 
-// ========== DOWNLOAD LINKS ==========
+// Default Downloads Structure
 const DEFAULT_DOWNLOADS = {
     "ps-combined-maths": { title: "Combined Mathematics", meta: "Physical Science", url: "", icon: "📐" },
     "ps-physics":        { title: "Physics",              meta: "Physical Science", url: "", icon: "⚛️" },
@@ -37,7 +38,7 @@ const DEFAULT_DOWNLOADS = {
 };
 let downloads = JSON.parse(JSON.stringify(DEFAULT_DOWNLOADS));
 
-// ========== POLL ==========
+// Poll Data Structure
 const POLL_QUESTION = "Which subject needs more papers / group sessions next?";
 const POLL_SUBJECTS = [
     { stream: "Physical Science", subjects: ["Combined Mathematics", "Physics", "Chemistry"] },
@@ -53,9 +54,10 @@ let pollVotes = {};
 function hasVotedLocally() { return localStorage.getItem(POLL_VOTED_KEY) === "true"; }
 function markVotedLocally() { localStorage.setItem(POLL_VOTED_KEY, "true"); }
 
-// ========== RECAP TIMER ==========
+// Target Date
 let RECAP_TARGET = new Date("2026-08-05T09:00:00");
 
+// Heartbeat
 setInterval(() => {
     fetch(API_URL, {
         method: "POST", mode: "no-cors",
@@ -67,11 +69,7 @@ setInterval(() => {
 window.addEventListener("DOMContentLoaded", () => {
     fetchAllData();
     setInterval(fetchAllData, 12000);
-    fetch(API_URL, {
-        method: "POST", mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "heartbeat", viewerId })
-    }).catch(() => {});
+
     if (document.getElementById("countdownDays")) {
         updateCountdown();
         setInterval(updateCountdown, 1000);
@@ -84,6 +82,7 @@ function fetchAllData() {
         .then(data => {
             if (data.scores) { scores.alpha = data.scores.alpha || 0; scores.omega = data.scores.omega || 0; }
             if (data.streams) streamScores = data.streams;
+            
             const v = document.getElementById("viewerCount");
             if (v && data.viewers !== undefined) v.textContent = data.viewers;
 
@@ -103,7 +102,6 @@ function fetchAllData() {
             else { pollVotes = {}; POLL_OPTIONS.forEach(s => pollVotes[s.replace(/\s+/g,"")] = 0); }
             renderPoll();
 
-            // Load recap date from backend
             if (data.recapDate) {
                 RECAP_TARGET = new Date(data.recapDate);
                 const dateInput = document.getElementById("recapDateInput");
@@ -121,7 +119,7 @@ function fetchAllData() {
 
             updateDisplay();
         })
-        .catch(err => console.error(err));
+        .catch(err => console.error("Error connecting to sheet backend:", err));
 }
 
 function syncToSheet() {
@@ -132,36 +130,11 @@ function syncToSheet() {
     }).catch(() => {});
 }
 
-function toggleAdmin() {
-    const controls = document.getElementById("controlsSection");
-    const adminBtn = document.getElementById("adminBtn");
-    const lockBadge = document.getElementById("lockBadge");
-    if (!isAdminLoggedIn) {
-        const pin = prompt("Enter Admin PIN:");
-        if (pin === ADMIN_PIN) {
-            isAdminLoggedIn = true;
-            if (controls) { controls.classList.remove("locked"); controls.classList.add("unlocked"); }
-            if (adminBtn) { adminBtn.classList.add("unlocked"); adminBtn.textContent = "🔓 Admin Logged In"; }
-            if (lockBadge) lockBadge.textContent = "🔓 Unlocked";
-            logActivity("Admin access granted.");
-        } else if (pin !== null) alert("Incorrect PIN!");
-    } else {
-        isAdminLoggedIn = false;
-        if (controls) { controls.classList.remove("unlocked"); controls.classList.add("locked"); }
-        if (adminBtn) { adminBtn.classList.remove("unlocked"); adminBtn.textContent = "🔒 Admin Login"; }
-        if (lockBadge) lockBadge.textContent = "🔒 Locked";
-        logActivity("Admin logged out.");
-    }
-}
-
-// ========== AWARDING POINTS & LOGGING ==========
 function awardCustomStreamScore(team) {
-    if (!isAdminLoggedIn) { alert("Please login as admin first."); return; }
     const stream = document.getElementById("streamSelect").value;
     const points = parseInt(document.getElementById("achievementSelect").value, 10) || 0;
     const optionText = document.getElementById("achievementSelect").selectedOptions[0].text;
     
-    // Clean option string, e.g. "Full Attendance (+5 pts)" -> "full attendance"
     const criterion = optionText.replace(/\s*\(\+\d+\s*pts\)/i, '').toLowerCase();
     const teamName = team === 'alpha' ? 'Team Alpha' : 'Team Omega';
 
@@ -171,12 +144,10 @@ function awardCustomStreamScore(team) {
     updateDisplay();
     syncToSheet();
 
-    // Log formatted string directly into activity feed
     logActivity(`${teamName} got +${points} marks for ${criterion} (${stream} Stream)`);
 }
 
 function resetScores() {
-    if (!isAdminLoggedIn) { alert("Please login as admin first."); return; }
     if (confirm("Reset all scores to zero?")) {
         scores.alpha = 0; scores.omega = 0;
         Object.keys(streamScores).forEach(k => streamScores[k] = 0);
@@ -191,33 +162,13 @@ function updateDisplay() {
     const o = document.getElementById("omegaScore");
     if (a) { a.textContent = scores.alpha; a.classList.add("pop"); setTimeout(() => a.classList.remove("pop"), 300); }
     if (o) { o.textContent = scores.omega; o.classList.add("pop"); setTimeout(() => o.classList.remove("pop"), 300); }
-    
-    // Live Feed Header Status Updates
-    const fa = document.getElementById("feedAlphaScore");
-    const fo = document.getElementById("feedOmegaScore");
-    const fas = document.getElementById("feedAlphaStatus");
-    const fos = document.getElementById("feedOmegaStatus");
-    
-    if (fa) fa.textContent = scores.alpha + " pts";
-    if (fo) fo.textContent = scores.omega + " pts";
-    
-    if (fas && fos) {
-        if (scores.alpha > scores.omega) {
-            fas.textContent = "🔥 Leading (+ " + (scores.alpha - scores.omega) + " pts)";
-            fos.textContent = "📉 Behind";
-        } else if (scores.omega > scores.alpha) {
-            fas.textContent = "📉 Behind";
-            fos.textContent = "🔥 Leading (+ " + (scores.omega - scores.alpha) + " pts)";
-        } else {
-            fas.textContent = "⚖️ Tied";
-            fos.textContent = "⚖️ Tied";
-        }
-    }
 
+    // Stream Score Sync Corrected Function
     for (let s in streamScores) {
         const el = document.getElementById("stream-" + s.replace(/\s+/g, '-'));
         if (el) el.textContent = streamScores[s];
     }
+
     const total = scores.alpha + scores.omega;
     let aPct = 50, oPct = 50;
     if (total > 0) { aPct = scores.alpha / total * 100; oPct = scores.omega / total * 100; }
@@ -230,8 +181,10 @@ function updateDisplay() {
     const desc = document.getElementById("statusDesc");
     const aCard = document.getElementById("alphaCard");
     const oCard = document.getElementById("omegaCard");
+
     if (aCard) aCard.className = "team-card alpha-card";
     if (oCard) oCard.className = "team-card omega-card";
+
     if (title && desc) {
         if (scores.alpha === 0 && scores.omega === 0) {
             title.textContent = "🔥 Battle Just Began!";
@@ -255,8 +208,15 @@ function updateDisplay() {
 
 function logActivity(msg) {
     const log = document.getElementById("activityLog");
-    if (!log) return;
+    const latestFeed = document.getElementById("latestActivityText");
+
     const time = new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+    
+    if (latestFeed) {
+        latestFeed.textContent = msg;
+    }
+
+    if (!log) return;
     const item = document.createElement("div");
     item.className = "activity-item";
     item.innerHTML = `<span class="activity-time">[${time}]</span> <strong>${msg}</strong>`;
@@ -279,15 +239,12 @@ function updateCountdown() {
     document.getElementById("countdownSecs").textContent = Math.floor((diff % 60000) / 1000).toString().padStart(2,"0");
 }
 
-/* ========== SAVE RECAP DATE ========== */
 function saveRecapDateFromAdmin() {
-    if (!isAdminLoggedIn) { alert("Please login as admin first."); return; }
     const input = document.getElementById("recapDateInput");
     if (!input || !input.value) { alert("Please select a date and time."); return; }
 
     const localDate = new Date(input.value);
     const iso = localDate.toISOString();
-
     RECAP_TARGET = localDate;
 
     fetch(API_URL, {
@@ -296,14 +253,8 @@ function saveRecapDateFromAdmin() {
         body: JSON.stringify({ recapDate: iso })
     }).catch(() => {});
 
-    const note = document.getElementById("countdownNote");
-    if (note) {
-        const options = { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' };
-        note.textContent = "Target: " + RECAP_TARGET.toLocaleString('en-GB', options);
-    }
-
     logActivity("Recap Paper countdown date updated by admin.");
-    alert("✅ Recap timer updated! Everyone will see the new countdown shortly.");
+    alert("✅ Recap timer updated!");
 }
 
 function renderTopPerformers() {
@@ -337,7 +288,6 @@ function fillTopPerformersForm() {
 }
 
 function saveTopPerformersFromAdmin() {
-    if (!isAdminLoggedIn) { alert("Please login as admin first."); return; }
     for (let i=0;i<3;i++) {
         topPerformers.alpha[i] = {
             name: document.getElementById(`tp-alpha-${i+1}-name`)?.value.trim()||"—",
@@ -351,7 +301,7 @@ function saveTopPerformersFromAdmin() {
     fetch(API_URL, { method:"POST", mode:"no-cors", headers:{"Content-Type":"application/json"},
         body: JSON.stringify({ topPerformers }) }).catch(()=>{});
     renderTopPerformers();
-    logActivity("Top Performers updated by admin.");
+    logActivity("Top Performers list updated by admin.");
     alert("✅ Top Performers saved!");
 }
 
@@ -367,7 +317,7 @@ function renderDownloads() {
     };
     let html = "";
     for (const stream in groups) {
-        html += `<div style="grid-column:1/-1; margin-top:8px; margin-bottom:4px; color:#ffd700; font-size:0.85rem; font-weight:600;">${stream}</div>`;
+        html += `<div style="grid-column:1/-1; margin-top:8px; color:#ffd700; font-size:0.85rem; font-weight:600;">${stream}</div>`;
         groups[stream].forEach(key => {
             const item = downloads[key] || DEFAULT_DOWNLOADS[key];
             const hasLink = item.url && item.url.trim().length > 5;
@@ -394,14 +344,10 @@ function fillDownloadsForm() {
 }
 
 function saveDownloadsFromAdmin() {
-    if (!isAdminLoggedIn) { alert("Please login as admin first."); return; }
     for (const key in DEFAULT_DOWNLOADS) {
         const el = document.getElementById("dl-" + key);
         if (!downloads[key]) downloads[key] = { ...DEFAULT_DOWNLOADS[key] };
         downloads[key].url = el ? el.value.trim() : "";
-        downloads[key].title = DEFAULT_DOWNLOADS[key].title;
-        downloads[key].meta = DEFAULT_DOWNLOADS[key].meta;
-        downloads[key].icon = DEFAULT_DOWNLOADS[key].icon;
     }
     fetch(API_URL, {
         method: "POST", mode: "no-cors",
@@ -430,17 +376,17 @@ function renderPoll() {
         });
         html += `</select><button class="poll-vote-btn" onclick="submitPollVote()">Cast Your Vote</button>`;
     } else {
-        html += `<div class="poll-total" style="margin-bottom:14px;">You already voted • Total votes: ${total}</div>`;
+        html += `<div style="text-align:center; font-size:0.8rem; color:#94a3b8; margin-bottom:14px;">You already voted • Total votes: ${total}</div>`;
     }
     if (total > 0) {
-        html += `<div style="margin-top:8px;"><div style="font-size:0.85rem;color:#94a3b8;margin-bottom:8px;">Current results (shared):</div>`;
+        html += `<div style="margin-top:8px;"><div style="font-size:0.85rem;color:#94a3b8;margin-bottom:8px;">Current results:</div>`;
         POLL_OPTIONS.map(opt => ({ name: opt, count: pollVotes[opt.replace(/\s+/g,"")] || 0 }))
             .filter(x => x.count > 0).sort((a,b) => b.count - a.count)
             .forEach(item => {
                 const pct = Math.round(item.count / total * 100);
-                html += `<div class="poll-option" style="cursor:default;margin-bottom:8px;">
-                    <div style="flex:1"><div class="poll-option-text">${item.name}</div>
-                    <div class="poll-bar-container"><div class="poll-bar-bg"><div class="poll-bar-fill" style="width:${pct}%"></div></div></div></div>
+                html += `<div class="poll-option" style="cursor:default;">
+                    <div style="flex:1"><div style="font-size:0.9rem; color:#e2e8f0;">${item.name}</div>
+                    <div class="poll-bar-bg"><div class="poll-bar-fill" style="width:${pct}%"></div></div></div>
                     <div class="poll-percent">${pct}%</div></div>`;
             });
         html += `</div>`;
