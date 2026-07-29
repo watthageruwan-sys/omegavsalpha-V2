@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbz4Q1Lit-6JmlMAAfKKrXCgBfDLohXN4wbXW_1lW0gAbZNNt6Nj0RZQYK8IpGKe-f-jlg/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwWpdBcZIQnNRyjw7Jl_ccs_Ni6AkyGYlAylvsGKs_-yHuEaX1z5Vzv5Bh8ysG9-j6pxA/exec";
 
 let scores = { alpha: 0, omega: 0 };
 let streamScores = {
