@@ -49,22 +49,43 @@
             </div>
         </div>
 
-        <!-- LIVE TEAM SCORE FEED -->
-        <div class="section-card">
-            <h2>📡 Live Team Score Feed</h2>
-            <div class="team-feed-grid">
-                <div class="team-feed-box alpha">
-                    <h3>α Team Alpha</h3>
-                    <div class="team-feed-score" id="feedAlphaScore">0 pts</div>
-                    <div class="team-feed-status" id="feedAlphaStatus">Calculating status...</div>
-                </div>
-                <div class="team-feed-box omega">
-                    <h3>Ω Team Omega</h3>
-                    <div class="team-feed-score" id="feedOmegaScore">0 pts</div>
-                    <div class="team-feed-status" id="feedOmegaStatus">Calculating status...</div>
-                </div>
-            </div>
+      <!-- MAIN SCOREBOARD SECTION -->
+<div class="scoreboard-section">
+    
+    <!-- Existing Alpha & Omega Score Cards -->
+    <div class="team-cards">
+        <div class="team-card alpha-card" id="alphaCard">
+            <!-- Alpha score content -->
+            <h3>α-Alpha</h3>
+            <div class="score" id="alphaScore">0</div>
         </div>
+        <div class="team-card omega-card" id="omegaCard">
+            <!-- Omega score content -->
+            <h3>Ω-Omega</h3>
+            <div class="score" id="omegaScore">0</div>
+        </div>
+    </div>
+
+    <!-- ⚡ NEW: SINGLE LIVE FEED CARD (Placed directly below score cards) -->
+    <div class="latest-feed-card" style="
+        background: rgba(15, 23, 42, 0.85); 
+        border: 1px solid rgba(255, 215, 0, 0.35); 
+        border-radius: 12px; 
+        padding: 14px 20px; 
+        margin: 16px auto; 
+        max-width: 600px; 
+        text-align: center; 
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    ">
+        <div style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">
+            ⚡ Latest Activity
+        </div>
+        <div id="latestActivityText" style="font-size: 1.05rem; font-weight: 600; color: #f8fafc;">
+            Standing by for new points...
+        </div>
+    </div>
+
+</div>
 
         <!-- TOP PERFORMERS -->
         <div class="section-card">
