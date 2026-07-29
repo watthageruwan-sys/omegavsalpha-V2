@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - Grade 12 Study Group Initiative</title>
+    <title>Admin Panel - α-ALPHA vs Ω-OMEGA</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -19,48 +19,37 @@
         <!-- HEADER -->
         <header>
             <div class="subtitle">Kuruduwatta Royal College - Grade 12 Study Group Initiative</div>
-            <h1>🛠️ Admin Point Controller</h1>
-            <div class="college-name">
-                <div class="school-flag">
-                    <div class="navy-half"></div>
-                    <div class="gold-half"></div>
-                </div>
-                Secure Admin Area
-            </div>
+            <h1>🛠️ Battle Arena Admin Panel</h1>
+            <div class="college-name">Authorized Personnel Only</div>
         </header>
 
-        <div class="admin-info">
-            This page is for team captains, coordinators and teachers only. 
-            Enter the PIN to unlock the controls. Points awarded here update live on the Battle Arena for everyone.
+        <!-- LOGIN SECTION -->
+        <div class="section-card" id="loginCard">
+            <h2>🔒 Admin Access Required</h2>
+            <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 15px;">Please enter the admin password to manage scores and settings.</p>
+            <div style="display: flex; gap: 10px; max-width: 400px; margin: 0 auto;">
+                <input type="password" id="adminPassInput" placeholder="Enter Admin Password..." style="flex: 1; padding: 10px; border-radius: 6px; border: 1px solid #334155; background: #0f172a; color: white;">
+                <button onclick="checkAdminPassword()" class="btn-primary">Login</button>
+            </div>
+            <p id="loginError" style="color: #ef4444; font-size: 0.85rem; margin-top: 10px; display: none;">Incorrect password. Access denied.</p>
         </div>
 
-        <!-- LIVE MINI SCOREBOARD -->
-        <div class="scoreboard-overview">
-            <div class="team-card alpha-card" id="alphaCard">
-                <div class="team-title">α - Team Alpha</div>
-                <div class="score-display" id="alphaScore">0</div>
-                <div class="score-subtitle" style="color: #94a3b8; font-size: 0.9rem;">Total Points</div>
-            </div>
-            <div class="team-card omega-card" id="omegaCard">
-                <div class="team-title">Ω - Team Omega</div>
-                <div class="score-display" id="omegaScore">0</div>
-                <div class="score-subtitle" style="color: #94a3b8; font-size: 0.9rem;">Total Points</div>
-            </div>
-        </div>
+        <!-- MAIN ADMIN PANEL (Hidden by default) -->
+        <div id="adminPanel" style="display: none;">
 
-        <!-- CONTROLS / ADMIN PANEL -->
-        <div class="controls-section locked" id="controlsSection">
-            <div class="controls-header">
-                <h2>🛠️ Award Points</h2>
-                <div style="display: flex; gap: 10px; align-items: center;">
-                    <span class="lock-badge" id="lockBadge">🔒 Locked</span>
-                    <button class="admin-login-btn" id="adminBtn" onclick="toggleAdmin()">🔒 Admin Login</button>
+            <!-- AWARD POINTS SECTION -->
+            <div class="section-card">
+                <h2>🏆 Award / Deduct Points</h2>
+                <div class="form-group">
+                    <label for="teamSelect">Select Team:</label>
+                    <select id="teamSelect">
+                        <option value="alpha">α - Team Alpha</option>
+                        <option value="omega">Ω - Team Omega</option>
+                    </select>
                 </div>
-            </div>
-            
-            <div class="controls-body">
-                <div class="control-group">
-                    <label for="streamSelect">Select Academic Stream</label>
+
+                <div class="form-group" style="margin-top: 12px;">
+                    <label for="streamSelect">Select Stream:</label>
                     <select id="streamSelect">
                         <option value="Physical Science">Physical Science</option>
                         <option value="Bio Science">Bio Science</option>
@@ -70,179 +59,82 @@
                     </select>
                 </div>
 
-                <div class="control-group">
-                    <label for="achievementSelect">Select Official Point Criteria</label>
-                    <select id="achievementSelect">
-                        <option value="10">Top Average Score (+10 pts)</option>
-                        <option value="5">Most Improved (+5 pts)</option>
-                        <option value="5">Full Attendance (+5 pts)</option>
-                        <option value="3">Shared Resources (+3 pts)</option>
-                    </select>
+                <div class="form-group" style="margin-top: 12px;">
+                    <label for="pointsInput">Points Amount (use negative for deduction):</label>
+                    <input type="number" id="pointsInput" value="10">
                 </div>
 
-                <div class="control-row">
-                    <button class="btn-action" onclick="awardCustomStreamScore('alpha')">Award to α-Alpha</button>
-                    <button class="btn-action" onclick="awardCustomStreamScore('omega')">Award to Ω-Omega</button>
-                </div>
-
-                <button class="btn-danger" onclick="resetScores()">⚠️ Reset All Scores</button>
-            </div>
-        </div>
-
-        <!-- TOP PERFORMERS EDITOR -->
-        <div class="section-card" id="topPerformersEditor">
-            <h2>🌟 Edit Top Performers</h2>
-            <p style="color:#94a3b8; font-size:0.85rem; margin-bottom:16px;">
-                Enter the current top 3 students for each team. These names appear on the public Battle Arena.
-                You must login as admin first to save changes.
-            </p>
-
-            <div class="top-edit-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:18px;">
-                <!-- Alpha -->
-                <div style="background:rgba(0,0,40,0.9); border:1px solid rgba(59,130,246,0.4); border-radius:12px; padding:16px;">
-                    <h3 style="color:#60a5fa; margin-bottom:12px; font-size:1rem;">α Team Alpha</h3>
-                    
-                    <div style="margin-bottom:12px;">
-                        <label style="font-size:0.8rem; color:#94a3b8;">1st Place – Name</label>
-                        <input type="text" id="tp-alpha-1-name" placeholder="Student name" style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;">
-                        <input type="text" id="tp-alpha-1-note" placeholder="Note (e.g. Highest average)" style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px; font-size:0.85rem;">
-                    </div>
-                    <div style="margin-bottom:12px;">
-                        <label style="font-size:0.8rem; color:#94a3b8;">2nd Place – Name</label>
-                        <input type="text" id="tp-alpha-2-name" placeholder="Student name" style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;">
-                        <input type="text" id="tp-alpha-2-note" placeholder="Note (e.g. Most improved)" style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px; font-size:0.85rem;">
-                    </div>
-                    <div>
-                        <label style="font-size:0.8rem; color:#94a3b8;">3rd Place – Name</label>
-                        <input type="text" id="tp-alpha-3-name" placeholder="Student name" style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;">
-                        <input type="text" id="tp-alpha-3-note" placeholder="Note (e.g. Perfect attendance)" style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px; font-size:0.85rem;">
-                    </div>
-                </div>
-
-                <!-- Omega -->
-                <div style="background:rgba(0,0,40,0.9); border:1px solid rgba(255,215,0,0.4); border-radius:12px; padding:16px;">
-                    <h3 style="color:#ffd700; margin-bottom:12px; font-size:1rem;">Ω Team Omega</h3>
-                    
-                    <div style="margin-bottom:12px;">
-                        <label style="font-size:0.8rem; color:#94a3b8;">1st Place – Name</label>
-                        <input type="text" id="tp-omega-1-name" placeholder="Student name" style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;">
-                        <input type="text" id="tp-omega-1-note" placeholder="Note (e.g. Highest average)" style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px; font-size:0.85rem;">
-                    </div>
-                    <div style="margin-bottom:12px;">
-                        <label style="font-size:0.8rem; color:#94a3b8;">2nd Place – Name</label>
-                        <input type="text" id="tp-omega-2-name" placeholder="Student name" style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;">
-                        <input type="text" id="tp-omega-2-note" placeholder="Note (e.g. Most improved)" style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px; font-size:0.85rem;">
-                    </div>
-                    <div>
-                        <label style="font-size:0.8rem; color:#94a3b8;">3rd Place – Name</label>
-                        <input type="text" id="tp-omega-3-name" placeholder="Student name" style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;">
-                        <input type="text" id="tp-omega-3-note" placeholder="Note (e.g. Shared most resources)" style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px; font-size:0.85rem;">
-                    </div>
-                </div>
+                <button onclick="awardPoints()" class="btn-primary" style="margin-top: 15px; width: 100%;">
+                    ⚡ Update Score & Feed
+                </button>
             </div>
 
-            <button class="btn-action" style="margin-top:18px; width:100%;" onclick="saveTopPerformersFromAdmin()">
-                💾 Save Top Performers
+            <!-- TOP PERFORMERS EDIT SECTION -->
+            <div class="section-card">
+                <h2>🌟 Update Top Performers</h2>
+                
+                <h3>α - Team Alpha</h3>
+                <input type="text" id="topAlpha1" placeholder="Rank 1 Student Name" style="margin-bottom:6px; width:100%;">
+                <input type="text" id="topAlpha2" placeholder="Rank 2 Student Name" style="margin-bottom:6px; width:100%;">
+                <input type="text" id="topAlpha3" placeholder="Rank 3 Student Name" style="margin-bottom:12px; width:100%;">
+
+                <h3>Ω - Team Omega</h3>
+                <input type="text" id="topOmega1" placeholder="Rank 1 Student Name" style="margin-bottom:6px; width:100%;">
+                <input type="text" id="topOmega2" placeholder="Rank 2 Student Name" style="margin-bottom:6px; width:100%;">
+                <input type="text" id="topOmega3" placeholder="Rank 3 Student Name" style="margin-bottom:12px; width:100%;">
+
+                <button onclick="saveTopPerformers()" class="btn-primary" style="width: 100%;">
+                    💾 Save Performers
+                </button>
+            </div>
+
+            <!-- RECAP DATE SETTING -->
+            <div class="section-card">
+                <h2>⏱️ Set Next Recap Paper Date</h2>
+                <input type="datetime-local" id="recapDatePicker" style="width: 100%; padding: 8px; margin-bottom: 12px;">
+                <button onclick="saveRecapDate()" class="btn-primary" style="width: 100%;">
+                    📅 Update Target Date
+                </button>
+            </div>
+
+            <!-- LOGOUT BUTTON -->
+            <button onclick="logoutAdmin()" style="background: #334155; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; margin-top: 10px; width: 100%;">
+                🔒 Logout Admin Panel
             </button>
-            <p style="margin-top:10px; font-size:0.8rem; color:#94a3b8; text-align:center;">
-                After saving, everyone will see the updated names within a few seconds.
-            </p>
-        </div>
-
-        <!-- RECAP TIMER EDITOR -->
-        <div class="section-card">
-            <h2>⏱️ Update Recap Paper Countdown</h2>
-            <p style="color:#94a3b8; font-size:0.85rem; margin-bottom:16px;">
-                Set the exact date and time of the next Recap Paper. The countdown on the Battle Arena will update for everyone.
-                You must login as admin first.
-            </p>
-            <div>
-                <label style="font-size:0.8rem; color:#94a3b8;">New Recap Date & Time</label>
-                <input type="datetime-local" id="recapDateInput"
-                    style="width:100%; margin-top:6px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:10px; border-radius:8px; font-size:1rem;">
-            </div>
-            <button class="btn-action" style="margin-top:16px; width:100%;" onclick="saveRecapDateFromAdmin()">
-                💾 Update Countdown Timer
-            </button>
-        </div>
-
-        <!-- PAST PAPER LINKS EDITOR -->
-        <div class="section-card">
-            <h2>📥 Edit Past Paper Download Links</h2>
-            <p style="color:#94a3b8; font-size:0.85rem; margin-bottom:16px;">
-                Paste Google Drive / any links for each subject. Students will see real Download buttons once you save.
-                You must login as admin first.
-            </p>
-
-            <div style="display:flex; flex-direction:column; gap:14px;">
-
-                <div style="color:#60a5fa; font-weight:600; font-size:0.9rem; margin-top:4px;">Physical Science</div>
-                <div><label style="font-size:0.8rem; color:#94a3b8;">Combined Mathematics</label>
-                    <input type="url" id="dl-ps-combined-maths" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
-                <div><label style="font-size:0.8rem; color:#94a3b8;">Physics</label>
-                    <input type="url" id="dl-ps-physics" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
-                <div><label style="font-size:0.8rem; color:#94a3b8;">Chemistry</label>
-                    <input type="url" id="dl-ps-chemistry" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
-
-                <div style="color:#60a5fa; font-weight:600; font-size:0.9rem; margin-top:8px;">Bio Science</div>
-                <div><label style="font-size:0.8rem; color:#94a3b8;">Biology</label>
-                    <input type="url" id="dl-bs-biology" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
-                <div><label style="font-size:0.8rem; color:#94a3b8;">Chemistry</label>
-                    <input type="url" id="dl-bs-chemistry" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
-                <div><label style="font-size:0.8rem; color:#94a3b8;">Physics</label>
-                    <input type="url" id="dl-bs-physics" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
-                <div><label style="font-size:0.8rem; color:#94a3b8;">Agriculture</label>
-                    <input type="url" id="dl-bs-agriculture" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
-
-                <div style="color:#60a5fa; font-weight:600; font-size:0.9rem; margin-top:8px;">Commerce</div>
-                <div><label style="font-size:0.8rem; color:#94a3b8;">Accounting</label>
-                    <input type="url" id="dl-cm-accounting" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
-                <div><label style="font-size:0.8rem; color:#94a3b8;">Business Studies</label>
-                    <input type="url" id="dl-cm-business" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
-                <div><label style="font-size:0.8rem; color:#94a3b8;">Economics</label>
-                    <input type="url" id="dl-cm-economics" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
-
-                <div style="color:#60a5fa; font-weight:600; font-size:0.9rem; margin-top:8px;">Technology</div>
-                <div><label style="font-size:0.8rem; color:#94a3b8;">Engineering Technology</label>
-                    <input type="url" id="dl-tech-eng" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
-                <div><label style="font-size:0.8rem; color:#94a3b8;">Bio Systems Technology</label>
-                    <input type="url" id="dl-tech-bst" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
-                <div><label style="font-size:0.8rem; color:#94a3b8;">Science for Technology</label>
-                    <input type="url" id="dl-tech-sft" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
-                <div><label style="font-size:0.8rem; color:#94a3b8;">ICT</label>
-                    <input type="url" id="dl-tech-ict" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
-
-                <div style="color:#60a5fa; font-weight:600; font-size:0.9rem; margin-top:8px;">Arts</div>
-                <div><label style="font-size:0.8rem; color:#94a3b8;">History</label>
-                    <input type="url" id="dl-arts-history" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
-                <div><label style="font-size:0.8rem; color:#94a3b8;">Geography</label>
-                    <input type="url" id="dl-arts-geography" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
-                <div><label style="font-size:0.8rem; color:#94a3b8;">Political Science</label>
-                    <input type="url" id="dl-arts-polscience" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
-                <div><label style="font-size:0.8rem; color:#94a3b8;">Literature</label>
-                    <input type="url" id="dl-arts-literature" placeholder="https://drive.google.com/..." style="width:100%; margin-top:4px; background:rgba(0,0,30,0.9); color:#f8fafc; border:1px solid rgba(255,215,0,0.3); padding:8px; border-radius:6px;"></div>
-            </div>
-
-            <button class="btn-action" style="margin-top:18px; width:100%;" onclick="saveDownloadsFromAdmin()">
-                💾 Save All Download Links
-            </button>
-        </div>
-
-        <!-- ACTIVITY LOG -->
-        <div class="activity-section">
-            <h2>📜 Admin Activity Log</h2>
-            <div class="activity-log" id="activityLog">
-                <div class="activity-item"><span class="activity-time">[System]</span> Admin panel ready. Login to award points.</div>
-            </div>
         </div>
 
         <!-- FOOTER -->
         <footer>
-            Kuruduwatta Royal College &bull; Grade 12 Study Group Initiative &copy; 2026<br>
-            <span style="font-size:0.75rem; opacity:0.8;">PIN is known only to authorized captains & teachers</span>
+            Kuruduwatta Royal College &bull; Grade 12 Study Group Initiative &copy; 2026
         </footer>
     </div>
 
     <script src="script.js"></script>
+    <script>
+        const ADMIN_PASS = "royal1232009";
+
+        // Check session storage on page load
+        if (sessionStorage.getItem("isAdminLoggedIn") === "true") {
+            document.getElementById("loginCard").style.display = "none";
+            document.getElementById("adminPanel").style.display = "block";
+        }
+
+        function checkAdminPassword() {
+            const entered = document.getElementById("adminPassInput").value;
+            if (entered === ADMIN_PASS) {
+                sessionStorage.setItem("isAdminLoggedIn", "true");
+                document.getElementById("loginCard").style.display = "none";
+                document.getElementById("adminPanel").style.display = "block";
+                document.getElementById("loginError").style.display = "none";
+            } else {
+                document.getElementById("loginError").style.display = "block";
+            }
+        }
+
+        function logoutAdmin() {
+            sessionStorage.removeItem("isAdminLoggedIn");
+            location.reload();
+        }
+    </script>
 </body>
 </html>
